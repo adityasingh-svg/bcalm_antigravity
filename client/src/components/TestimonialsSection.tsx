@@ -81,7 +81,7 @@ export default function TestimonialsSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
             >
-              <Card className="h-full hover-elevate">
+              <Card className="h-full hover-elevate" data-testid={`card-testimonial-${index}`}>
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center">
                     <Avatar className="h-20 w-20 mb-4">
