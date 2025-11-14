@@ -1,0 +1,339 @@
+1. Hero Section
+Headline:
+ “Become Interview-Ready for AI Product Roles in Just 30 Days”
+Subheadline:
+ “A curated program by AI Product Managers and Leaders to help students and recent graduates build job-ready skills, a strong portfolio, and the confidence to crack AI PM interviews.”
+Primary Call-to-Action Buttons:
+“Join the Waitlist”
+
+
+“Schedule a Call”
+
+
+Supporting Metrics:
+“🎓 200+ students from IITs, BITS, NITs, and IIITs already registered!”
+
+
+“🚀 Next Cohort Starts: December 2, 2025”
+
+
+
+2. Extensive Career Support
+(Place directly below the hero section.)
+Section Title:
+ “Extensive Career Support”
+Subtitle:
+ “Everything you need to turn your skills into real opportunities.”
+Card 1 — Resume Optimization
+ 1:1 expert review and optimization so your resume highlights PM-ready skills and AI understanding.
+Card 2 — Build Your Portfolio
+ Hands-on assignments and product simulations to create a strong PM + AI portfolio.
+ NEW: Build and present your own AI product case study.
+Card 3 — Extensive Interview Prep
+ AI + Product + Strategy interview prep.
+ Mock interviews, frameworks, practice questions, and personalized feedback.
+Card 4 — Job Board & Referrals
+ Access curated PM + AI opportunities, hiring partner intros, and alumni referrals when available.
+
+3. About the Program
+“This program is created especially for graduating students and early-career professionals from India’s top colleges. You’ll learn what companies expect from entry-level AI PMs, how to build a job-ready portfolio, and how to confidently navigate PM + AI interviews. Each week blends live learning, hands-on assignments, and personalized guidance.”
+
+4. Curriculum — What You’ll Learn
+Section Title:
+ “Curriculum”
+Subtitle:
+ “30 days of immersive, hands-on learning designed for ambitious students who want to break into AI Product Management.”
+
+Week 1 — AI & Product Foundations
+What You Learn:
+Modern AI PM role across B2B/B2C
+
+
+Product lifecycle: Discovery → Delivery → Iteration
+
+
+Core PM frameworks: CIRCLES, JTBD, PR/FAQ
+
+
+AI fundamentals: prompts, inputs/outputs, evaluation
+
+
+How PMs work with AI engineers, designers, and data teams
+
+
+Outcome:
+ Understand how AI-first products are conceptualized, designed, and launched.
+Hands-on Assignment:
+ Redesign one existing product feature using AI.
+ Create a brief PR/FAQ + user journey flow.
+
+Week 2 — AI Systems, Data & UX for PMs
+What You Learn:
+AI/ML systems explained for PMs
+
+
+Prompt engineering fundamentals
+
+
+Tools: ChatGPT, NotebookLM, Gemini, Kraftful
+
+
+UX fundamentals for AI: feedback loops, trust, failure states
+
+
+How to spec AI features clearly
+
+
+Outcome:
+ Design clear, intuitive AI workflows and write strong prompt + UX specs.
+Hands-on Assignment:
+ Design an AI assistant for a specific user segment.
+ Provide flows, prompts, and a mini-spec of model behavior.
+
+Week 3 — Strategy, Metrics & Business Thinking
+What You Learn:
+Prioritization frameworks for AI products
+
+
+Defining AI product metrics (quality, engagement, success)
+
+
+Growth loops & monetization for AI-first products
+
+
+Competitive analysis & evaluating AI markets
+
+
+Responsible AI considerations (ethics, bias, safety)
+
+
+Outcome:
+ Think strategically like a PM — justify decisions using metrics and user impact.
+Hands-on Assignment:
+ Write a 2–3 month product strategy for an AI feature or product.
+ Include metrics, prioritization, and roadmap.
+
+Week 4 — Capstone, Portfolio & Interview Readiness
+What You Learn:
+Choosing a strong capstone problem
+
+
+Creating a complete AI PM case study
+
+
+Storytelling for PM interviews
+
+
+Product sense, execution, AI, and strategy interview patterns
+
+
+Formatting a professional PM portfolio
+
+
+Outcome:
+ Graduate with a polished AI Product Case Study + a PM-ready portfolio.
+Hands-on Assignment:
+ Build your complete capstone project with PRD sections, flows, metrics, UX outline, and pitch it to mentors for feedback.
+
+5. Why Choose Bcalm?
+Section Title:
+ “Why Choose Bcalm?”
+Create a three-column comparison table:
+Benefit | Traditional Bootcamps | Bcalm AI PM Launchpad
+Curriculum
+Basic PM theory
+
+
+Deep AI-first PM curriculum covering AI, GenAI, LLM thinking, metrics, and strategy
+
+
+Instructor Expertise
+Limited real PM experience
+
+
+Taught by working AI PMs & leaders from top companies
+
+
+Personalized Support
+Generic feedback
+
+
+1:1 mentorship, assignment feedback, resume + portfolio review, interview coaching
+
+
+Community
+Basic Slack/WhatsApp group
+
+
+Ambitious cohort from IITs, BITS, NITs, IIITs + lifelong alumni network
+
+
+Hands-On Learning
+One capstone project
+
+
+5 simulations + weekly assignments + full capstone with detailed feedback
+
+
+Post-Completion Support
+Ends with cohort
+
+
+2 years of continued help, office hours, and alumni support
+
+
+Offline Events
+Minimal
+
+
+Regular meetups in Bangalore, Delhi NCR, Pune, Mumbai, Hyderabad
+
+
+Industry Connects
+One-time
+
+
+Multiple speaker sessions, founder talks, and AI PM AMA sessions
+
+
+Placement Assistance
+Basic job board
+
+
+Resume review, portfolio creation, mock interviews, job board, alumni referrals
+
+
+Closing Line:
+ “Bcalm isn’t just a course — it’s a launchpad into AI Product Management.”
+
+6. Student Stories & Reviews
+Section Title:
+ “What Our Students Say”
+Include six reviews:
+“This program connected AI with real product thinking. The assignments and feedback made me truly interview-ready.” — Priya S., IIT Delhi
+
+
+“Resume + portfolio help was priceless. I landed my first PM internship because of the portfolio I built here.” — Arjun R., BITS Pilani
+
+
+“I built my first AI product case study as the capstone. Interviewers loved it.” — Rhea M., NIT Trichy
+
+
+“The community is incredible — the quality of peers pushes you to do better work.” — Siddharth P., IIT Madras
+
+
+“Learning from working AI PMs gave me clarity you can’t find in textbooks.” — Aditi S., IIIT Hyderabad
+
+
+“The opportunity board and referrals helped me get real interviews at AI startups.” — Karan J., NIT Surathkal
+
+
+
+7. Instructor Section
+Section Title:
+ “Learn from AI Product Leaders”
+Rahul Mehta – Senior AI PM, Google
+
+
+Neha Sharma – AI Strategy Lead, Microsoft
+
+
+Aarav Patel – Head of Product, AI Startup
+
+
+
+8. Pricing & What You Get
+Section Title:
+ “Program Fee & Everything You Get”
+Pricing:
+Actual Price: ₹24,999
+
+
+Special Cohort Price: ₹14,999
+
+
+7-Day Refund Guarantee:
+ “Try the program for 7 days — if you don’t see value, get a full refund. No questions asked.”
+What’s Included:
+30 days of live sessions with AI PMs
+
+
+5 hands-on simulations + full capstone
+
+
+Weekly assignments + detailed feedback
+
+
+1:1 mentorship sessions
+
+
+Resume optimization
+
+
+Portfolio creation support
+
+
+Mock interviews (AI, PM, product sense, strategy)
+
+
+Curated job & internship board
+
+
+Interview frameworks & templates
+
+
+Lifetime access to session recordings
+
+
+Lifetime alumni community
+
+
+Certificate of Completion
+
+
+Alumni referrals (subject to availability)
+
+
+Buttons:
+“Enroll at ₹14,999”
+
+
+“Join the Waitlist”
+
+
+
+9. Final Call-to-Action Section
+Section Title:
+ “Start Your AI Product Journey Today”
+Text:
+ “Join a focused learning community, build your portfolio, and confidently prepare for AI PM interviews.”
+Buttons:
+“Enroll Now”
+
+
+“Schedule a 1:1 Call”
+
+
+
+10. Footer
+LinkedIn | Twitter | Instagram
+
+
+© 2025 Bcalm – AI Product Manager Launchpad
+
+
+Terms of Use | Privacy Policy | Contact Us
+
+
+
+11. Tone & Copy Style
+Aspirational, clear, student-friendly
+
+
+Emphasize interview readiness, portfolio building, and real career outcomes
+
+
+High-trust, no fluff
+
+
+
