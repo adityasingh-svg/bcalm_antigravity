@@ -7,18 +7,18 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           <div>
-            <h3 className="font-bold text-lg mb-4">AI Product Manager Launchpad</h3>
+            <h3 className="font-bold text-lg mb-4">Bcalm</h3>
             <p className="text-sm text-muted-foreground">
-              Transform into an AI Product Manager in 30 days with industry leaders.
+              AI Product Manager Launchpad - Transform into an AI PM in 30 days with industry leaders.
             </p>
           </div>
           
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors" data-testid="link-terms">Terms of Service</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors" data-testid="link-terms">Terms of Use</a></li>
               <li><a href="#" className="hover:text-primary transition-colors" data-testid="link-privacy">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors" data-testid="link-contact">Contact</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors" data-testid="link-contact">Contact Us</a></li>
             </ul>
           </div>
           
@@ -49,7 +49,7 @@ export default function Footer() {
         </div>
         
         <div className="border-t pt-8 text-center text-sm text-muted-foreground">
-          <p>© 2025 AI Product Manager Launchpad. All rights reserved.</p>
+          <p>© 2025 Bcalm – AI Product Manager Launchpad. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
+import CareerSupportSection from "@/components/CareerSupportSection";
 import AboutSection from "@/components/AboutSection";
 import CurriculumSection from "@/components/CurriculumSection";
-import WhyProgramSection from "@/components/WhyProgramSection";
+import WhyBcalmSection from "@/components/WhyBcalmSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import InstructorsSection from "@/components/InstructorsSection";
+import PricingSection from "@/components/PricingSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import WaitlistDialog from "@/components/WaitlistDialog";
@@ -15,8 +17,19 @@ export default function LandingPage() {
   const [waitlistOpen, setWaitlistOpen] = useState(false);
   const [scheduleOpen, setScheduleOpen] = useState(false);
 
+  useEffect(() => {
+    document.documentElement.style.scrollBehavior = 'smooth';
+    return () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+    };
+  }, []);
+
   const handleDownloadCurriculum = () => {
     console.log('Download curriculum clicked');
+  };
+
+  const handleEnroll = () => {
+    setWaitlistOpen(true);
   };
 
   return (
@@ -31,18 +44,25 @@ export default function LandingPage() {
         onScheduleCall={() => setScheduleOpen(true)} 
       />
       
+      <CareerSupportSection />
+      
       <AboutSection />
       
       <CurriculumSection onDownloadCurriculum={handleDownloadCurriculum} />
       
-      <WhyProgramSection />
+      <WhyBcalmSection />
       
       <TestimonialsSection />
       
       <InstructorsSection />
       
-      <CTASection 
+      <PricingSection 
+        onEnroll={handleEnroll}
         onJoinWaitlist={() => setWaitlistOpen(true)} 
+      />
+      
+      <CTASection 
+        onEnroll={handleEnroll}
         onScheduleCall={() => setScheduleOpen(true)} 
       />
       

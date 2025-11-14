@@ -29,7 +29,7 @@ export default function Navbar({ onJoinWaitlist, onScheduleCall }: NavbarProps) 
       <div className="container mx-auto px-4 py-4 max-w-6xl">
         <div className="flex items-center justify-between">
           <div className="font-bold text-xl text-foreground">
-            AI PM Launchpad
+            Bcalm
           </div>
           
           <div className="hidden md:flex items-center gap-4">

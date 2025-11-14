@@ -2,11 +2,11 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 interface CTASectionProps {
-  onJoinWaitlist: () => void;
+  onEnroll: () => void;
   onScheduleCall: () => void;
 }
 
-export default function CTASection({ onJoinWaitlist, onScheduleCall }: CTASectionProps) {
+export default function CTASection({ onEnroll, onScheduleCall }: CTASectionProps) {
   return (
     <section className="py-24 bg-gradient-to-br from-primary/5 to-primary/10">
       <div className="container mx-auto px-4 max-w-4xl">
@@ -21,17 +21,17 @@ export default function CTASection({ onJoinWaitlist, onScheduleCall }: CTASectio
             Start Your AI Product Journey Today
           </h2>
           <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Get mentored by AI leaders and launch your PM career in 30 days.
+            Join a focused learning community, build your portfolio, and confidently prepare for AI PM interviews.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
               className="text-base px-8 py-6"
-              onClick={onJoinWaitlist}
-              data-testid="button-cta-waitlist"
+              onClick={onEnroll}
+              data-testid="button-cta-enroll"
             >
-              Join the Waitlist
+              Enroll Now
             </Button>
             <Button 
               size="lg" 
@@ -40,7 +40,7 @@ export default function CTASection({ onJoinWaitlist, onScheduleCall }: CTASectio
               onClick={onScheduleCall}
               data-testid="button-cta-call"
             >
-              Schedule a Call
+              Schedule a 1:1 Call
             </Button>
           </div>
         </motion.div>

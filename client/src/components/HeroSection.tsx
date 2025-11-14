@@ -9,6 +9,16 @@ interface HeroSectionProps {
   onScheduleCall: () => void;
 }
 
+const quickLinks = [
+  { name: "Career Support", href: "#career-support" },
+  { name: "About", href: "#about" },
+  { name: "Curriculum", href: "#curriculum" },
+  { name: "Why Bcalm", href: "#why-bcalm" },
+  { name: "Reviews", href: "#reviews" },
+  { name: "Instructors", href: "#instructors" },
+  { name: "Pricing", href: "#pricing" },
+];
+
 export default function HeroSection({ onJoinWaitlist, onScheduleCall }: HeroSectionProps) {
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
@@ -29,14 +39,14 @@ export default function HeroSection({ onJoinWaitlist, onScheduleCall }: HeroSect
           className="text-center"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-            Become the Next-Gen AI Product Manager in 30 Days
+            Become Interview-Ready for AI Product Roles in Just 30 Days
           </h1>
           
           <p className="text-lg md:text-xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed">
-            A curated program by AI Product Managers and Leaders to help ambitious graduates build the foundation to lead in the age of intelligent products.
+            A curated program by AI Product Managers and Leaders to help students and recent graduates build job-ready skills, a strong portfolio, and the confidence to crack AI PM interviews.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Button 
               size="lg" 
               className="text-base px-8 py-6 bg-gradient-to-r from-primary to-primary/90"
@@ -59,12 +69,30 @@ export default function HeroSection({ onJoinWaitlist, onScheduleCall }: HeroSect
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex flex-wrap gap-3 justify-center items-center mb-12"
+          >
+            {quickLinks.map((link, index) => (
+              <a
+                key={index}
+                href={link.href}
+                className="text-sm text-white/80 hover:text-white transition-colors border-b border-transparent hover:border-white/60 pb-1 cursor-pointer"
+                data-testid={`link-quick-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
+              >
+                {link.name}
+              </a>
+            ))}
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-6 justify-center items-center"
           >
             <Badge variant="secondary" className="bg-white/15 backdrop-blur-md text-white border-white/20 px-4 py-2 text-sm flex items-center gap-2">
               <GraduationCap className="h-4 w-4" />
-              200+ students from IITs, BITS, and NITs already registered!
+              200+ students from IITs, BITS, NITs, and IIITs already registered!
             </Badge>
             <Badge variant="secondary" className="bg-white/15 backdrop-blur-md text-white border-white/20 px-4 py-2 text-sm flex items-center gap-2">
               <Rocket className="h-4 w-4" />

@@ -2,36 +2,60 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 import priyaImage from "@assets/generated_images/Female_IIT_student_testimonial_e0fb5fa7.png";
-import rohanImage from "@assets/generated_images/Male_BITS_student_testimonial_a5817a1b.png";
-import ananyaImage from "@assets/generated_images/Female_NIT_student_testimonial_6481001f.png";
+import arjunImage from "@assets/generated_images/Male_BITS_student_testimonial_a5817a1b.png";
+import rheaImage from "@assets/generated_images/Female_NIT_student_testimonial_6481001f.png";
+import siddharthImage from "@assets/generated_images/Male_IIT_Madras_student_testimonial_1724e208.png";
+import aditiImage from "@assets/generated_images/Female_IIIT_Hyderabad_student_testimonial_a6c7c126.png";
+import karanImage from "@assets/generated_images/Male_NIT_Surathkal_student_testimonial_50308592.png";
 
 const testimonials = [
   {
-    quote: "This program helped me connect product thinking with AI — I feel ready for PM interviews.",
+    quote: "This program connected AI with real product thinking. The assignments and feedback made me truly interview-ready.",
     name: "Priya S.",
     college: "IIT Delhi",
     image: priyaImage,
     initials: "PS"
   },
   {
-    quote: "Learning from real AI PMs gave me clarity on what top companies look for.",
-    name: "Rohan M.",
+    quote: "Resume + portfolio help was priceless. I landed my first PM internship because of the portfolio I built here.",
+    name: "Arjun R.",
     college: "BITS Pilani",
-    image: rohanImage,
+    image: arjunImage,
+    initials: "AR"
+  },
+  {
+    quote: "I built my first AI product case study as the capstone. Interviewers loved it.",
+    name: "Rhea M.",
+    college: "NIT Trichy",
+    image: rheaImage,
     initials: "RM"
   },
   {
-    quote: "I built and pitched an AI product idea within 30 days — incredible experience!",
-    name: "Ananya K.",
-    college: "NIT Trichy",
-    image: ananyaImage,
-    initials: "AK"
+    quote: "The community is incredible — the quality of peers pushes you to do better work.",
+    name: "Siddharth P.",
+    college: "IIT Madras",
+    image: siddharthImage,
+    initials: "SP"
+  },
+  {
+    quote: "Learning from working AI PMs gave me clarity you can't find in textbooks.",
+    name: "Aditi S.",
+    college: "IIIT Hyderabad",
+    image: aditiImage,
+    initials: "AS"
+  },
+  {
+    quote: "The opportunity board and referrals helped me get real interviews at AI startups.",
+    name: "Karan J.",
+    college: "NIT Surathkal",
+    image: karanImage,
+    initials: "KJ"
   }
 ];
 
 export default function TestimonialsSection() {
   return (
-    <section className="py-24 bg-muted/30">
+    <section id="reviews" className="py-24 bg-muted/30">
       <div className="container mx-auto px-4 max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -41,14 +65,14 @@ export default function TestimonialsSection() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Student Success Stories
+            What Our Students Say
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Hear from students who transformed their careers with our program
           </p>
         </motion.div>
         
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
             <motion.div
               key={index}
