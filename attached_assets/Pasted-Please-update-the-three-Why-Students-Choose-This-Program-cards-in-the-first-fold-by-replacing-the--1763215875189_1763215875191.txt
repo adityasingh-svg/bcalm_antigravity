@@ -1,0 +1,76 @@
+Please update the three “Why Students Choose This Program” cards in the first fold by replacing the old single-sentence text in each card with a two-part structure:
+
+A short micro-heading (bold or slightly larger)
+
+One concise, high-impact sentence
+
+Highlight ONLY the exact proof-words specified below — do not highlight anything else.
+
+This change improves scannability and visual hierarchy while keeping the hero section clean and uncluttered.
+
+🔄 Replace each card’s text with the EXACT content and highlight instructions below:
+CARD 1 — INSTRUCTOR
+Micro-Heading (bold):
+
+Learn From the Leader Behind 500+ PM Interviews
+
+Sentence (with required highlights):
+
+“Get trained by a Product Leader who has conducted 500+ PM interviews and shaped the decisions behind 30–40 PM offers.”
+
+Highlight ONLY these exact phrases:
+
+500+ PM interviews
+
+30–40 PM offers
+
+Do not highlight any other text in this card.
+
+CARD 2 — SHORTLISTING
+Micro-Heading (bold):
+
+10x Your Shortlist Chances
+
+Sentence (with required highlights):
+
+“Use insider hiring criteria to craft a resume and AI PM portfolio that gets you 10x more shortlists than typical applicants.”
+
+Highlight ONLY these exact phrases:
+
+insider hiring criteria
+
+AI PM portfolio
+
+10x more shortlists
+
+Do not highlight any other text in this card.
+
+CARD 3 — COHORT QUALITY
+Micro-Heading (bold):
+
+Selective, High-Quality Cohort
+
+Sentence (with required highlights):
+
+“We handpick a limited cohort so every student gets personal attention, deeper mentorship, and a high-caliber peer group.”
+
+Highlight ONLY these exact phrases:
+
+handpick a limited cohort
+
+personal attention
+
+high-caliber peer group
+
+Do not highlight any other text in this card.
+
+🎨 Design & Placement Instructions (Important):
+
+Keep the hero section clean, readable, and uncluttered.
+
+Place these three cards exactly where they currently are: below the CTA buttons and above the navigation tabs / metric badges.
+
+Maintain the current card layout, spacing, and icons — just replace the copy and apply the specified highlights.
+
+Micro-headings should stand out subtly but must not overpower the hero title.
+
