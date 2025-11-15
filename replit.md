@@ -23,6 +23,16 @@ Production-ready landing page for "Bcalm's AI Product Manager Launchpad" - a 30-
   - Non-highlighted text remains clean with normal font-weight for visual contrast
   - Updated subtitle to crisp, targeted message: "Designed for Non-Tech Students & Graduates"
   - Two-line layout creates balanced visual hierarchy with both highlights on the impactful second line
+- **Added "Why Choose This Program" credibility section in first fold:**
+  - Positioned between CTA buttons and quick links for instant trust-building
+  - Three glassmorphic cards with unique gradient icon badges (Award/amber, Zap/violet, Users/emerald)
+  - Card 1: Expert instructor credential (500+ interviews) with Award icon
+  - Card 2: 10x shortlist promise with Zap icon  
+  - Card 3: Small cohort exclusivity with Users icon
+  - Responsive design: 3-column grid on desktop, vertical stack on mobile
+  - Staggered Framer Motion animations (delays 0.4s, 0.5s, 0.6s) with hover-elevate effects
+  - Premium glassmorphic styling (bg-white/5, backdrop-blur-md, border-white/10) maintains hero's clean aesthetic
+  - Fits naturally in first fold, supporting main hero message without cluttering
 - **Optimized page spacing using tiered system based on hellopm.co benchmark:**
   - Most content sections: py-24 → py-16 (64px), mb-16 → mb-10 (40px)
   - Action-oriented sections (Pricing, CTA): py-24 → py-12 (48px) for focused momentum
