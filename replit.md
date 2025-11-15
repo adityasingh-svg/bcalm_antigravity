@@ -16,12 +16,13 @@ Production-ready landing page for "Bcalm's AI Product Manager Launchpad" - a 30-
 - Implemented quick links navigation bar in hero section for smooth scrolling to all major sections
 - Added proper section IDs for anchor navigation (#career-support, #about, #curriculum, #why-bcalm, #reviews, #instructors, #pricing)
 - Enhanced accessibility with aria-expanded attributes on curriculum toggles and proper anchor tags
-- **Enhanced hero section with premium keyword highlighting:**
-  - Main heading highlights three key phrases: "Interview-Ready", "AI Product", and "30 Days"
+- **Enhanced hero section with premium keyword highlighting and two-line layout:**
+  - Main heading split into two lines: "Become Interview-Ready for" / "AI Product Roles in Just 30 Days"
+  - Only TWO key phrases highlighted: "AI Product" and "30 Days" (simplified from three for cleaner focus)
   - Highlighted keywords use bold font-weight with brand violet gradient (from-primary to-violet-400) and subtle glow effect
   - Non-highlighted text remains clean with normal font-weight for visual contrast
   - Updated subtitle to crisp, targeted message: "Designed for Non-Tech Students & Graduates"
-  - Creates premium, AI-themed visual hierarchy while maintaining balance
+  - Two-line layout creates balanced visual hierarchy with both highlights on the impactful second line
 - **Optimized page spacing using tiered system based on hellopm.co benchmark:**
   - Most content sections: py-24 → py-16 (64px), mb-16 → mb-10 (40px)
   - Action-oriented sections (Pricing, CTA): py-24 → py-12 (48px) for focused momentum
