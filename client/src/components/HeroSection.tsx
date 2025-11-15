@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { GraduationCap, Rocket } from "lucide-react";
+import { GraduationCap, Rocket, Award, Zap, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import heroBackground from "@assets/generated_images/AI_neural_network_hero_background_86a25de9.png";
 
@@ -54,7 +54,7 @@ export default function HeroSection({ onJoinWaitlist, onScheduleCall }: HeroSect
             Designed for Non-Tech Students & Graduates
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
             <Button 
               size="lg" 
               className="text-base px-8 py-6 bg-gradient-to-r from-primary to-primary/90"
@@ -73,11 +73,79 @@ export default function HeroSection({ onJoinWaitlist, onScheduleCall }: HeroSect
               Schedule a Call
             </Button>
           </div>
+
+          {/* Why Choose This Program Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mb-10"
+          >
+            <h3 className="text-xl md:text-2xl font-semibold text-white/90 mb-6 text-center">
+              Why Choose This Program
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
+              {/* Card 1: Expert Instructor */}
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="group relative bg-white/5 backdrop-blur-md border border-white/10 rounded-lg p-5 hover-elevate transition-all duration-300"
+                data-testid="card-why-choose-expert"
+              >
+                <div className="flex flex-col items-center text-center">
+                  <div className="mb-4 p-3 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-400/30">
+                    <Award className="h-6 w-6 text-amber-300" />
+                  </div>
+                  <p className="text-sm text-white/85 leading-relaxed">
+                    Learn from the Product Leader who has interviewed 500+ candidates and knows exactly what gets you hired.
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Card 2: 10x Results */}
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                className="group relative bg-white/5 backdrop-blur-md border border-white/10 rounded-lg p-5 hover-elevate transition-all duration-300"
+                data-testid="card-why-choose-results"
+              >
+                <div className="flex flex-col items-center text-center">
+                  <div className="mb-4 p-3 rounded-full bg-gradient-to-br from-violet-500/20 to-purple-500/20 border border-violet-400/30">
+                    <Zap className="h-6 w-6 text-violet-300" />
+                  </div>
+                  <p className="text-sm text-white/85 leading-relaxed">
+                    Get 10x more shortlists with a resume and portfolio engineered using insider hiring criteria from real AI PM recruiters.
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Card 3: Small Cohort */}
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+                className="group relative bg-white/5 backdrop-blur-md border border-white/10 rounded-lg p-5 hover-elevate transition-all duration-300"
+                data-testid="card-why-choose-cohort"
+              >
+                <div className="flex flex-col items-center text-center">
+                  <div className="mb-4 p-3 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-400/30">
+                    <Users className="h-6 w-6 text-emerald-300" />
+                  </div>
+                  <p className="text-sm text-white/85 leading-relaxed">
+                    We handpick a small group of highly motivated students so every learner gets personal attention, deeper mentorship, and a high-quality peer group.
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
           
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
             className="flex flex-wrap gap-3 justify-center items-center mb-8"
           >
             {quickLinks.map((link, index) => (
@@ -95,7 +163,7 @@ export default function HeroSection({ onJoinWaitlist, onScheduleCall }: HeroSect
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
             className="flex flex-col sm:flex-row gap-6 justify-center items-center"
           >
             <Badge variant="secondary" className="bg-white/15 backdrop-blur-md text-white border-white/20 px-4 py-2 text-sm flex items-center gap-2">
