@@ -39,11 +39,22 @@ export default function HeroSection({ onJoinWaitlist, onScheduleCall }: HeroSect
           className="text-center"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-            Become Interview-Ready for AI Product Roles in Just 30 Days
+            Become{" "}
+            <span className="bg-gradient-to-r from-primary via-primary to-violet-400 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(106,61,240,0.5)]">
+              Interview-Ready
+            </span>{" "}
+            for{" "}
+            <span className="bg-gradient-to-r from-primary via-primary to-violet-400 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(106,61,240,0.5)]">
+              AI Product
+            </span>{" "}
+            Roles in Just{" "}
+            <span className="bg-gradient-to-r from-primary via-primary to-violet-400 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(106,61,240,0.5)]">
+              30 Days
+            </span>
           </h1>
           
           <p className="text-lg md:text-xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-            A curated program by AI Product Managers and Leaders to help students and recent graduates build job-ready skills, a strong portfolio, and the confidence to crack AI PM interviews.
+            Designed for Non-Tech Students & Graduates
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
