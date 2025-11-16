@@ -152,7 +152,7 @@ export default function ResourcesPage() {
     }
   };
 
-  const handleDownload = async (resourceId: string) => {
+  const handleDownload = (resourceId: string) => {
     if (!token) {
       setShowAuthDialog(true);
       toast({
@@ -162,54 +162,12 @@ export default function ResourcesPage() {
       return;
     }
 
-    try {
-      const checkResponse = await fetch(`/api/resources/download/${resourceId}`, {
-        method: 'HEAD',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const contentType = checkResponse.headers.get("content-type");
-      
-      if (contentType && contentType.includes("application/json")) {
-        const response = await fetch(`/api/resources/download/${resourceId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        if (data.url) {
-          window.open(data.url, "_blank");
-          toast({
-            title: "Opening resource",
-            description: "External link opened in new tab",
-          });
-        }
-        return;
-      }
-
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = `/api/resources/download/${resourceId}?token=${encodeURIComponent(token)}`;
-      document.body.appendChild(iframe);
-      
-      setTimeout(() => {
-        document.body.removeChild(iframe);
-      }, 5000);
-
-      toast({
-        title: "Download started",
-        description: "Your file is being downloaded",
-      });
-    } catch (error) {
-      console.error("Download error:", error);
-      toast({
-        title: "Download failed",
-        description: error instanceof Error ? error.message : "Failed to download resource",
-        variant: "destructive",
-      });
-    }
+    window.location.href = `/api/resources/download/${resourceId}?token=${encodeURIComponent(token)}`;
+    
+    toast({
+      title: "Download started",
+      description: "Your file is being downloaded",
+    });
   };
 
   const logout = () => {
