@@ -26,7 +26,19 @@ export default function Navbar() {
           
           <Link 
             href="/resources"
-            className="text-foreground font-medium transition-colors hover:text-primary hover:underline decoration-2 underline-offset-4"
+            className="px-5 py-2.5 rounded-full font-medium transition-all duration-200 hover:shadow-sm"
+            style={{
+              backgroundColor: '#f5f3ff',
+              color: '#6c47ff'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#ebe8ff';
+              e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#f5f3ff';
+              e.currentTarget.style.boxShadow = '';
+            }}
             data-testid="link-free-resources"
           >
             Free Resources
