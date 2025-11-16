@@ -20,6 +20,8 @@ export const resources = pgTable("resources", {
   type: text("type").notNull(),
   filePath: text("file_path"),
   fileSize: integer("file_size"),
+  originalFileName: text("original_file_name"),
+  mimeType: text("mime_type"),
   isActive: boolean("is_active").notNull().default(true),
   uploadedDate: timestamp("uploaded_date").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

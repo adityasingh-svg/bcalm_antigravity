@@ -156,15 +156,33 @@ router.get("/download/:resourceId", authenticateToken, async (req: AuthRequest, 
       return res.status(404).json({ error: "File not found on server" });
     }
 
+    const stats = fs.statSync(filePath);
+    const filename = resource.originalFileName || path.basename(filePath);
+    const mimeType = resource.mimeType || "application/octet-stream";
+
     await storage.logDownload({
       userId: req.user!.userId,
       resourceId: resource.id,
     });
 
-    res.download(filePath, path.basename(filePath));
+    res.setHeader("Content-Type", mimeType);
+    res.setHeader("Content-Length", stats.size);
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
+
+    fileStream.on("error", (error) => {
+      console.error("File stream error:", error);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Failed to stream file" });
+      }
+    });
   } catch (error) {
     console.error("Download error:", error);
-    res.status(500).json({ error: "Failed to download resource" });
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Failed to download resource" });
+    }
   }
 });
 
@@ -174,10 +192,14 @@ router.post("/admin/upload", authenticateToken, requireAdmin, upload.single("fil
 
     let filePath: string | null = null;
     let fileSize: number | null = null;
+    let originalFileName: string | null = null;
+    let mimeType: string | null = null;
 
     if (req.file) {
       filePath = req.file.path;
       fileSize = req.file.size;
+      originalFileName = req.file.originalname;
+      mimeType = req.file.mimetype;
     } else if (type === "link" && req.body.filePath) {
       filePath = req.body.filePath;
     }
@@ -189,6 +211,8 @@ router.post("/admin/upload", authenticateToken, requireAdmin, upload.single("fil
       type,
       filePath,
       fileSize,
+      originalFileName,
+      mimeType,
     };
 
     const validatedData = insertResourceSchema.parse(resourceData);
@@ -237,6 +261,8 @@ router.put("/admin/:resourceId", authenticateToken, requireAdmin, upload.single(
       }
       updateData.filePath = req.file.path;
       updateData.fileSize = req.file.size;
+      updateData.originalFileName = req.file.originalname;
+      updateData.mimeType = req.file.mimetype;
     } else if (filePath && type === "link") {
       updateData.filePath = filePath;
     }
