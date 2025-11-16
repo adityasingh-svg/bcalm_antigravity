@@ -173,20 +173,33 @@ export default function ResourcesPage() {
         throw new Error("Download failed");
       }
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type");
       
-      if (data.url) {
-        window.open(data.url, "_blank");
-        toast({
-          title: "Opening resource",
-          description: "External link opened in new tab",
-        });
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        if (data.url) {
+          window.open(data.url, "_blank");
+          toast({
+            title: "Opening resource",
+            description: "External link opened in new tab",
+          });
+        }
       } else {
         const blob = await response.blob();
+        const contentDisposition = response.headers.get("content-disposition");
+        let filename = `resource-${resourceId}`;
+        
+        if (contentDisposition) {
+          const filenameMatch = contentDisposition.match(/filename="?(.+)"?/);
+          if (filenameMatch) {
+            filename = filenameMatch[1];
+          }
+        }
+        
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `resource-${resourceId}`;
+        a.download = filename;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
