@@ -1,5 +1,6 @@
 import { Router, Response } from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { storage } from "../storage";
 import { authenticateToken, requireAdmin, generateToken, type AuthRequest } from "../middleware/auth";
 import { upload } from "../middleware/upload";
@@ -129,7 +130,26 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/download/:resourceId", authenticateToken, async (req: AuthRequest, res: Response) => {
+router.get("/download/:resourceId", async (req: AuthRequest, res: Response) => {
+  const authHeader = req.headers["authorization"];
+  const headerToken = authHeader && authHeader.split(" ")[1];
+  const queryToken = req.query.token as string;
+  const token = headerToken || queryToken;
+
+  if (!token) {
+    return res.status(401).json({ error: "Access token required" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || process.env.SESSION_SECRET || "") as {
+      userId: string;
+      email: string;
+      isAdmin: boolean;
+    };
+    req.user = decoded;
+  } catch (error) {
+    return res.status(403).json({ error: "Invalid or expired token" });
+  }
   try {
     const { resourceId } = req.params;
     
