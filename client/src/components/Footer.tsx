@@ -1,5 +1,6 @@
 import { SiLinkedin, SiX, SiInstagram } from "react-icons/si";
 import { Mail, MessageCircle } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Footer() {
   return (
@@ -16,6 +17,11 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>
+                <Link href="/resources" className="hover:text-primary transition-colors" data-testid="link-free-resources">
+                  Free Resources
+                </Link>
+              </li>
               <li><a href="#" className="hover:text-primary transition-colors" data-testid="link-terms">Terms of Use</a></li>
               <li><a href="#" className="hover:text-primary transition-colors" data-testid="link-privacy">Privacy Policy</a></li>
               <li><a href="#" className="hover:text-primary transition-colors" data-testid="link-contact">Contact Us</a></li>
