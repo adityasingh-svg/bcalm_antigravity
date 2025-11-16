@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { GraduationCap, Rocket } from "lucide-react";
+import { GraduationCap, Rocket, User, Target } from "lucide-react";
 import { motion } from "framer-motion";
 import heroBackground from "@assets/generated_images/AI_neural_network_hero_background_86a25de9.png";
 
@@ -73,73 +73,98 @@ export default function HeroSection({ onJoinWaitlist, onScheduleCall }: HeroSect
             </Button>
           </div>
 
-          {/* Why Choose This Program Section - Apple-style Cards */}
+          {/* Why Bcalm Works Section - Premium Redesign */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="mb-10"
+            style={{ marginTop: '56px' }}
           >
-            <h3 className="text-xl md:text-2xl font-light text-white/95 mb-8 text-center">
-              Why Choose This Program
-            </h3>
+            {/* Section Heading & Subtitle */}
+            <div className="text-center mb-6">
+              <h3 className="text-2xl md:text-[28px] font-semibold text-white mb-3">
+                Why Bcalm Works
+              </h3>
+              <p className="text-sm md:text-base" style={{ color: '#d0d0d0' }}>
+                Built from real hiring experience, real product journeys, and real outcomes.
+              </p>
+            </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
-              {/* Card 1: Instructor Card - Apple Style */}
+            {/* Cards Container */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 max-w-[1080px] mx-auto" style={{ marginTop: '28px' }}>
+              {/* Card 1: Learn From a Product Leader */}
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="bg-white rounded-xl shadow-sm overflow-hidden"
+                className="rounded-2xl"
+                style={{
+                  background: '#f8f7ff',
+                  border: '1px solid rgba(0,0,0,0.04)',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.06)',
+                  padding: '24px 28px'
+                }}
                 data-testid="card-instructor"
               >
-                <div className="p-8 md:p-10 h-full flex flex-col justify-center">
-                  {/* Title */}
-                  <h4 className="text-xl md:text-2xl font-light text-gray-900 mb-10 text-center leading-tight">
-                    Learn From a Product Leader
-                  </h4>
-                  
-                  {/* Bullet Points */}
-                  <div className="space-y-6">
-                    <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                      • Built large scale products across Zepto, Apollo247, Toppr, Housing.com
-                    </p>
-                    <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                      • Journey from 3 LPA to &gt; 2 Cr in 10 Years
-                    </p>
-                    <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                      • Currently Senior Director of Product at Zepto, YC and a $7B company
-                    </p>
-                  </div>
+                {/* Icon */}
+                <div className="mb-3">
+                  <User className="w-6 h-6" style={{ color: '#6c47ff' }} />
+                </div>
+                
+                {/* Title */}
+                <h4 className="text-lg md:text-xl font-semibold mb-4" style={{ color: '#111111' }}>
+                  Learn From a Product Leader
+                </h4>
+                
+                {/* Bullets */}
+                <div className="space-y-3">
+                  <p className="text-sm md:text-[15px]" style={{ color: '#333333', lineHeight: '1.5' }}>
+                    • Built large-scale products across Zepto, Apollo247, Toppr & Housing.com
+                  </p>
+                  <p className="text-sm md:text-[15px]" style={{ color: '#333333', lineHeight: '1.5' }}>
+                    • Grew income from ₹3 LPA to ₹2 Cr+ in 10 years
+                  </p>
+                  <p className="text-sm md:text-[15px]" style={{ color: '#333333', lineHeight: '1.5' }}>
+                    • Currently Senior Director of Product at Zepto, a YC-backed $7B company
+                  </p>
                 </div>
               </motion.div>
 
-              {/* Card 2: Shortlist Card - Apple Style */}
+              {/* Card 2: 10x Your Shortlist Chances */}
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
-                className="bg-white rounded-xl shadow-sm overflow-hidden"
+                className="rounded-2xl"
+                style={{
+                  background: '#f8f7ff',
+                  border: '1px solid rgba(0,0,0,0.04)',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.06)',
+                  padding: '24px 28px'
+                }}
                 data-testid="card-shortlist"
               >
-                <div className="p-8 md:p-10 h-full flex flex-col justify-center">
-                  {/* Title */}
-                  <h4 className="text-xl md:text-2xl font-light text-gray-900 mb-10 text-center leading-tight">
-                    10x Your Shortlist Chances
-                  </h4>
-                  
-                  {/* Bullet Points */}
-                  <div className="space-y-6">
-                    <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                      • Insider Hiring Signals Most Candidates Never Learn
-                    </p>
-                    <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                      • A Portfolio That Proves You Can Solve Real Product Problems
-                    </p>
-                    <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                      • A Resume Engineered to Outperform 90% of Applicants
-                    </p>
-                  </div>
+                {/* Icon */}
+                <div className="mb-3">
+                  <Target className="w-6 h-6" style={{ color: '#6c47ff' }} />
+                </div>
+                
+                {/* Title */}
+                <h4 className="text-lg md:text-xl font-semibold mb-4" style={{ color: '#111111' }}>
+                  10x Your Shortlist Chances
+                </h4>
+                
+                {/* Bullets */}
+                <div className="space-y-3">
+                  <p className="text-sm md:text-[15px]" style={{ color: '#333333', lineHeight: '1.5' }}>
+                    • Insider hiring signals most candidates never learn
+                  </p>
+                  <p className="text-sm md:text-[15px]" style={{ color: '#333333', lineHeight: '1.5' }}>
+                    • A Portfolio That Proves You Can Solve Real Product Problems
+                  </p>
+                  <p className="text-sm md:text-[15px]" style={{ color: '#333333', lineHeight: '1.5' }}>
+                    • A Resume Engineered to Outperform 90% of Applicants
+                  </p>
                 </div>
               </motion.div>
             </div>
@@ -150,6 +175,7 @@ export default function HeroSection({ onJoinWaitlist, onScheduleCall }: HeroSect
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
             className="flex flex-wrap gap-3 justify-center items-center mb-8"
+            style={{ marginTop: '56px' }}
           >
             {quickLinks.map((link, index) => (
               <a
