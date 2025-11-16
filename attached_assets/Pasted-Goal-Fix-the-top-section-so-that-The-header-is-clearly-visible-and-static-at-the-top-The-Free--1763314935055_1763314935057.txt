@@ -1,0 +1,102 @@
+Goal:
+Fix the top section so that:
+
+The header is clearly visible and static at the top.
+
+The “Free Resources” pill CTA sits inside the header, not floating over the hero.
+
+The overall feel is premium, clean, Apple-like.
+
+1️⃣ Make the Header a Clear, Static Bar
+
+Implement a <header> that is:
+
+position: fixed
+
+top: 0, left: 0
+
+width: 100%
+
+z-index: 1000
+
+Background: solid white (#ffffff)
+
+Add a very light bottom border to separate it from the hero:
+
+border-bottom: 1px solid rgba(0,0,0,0.05);
+
+Inside the header, use a flex layout:
+
+display: flex;
+
+justify-content: space-between;
+
+align-items: center;
+
+Add padding:
+
+padding: 16px 24px; (or close)
+
+The header should look like a subtle, defined bar at the top (like Apple/Stripe), not blend into the hero.
+
+2️⃣ Left Side: Make “Bcalm” Visible and Strong
+
+On the left side of the header, place the brand text: Bcalm.
+
+Style it as:
+
+Color: #111111 (dark, clearly visible)
+
+Font-weight: 600
+
+Font-size: 18–20px
+
+Make sure it is not sitting on the dark hero background. It should sit inside the white header bar.
+
+3️⃣ Right Side: “Free Resources” as a Pill CTA (Not Floating)
+
+On the right side of the same header, place the “Free Resources” CTA.
+
+It must be inside the header, aligned horizontally with “Bcalm”, not overlapping the hero text.
+
+Design it as a soft pill:
+
+Wrap the text in a <a> or <button> styled like this:
+
+padding: 6px 16px;
+
+border-radius: 9999px; (full pill)
+
+background: #f5f3ff; (soft purple tint)
+
+color: #6c47ff;
+
+font-weight: 500;
+
+text-decoration: none;
+
+transition: 0.2s ease;
+
+Hover state:
+
+Slightly darker background: background: #ebe4ff;
+
+Slightly deeper text: color: #5a38f0;
+
+Optional very light shadow: box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+
+This should look like a premium CTA chip, not like a cheap flashy button and not like plain text.
+
+4️⃣ Ensure Hero Content Sits Below Header (No Overlap)
+
+Right now the CTA looks like it’s floating over the hero because the hero section starts too high.
+
+Add top padding to the main content / hero container to account for the fixed header height:
+
+Example:
+
+main { padding-top: 80px; }
+
+or apply pt-20 in Tailwind.
+
+The hero headline “Become Interview-ready for AI Product in 30 Days” should start clearly below the header, with nice breathing room.
