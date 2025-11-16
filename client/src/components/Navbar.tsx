@@ -12,14 +12,21 @@ export default function Navbar() {
       <div className="container mx-auto max-w-6xl">
         <div className="flex items-center justify-between" style={{ padding: '16px 24px' }}>
           <div 
-            className="font-semibold"
+            className="font-semibold select-none"
             style={{
               color: '#111111',
-              fontSize: '20px',
-              fontWeight: 600
+              fontSize: 'clamp(17px, 2.5vw, 20px)',
+              fontWeight: 600,
+              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+              letterSpacing: '0.75px',
+              whiteSpace: 'nowrap',
+              display: 'flex',
+              alignItems: 'baseline'
             }}
+            data-testid="logo-bcalm"
           >
-            Bcalm
+            <span style={{ marginRight: '-1.5px' }}>B</span>
+            <span style={{ letterSpacing: '1px' }}>calm</span>
           </div>
           
           <Link 
