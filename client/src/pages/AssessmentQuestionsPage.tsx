@@ -31,7 +31,8 @@ export default function AssessmentQuestionsPage() {
 
   const createAttemptMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest("POST", "/api/assessment/attempts", {});
+      const response = await apiRequest("POST", "/api/assessment/attempts", {});
+      return await response.json();
     },
     onSuccess: (data: any) => {
       setAttemptId(data.id);
@@ -49,7 +50,8 @@ export default function AssessmentQuestionsPage() {
 
   const completeAssessmentMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest("POST", `/api/assessment/complete/${attemptId}`, {});
+      const response = await apiRequest("POST", `/api/assessment/complete/${attemptId}`, {});
+      return await response.json();
     },
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ["/api/assessment/resume"] });
@@ -63,15 +65,23 @@ export default function AssessmentQuestionsPage() {
       return;
     }
 
-    if (questions && !attemptId) {
+    if (questions && !attemptId && !createAttemptMutation.isPending) {
       createAttemptMutation.mutate();
     }
-  }, [isAuthenticated, questions, attemptId]);
+  }, [isAuthenticated, questions, attemptId, createAttemptMutation.isPending]);
 
-  if (!isAuthenticated || loadingQuestions || !questions || !attemptId) {
+  if (!isAuthenticated || loadingQuestions || !questions || (!attemptId && createAttemptMutation.isPending)) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <p style={{ color: "#9ca3af" }}>Loading...</p>
+        <p style={{ color: "#9ca3af" }} data-testid="text-loading">Loading...</p>
+      </div>
+    );
+  }
+
+  if (!attemptId) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p style={{ color: "#ef4444" }} data-testid="text-error">Failed to create assessment attempt. Please try again.</p>
       </div>
     );
   }
