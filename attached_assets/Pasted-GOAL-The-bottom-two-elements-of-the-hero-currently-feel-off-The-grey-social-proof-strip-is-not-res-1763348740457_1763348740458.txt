@@ -1,0 +1,169 @@
+GOAL
+The bottom two elements of the hero currently feel off:
+
+The grey social-proof strip is not responsive on mobile and looks like a broken ticker.
+
+The “Next Cohort Starts” bar is too subtle for such an important piece of information.
+
+Redesign them so that:
+
+Social proof is shown as a clean, responsive pill.
+
+The cohort date is a prominent highlight card that clearly stands out.
+
+The entire bottom of the hero feels intentional, premium, and aligned with the rest of the design.
+
+1️⃣ Remove / Replace the Existing Elements
+
+Remove the current narrow grey strip that shows social proof (the one that overflows / truncates text on mobile).
+
+Remove or restyle the existing “Next Cohort Starts” pill so it will be replaced with a new, more prominent card.
+
+We are replacing them with two new elements:
+
+A social proof pill
+
+A cohort highlight card
+
+2️⃣ Layout Order at the Bottom of the Hero (Mobile & Desktop)
+
+Within the hero, from top to bottom, the order should be:
+
+Main headline
+
+Subheadline
+
+Primary CTA button — “Join the Waitlist”
+
+Secondary CTA button — “Schedule a Call”
+
+New Social Proof Pill
+
+New Next Cohort Highlight Card
+
+This order must be respected on mobile and desktop for consistency.
+
+3️⃣ Social Proof Pill — Design & Content
+
+Content text:
+
+🧑‍🎓 Trusted by 200+ students from IITs, BITS, NITs, and IIITs
+
+Design requirements:
+
+It should be a full-width pill (but not edge-to-edge; respect page padding).
+
+Background: very soft purple tint, e.g. #f5f3ff or rgba(131, 88, 255, 0.08)
+
+Text color: dark grey #111111, with the “200+” slightly emphasized.
+
+Icon: emoji or small icon on the left (e.g. 🧑‍🎓 or user group icon).
+
+Border-radius: 9999px (full pill).
+
+Padding:
+
+Vertical: 8–10px
+
+Horizontal: 12–16px
+
+Alignment: center-aligned text on mobile; can stay center on desktop as well.
+
+Text must wrap naturally on mobile — no overflow or clipping.
+
+
+4️⃣ “Next Cohort Starts” Highlight Card — Design & Content
+
+This card should feel like a clear, premium info block, not a footer chip.
+
+Content structure:
+
+Small label: Next Cohort
+
+Main line (big): Starts: December 2, 2025
+
+Subtext: Limited seats • Applications reviewed on a rolling basis
+
+Design requirements:
+
+Card should be full-width within the content container, with generous padding.
+
+Make it visually stronger than the social proof pill, but still consistent with the hero’s style.
+
+Suggested styling:
+
+Background:
+
+Option A (preferred on dark hero): #111827 or a similar dark-but-slightly-lighter-than-hero shade.
+
+Or Option B: a very light tinted background (#f8f7ff) if you want a contrasting light card on dark hero.
+
+Text color: high contrast (white on dark, or dark on light).
+
+Border-radius: 16px (matching your existing card style).
+
+Padding: 14–16px on mobile, 18–20px on desktop.
+
+Add a small calendar icon on the left (📅 or vector icon).
+
+Layout:
+
+Mobile: icon + text stacked vertically or left-aligned within one block.
+
+Desktop: icon on the left, text aligned next to it in a row with flex.
+
+You can adjust the date dynamically later; for now, hardcode the same date you already use.
+
+5️⃣ Responsiveness Requirements
+
+On Mobile:
+
+Social proof pill and cohort card must:
+
+Respect the page’s horizontal padding.
+
+Never clip or overflow horizontally.
+
+Wrap text naturally without ellipsis.
+
+Maintain clear vertical spacing:
+
+8–12px between CTAs and social proof pill.
+
+8–12px between social proof pill and cohort card.
+
+On Desktop:
+
+Elements should remain centered within the main content container.
+
+Consider slightly increasing max-width and padding of the cohort card so it feels substantial but not overwhelming.
+
+Typography sizes can be slightly increased (e.g. date line at 16px).
+
+6️⃣ Visual Hierarchy Rules
+
+Social proof pill = secondary emphasis (lighter background, smaller type).
+
+Cohort highlight card = primary emphasis (stronger contrast, bold date text).
+
+When you look at the bottom of the hero:
+
+Users should first notice: “Next Cohort Starts: December 2, 2025”
+
+Then, they see: “Trusted by 200+ students…”
+
+Nothing should look like a glitchy ticker or a generic footer bar.
+
+7️⃣ Clean-Up
+
+Ensure no old CSS/JS for the previous scrolling/ticker-style strip remains.
+
+Remove any overflow: hidden / marquee behaviour from that old social-proof element.
+
+Confirm on real mobile dimensions (iPhone 12/13 width) that:
+
+All text is readable
+
+No elements are cut off
+
+Spacing feels consistent
