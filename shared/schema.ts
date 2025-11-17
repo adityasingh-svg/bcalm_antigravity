@@ -22,6 +22,8 @@ export const resourcesUsers = pgTable("resources_users", {
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
   name: text("name").notNull(),
+  year: text("year"),
+  background: text("background"),
   isAdmin: boolean("is_admin").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -88,3 +90,55 @@ export type InsertResource = z.infer<typeof insertResourceSchema>;
 
 export type DownloadLog = typeof downloadLogs.$inferSelect;
 export type InsertDownloadLog = z.infer<typeof insertDownloadLogSchema>;
+
+export const assessmentQuestions = pgTable("assessment_questions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  dimension: text("dimension").notNull(),
+  questionText: text("question_text").notNull(),
+  orderIndex: integer("order_index").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const assessmentAttempts = pgTable("assessment_attempts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").notNull().references(() => resourcesUsers.id),
+  totalScore: integer("total_score"),
+  readinessBand: text("readiness_band"),
+  scoresJson: text("scores_json"),
+  isCompleted: boolean("is_completed").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+export const assessmentAnswers = pgTable("assessment_answers", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  attemptId: uuid("attempt_id").notNull().references(() => assessmentAttempts.id),
+  questionId: uuid("question_id").notNull().references(() => assessmentQuestions.id),
+  answerValue: integer("answer_value").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertAssessmentQuestionSchema = createInsertSchema(assessmentQuestions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAssessmentAttemptSchema = createInsertSchema(assessmentAttempts).omit({
+  id: true,
+  createdAt: true,
+  completedAt: true,
+});
+
+export const insertAssessmentAnswerSchema = createInsertSchema(assessmentAnswers).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type AssessmentQuestion = typeof assessmentQuestions.$inferSelect;
+export type InsertAssessmentQuestion = z.infer<typeof insertAssessmentQuestionSchema>;
+
+export type AssessmentAttempt = typeof assessmentAttempts.$inferSelect;
+export type InsertAssessmentAttempt = z.infer<typeof insertAssessmentAttemptSchema>;
+
+export type AssessmentAnswer = typeof assessmentAnswers.$inferSelect;
+export type InsertAssessmentAnswer = z.infer<typeof insertAssessmentAnswerSchema>;

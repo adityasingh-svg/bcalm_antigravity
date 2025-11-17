@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type ResourcesUser, type InsertResourcesUser, type Resource, type InsertResource, type DownloadLog, type InsertDownloadLog, users, resourcesUsers, resources, downloadLogs } from "@shared/schema";
+import { type User, type InsertUser, type ResourcesUser, type InsertResourcesUser, type Resource, type InsertResource, type DownloadLog, type InsertDownloadLog, type AssessmentQuestion, type InsertAssessmentQuestion, type AssessmentAttempt, type InsertAssessmentAttempt, type AssessmentAnswer, type InsertAssessmentAnswer, users, resourcesUsers, resources, downloadLogs, assessmentQuestions, assessmentAttempts, assessmentAnswers } from "@shared/schema";
 import bcrypt from "bcrypt";
 import { db } from "./db";
 import { eq, sql } from "drizzle-orm";
@@ -12,6 +12,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   
   getResourcesUserByEmail(email: string): Promise<ResourcesUser | undefined>;
+  getResourcesUserById(id: string): Promise<ResourcesUser | undefined>;
   createResourcesUser(user: InsertResourcesUser): Promise<ResourcesUser>;
   getAllResources(): Promise<Resource[]>;
   getResourceById(id: string): Promise<Resource | undefined>;
@@ -24,10 +25,24 @@ export interface IStorage {
     totalDownloads: number;
     mostDownloaded: { resourceId: string; title: string; downloads: number } | null;
   }>;
+  
+  getAllAssessmentQuestions(): Promise<AssessmentQuestion[]>;
+  createAssessmentQuestion(question: InsertAssessmentQuestion): Promise<AssessmentQuestion>;
+  createAssessmentAttempt(attempt: InsertAssessmentAttempt): Promise<AssessmentAttempt>;
+  getAssessmentAttempt(id: string): Promise<AssessmentAttempt | undefined>;
+  getLatestIncompleteAttempt(userId: string): Promise<AssessmentAttempt | undefined>;
+  saveAssessmentAnswer(answer: InsertAssessmentAnswer): Promise<AssessmentAnswer>;
+  getAttemptAnswers(attemptId: string): Promise<AssessmentAnswer[]>;
+  completeAssessmentAttempt(attemptId: string, totalScore: number, readinessBand: string, scoresJson: string): Promise<AssessmentAttempt | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
   async initialize(): Promise<void> {
+    await this.initializeAdminUser();
+    await this.initializeAssessmentQuestions();
+  }
+
+  private async initializeAdminUser(): Promise<void> {
     const adminEmail = "admin@bcalm.org";
     const adminPassword = "admin123";
     
@@ -46,6 +61,22 @@ export class DatabaseStorage implements IStorage {
     });
     
     console.log("Admin user initialized:", adminEmail);
+  }
+
+  private async initializeAssessmentQuestions(): Promise<void> {
+    const existingQuestions = await this.getAllAssessmentQuestions();
+    if (existingQuestions.length > 0) {
+      console.log("Assessment questions already seeded:", existingQuestions.length);
+      return;
+    }
+
+    const { ASSESSMENT_QUESTIONS } = await import("./data/assessmentQuestions");
+    
+    for (const question of ASSESSMENT_QUESTIONS) {
+      await this.createAssessmentQuestion(question);
+    }
+    
+    console.log("Assessment questions initialized:", ASSESSMENT_QUESTIONS.length);
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -71,6 +102,11 @@ export class DatabaseStorage implements IStorage {
   async createResourcesUser(insertUser: InsertResourcesUser): Promise<ResourcesUser> {
     const [user] = await db.insert(resourcesUsers).values(insertUser).returning();
     return user;
+  }
+
+  async getResourcesUserById(id: string): Promise<ResourcesUser | undefined> {
+    const [user] = await db.select().from(resourcesUsers).where(eq(resourcesUsers.id, id));
+    return user || undefined;
   }
 
   async getAllResources(): Promise<Resource[]> {
@@ -148,6 +184,87 @@ export class DatabaseStorage implements IStorage {
       totalDownloads,
       mostDownloaded,
     };
+  }
+
+  async getAllAssessmentQuestions(): Promise<AssessmentQuestion[]> {
+    return await db.select().from(assessmentQuestions).orderBy(assessmentQuestions.orderIndex);
+  }
+
+  async createAssessmentQuestion(question: InsertAssessmentQuestion): Promise<AssessmentQuestion> {
+    const [newQuestion] = await db.insert(assessmentQuestions).values(question).returning();
+    return newQuestion;
+  }
+
+  async createAssessmentAttempt(attempt: InsertAssessmentAttempt): Promise<AssessmentAttempt> {
+    const [newAttempt] = await db.insert(assessmentAttempts).values(attempt).returning();
+    return newAttempt;
+  }
+
+  async getAssessmentAttempt(id: string): Promise<AssessmentAttempt | undefined> {
+    const [attempt] = await db.select().from(assessmentAttempts).where(eq(assessmentAttempts.id, id));
+    return attempt || undefined;
+  }
+
+  async getLatestIncompleteAttempt(userId: string): Promise<AssessmentAttempt | undefined> {
+    const { and } = await import("drizzle-orm");
+    const [attempt] = await db
+      .select()
+      .from(assessmentAttempts)
+      .where(and(
+        eq(assessmentAttempts.userId, userId),
+        eq(assessmentAttempts.isCompleted, false)
+      ))
+      .orderBy(sql`${assessmentAttempts.createdAt} DESC`)
+      .limit(1);
+    return attempt || undefined;
+  }
+
+  async saveAssessmentAnswer(answer: InsertAssessmentAnswer): Promise<AssessmentAnswer> {
+    const { and } = await import("drizzle-orm");
+    const existing = await db
+      .select()
+      .from(assessmentAnswers)
+      .where(and(
+        eq(assessmentAnswers.attemptId, answer.attemptId),
+        eq(assessmentAnswers.questionId, answer.questionId)
+      ))
+      .limit(1);
+
+    if (existing.length > 0) {
+      const [updated] = await db
+        .update(assessmentAnswers)
+        .set({ answerValue: answer.answerValue })
+        .where(eq(assessmentAnswers.id, existing[0].id))
+        .returning();
+      return updated;
+    }
+
+    const [newAnswer] = await db.insert(assessmentAnswers).values(answer).returning();
+    return newAnswer;
+  }
+
+  async getAttemptAnswers(attemptId: string): Promise<AssessmentAnswer[]> {
+    return await db.select().from(assessmentAnswers).where(eq(assessmentAnswers.attemptId, attemptId));
+  }
+
+  async completeAssessmentAttempt(
+    attemptId: string,
+    totalScore: number,
+    readinessBand: string,
+    scoresJson: string
+  ): Promise<AssessmentAttempt | undefined> {
+    const [updated] = await db
+      .update(assessmentAttempts)
+      .set({
+        totalScore,
+        readinessBand,
+        scoresJson,
+        isCompleted: true,
+        completedAt: new Date(),
+      })
+      .where(eq(assessmentAttempts.id, attemptId))
+      .returning();
+    return updated || undefined;
   }
 }
 
