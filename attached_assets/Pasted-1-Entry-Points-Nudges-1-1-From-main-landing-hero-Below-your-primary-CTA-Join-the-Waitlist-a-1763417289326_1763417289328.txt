@@ -1,0 +1,456 @@
+1. Entry Points & Nudges
+1.1 From main landing hero
+
+Below your primary CTA (“Join the Waitlist”), add a secondary text link:
+
+“Not sure if you’re ready yet?
+Take the AI PM Readiness Check →”
+
+Small, under the buttons, but clearly visible.
+
+Clicking opens /ai-pm-readiness in the same tab.
+
+Why?
+You capture the “I’m curious but not fully sold yet” segment and convert them into leads via assessment.
+
+1.2 From Free Resources header
+
+Under Free Resources, list:
+
+AI PM Readiness Check
+
+Free Resume Template
+
+Free AI PM Interview Questions (future)
+
+Readiness Check is top of the list. It links to the same route /ai-pm-readiness.
+
+1.3 From direct link (social, WhatsApp, communities)
+
+Use a short URL like:
+
+bcalm.in/ai-pm-readiness
+
+This should resolve to the same assessment landing page (not directly into questions), so expectations are set.
+
+2. Assessment Landing Page ( /ai-pm-readiness )
+Goal
+
+Make them want to invest ~10 minutes and accept signup as reasonable.
+
+Content structure
+
+Hero:
+
+AI PM Readiness Check
+Are you ready for AI Product roles? Find your strengths, gaps, and a clear learning path.
+
+Subtext:
+
+Designed for 3rd–4th year students and recent graduates. 24 questions · 10 minutes · instant personalized report.
+
+Primary CTA:
+
+Start My Readiness Check
+
+Secondary link:
+
+“Already have an account? Log in →”
+
+Below the fold:
+
+3 short benefit bullets:
+
+“See where you stand across 8 AI PM skills”
+
+“Get a personalized gap report + learning recommendations”
+
+“Understand how top students move from ‘curious’ to ‘role-ready’”
+
+Tiny reassurance at bottom:
+
+“You’ll need a free Bcalm account so we can save your report and email it to you.”
+
+Behavior:
+
+If user is logged in, Start My Readiness Check → /ai-pm-readiness/start
+
+If not logged in, Start My Readiness Check → signup modal with redirect (next section).
+
+3. Auth & Signup Flow
+
+Constraint: “If user is not logged in, they must sign up before starting or seeing results.”
+
+We’ll do it in a way that feels logical, not spammy.
+
+3.1 Signup entry
+
+When user clicks Start My Readiness Check and is not authenticated:
+
+Open a modal (or full-page on mobile) with:
+
+Title:
+
+Create your free Bcalm account
+
+Subtext:
+
+We’ll save your readiness report, email it to you, and let you track your progress over time.
+
+Fields:
+
+Name
+
+Email
+
+Password
+
+(Optional) “Year” (3rd / 4th / Graduated)
+
+(Optional) “Background” (Non-tech / CS/IT / Other Engineering / Other)
+
+Buttons:
+
+Continue (primary)
+
+“Already have an account? Log in” (link toggles to login mode)
+
+Critical detail:
+Store intended redirect (/ai-pm-readiness/start) in state or query param so after signup/login you go straight into the assessment, not back to landing.
+
+3.2 Why signup before questions is okay here
+
+You’re giving a 10-minute, personalized report. Asking for signup upfront is reasonable if:
+
+You explain why (“we’ll save your report, you can revisit it, and we’ll email you a copy”)
+
+The form is short and supports social login (Google) to reduce friction.
+
+If you can, definitely add:
+
+Button: “Continue with Google”
+
+This alone will dramatically boost start rate.
+
+4. Assessment-Taking UX
+
+Route: /ai-pm-readiness/start ➜ /ai-pm-readiness/questions
+
+Primary goals:
+
+Minimize friction per question
+
+Maintain a sense of progress & purpose
+
+Use student language from our earlier tailored questions
+
+4.1 Intro screen (once user is authenticated)
+
+Before question 1, show a short intro page:
+
+You’re about to start your AI PM Readiness Check
+24 questions · 8 skill areas · ~10 minutes
+
+Answer honestly. This is for you, not a test. Your responses stay private.
+
+CTA:
+
+Begin Assessment
+
+Secondary:
+
+“I’ll do this later” (goes back to landing/dashboard)
+
+This mentally commits them.
+
+4.2 Question UI
+
+One question per screen (especially important on mobile).
+
+Show section name and overall progress:
+
+Example:
+
+Section: Product & Problem Thinking
+Question 3 of 24
+
+Then the statement, e.g.:
+
+“I can take a vague problem (e.g., ‘students struggle to find internships’) and turn it into a clear, specific problem statement.”
+
+Scale as buttons, not dropdown:
+
+Not yet, this is new to me
+
+I’ve heard of this but can’t really use it
+
+I understand basics but need guidance to apply it
+
+I can apply this in projects with some help
+
+I can do this confidently and explain it to others
+
+Interactions:
+
+Tapping an option:
+
+Immediately records the answer
+
+Auto-advances to the next question after ~200–300ms subtle delay (to avoid “I tapped wrong” frustration)
+
+Allow small “Back” chevron to adjust previous question if needed.
+
+At the bottom, show a thin progress bar filling from 0–100%.
+
+4.3 Autosave & exit
+
+Implementation detail:
+
+Save answers in local state + periodically POST to backend (/api/assessment/attempt/{id}).
+
+If the user refreshes or closes mid-way:
+
+Resume from last answered question when they return within X hours (say 24h).
+
+Show “Resume your readiness check?” screen if they revisit /ai-pm-readiness.
+
+This helps massively with completion rate.
+
+5. Results Experience
+5.1 Backend scoring
+
+On completion:
+
+Calculate:
+
+Per-dimension scores (8 domains; each 3 questions → /15)
+
+Total score (/120)
+
+Readiness band (Early Explorer / Building Foundation / On Track / Internship Ready)
+
+Save as a AssessmentAttempt entity with:
+
+user_id
+
+scores JSON by dimension
+
+total
+
+band
+
+timestamp
+
+a public share token (e.g., short UUID separate from user ID)
+
+5.2 Redirect
+
+On completion, immediately redirect to:
+
+/ai-pm-readiness/results/{attemptId}
+
+This is the personal results page (requires login).
+
+5.3 Personal result page layout (logged-in view)
+
+Above the fold:
+
+Badge:
+
+Your AI PM Readiness Score
+
+Big score:
+
+92 / 120 – Building Foundation 📚
+
+1–2 line summary tailored to band:
+
+“You’re early in your AI PM journey. You already show strength in [X], but need to build foundations in [Y] and [Z] to become internship-ready.”
+
+Buttons:
+
+Primary: “See how to close these gaps with Bcalm →” (scrolls down or goes to curriculum section)
+
+Secondary: “Download my detailed report (PDF)”
+
+Next section – Radar / bar chart:
+
+Show all 8 dimensions with color-coded bars:
+
+Green: 12–15 (strong)
+
+Amber: 9–11 (developing)
+
+Red: 0–8 (gap)
+
+Below – Gap-based explanation
+
+For each dimension where score < 10:
+
+Product & Problem Thinking — Needs Work
+You scored 7 / 15 here. This usually means you:
+
+Struggle to crisply define user problems
+
+Jump to solutions without clear outcomes
+
+Find it hard to choose what to prioritize
+
+Then:
+
+How Bcalm helps you with this:
+In Module 1: Product & Problem Thinking for AI, you will…
+• Practice writing problem statements from vague prompts
+• Learn how to define success metrics
+• Work on structured case prompts similar to AI PM interviews
+
+Do this mapping for each weak dimension. This is where Bcalm sells itself without feeling salesy.
+
+End of page: contextual CTA
+
+Based on band:
+
+Early Explorer / Building Foundation:
+
+“You’re exactly who Bcalm was designed for. Join the next cohort to move from 60s → 100+.”
+
+CTA: See Program Curriculum / Join Waitlist
+
+On Track / Internship Ready:
+
+“You’re close. Bcalm helps you turn this into a standout portfolio & interview success.”
+
+CTA: See Student Projects / Join Next Cohort
+
+6. Shareable Results (Lead Gen Loop)
+
+We want a version they can share on LinkedIn/WhatsApp that:
+
+doesn’t leak private answers
+
+advertises Bcalm
+
+entices others to take the assessment
+
+6.1 Public share URL
+
+Generate URL like:
+
+/ai-pm-readiness/share/{publicToken}
+
+This should NOT require login.
+
+It should show:
+
+First name + initial (or just first name)
+
+Band + score range (not exact, if you prefer)
+
+A stylized card saying:
+
+“I just completed the Bcalm AI PM Readiness Check
+and scored Building Foundation 📚
+Want to see where you stand? Take the assessment → [bcalm.in/ai-pm-readiness]”
+
+Add a “Take the AI PM Readiness Check” button on this share page that:
+
+Redirects to /ai-pm-readiness
+
+If not logged in → triggers signup flow as before.
+
+6.2 Share CTA on personal results page
+
+On the logged-in results page, add:
+
+Share your readiness profile
+
+Buttons:
+
+Share to LinkedIn (pre-filled post text)
+
+Copy link
+
+Share to WhatsApp (mobile deep link)
+
+Keep this clearly optional; no gating.
+
+7. Implementation Details (High-Level)
+7.1 Routes
+
+/ai-pm-readiness → Landing/overview
+
+/ai-pm-readiness/start → Auth guard + intro
+
+/ai-pm-readiness/questions → Question runner
+
+/ai-pm-readiness/results/:attemptId → Personal result (requires auth + ownership)
+
+/ai-pm-readiness/share/:token → Public share view (no auth)
+
+7.2 Auth guard logic
+
+Any access to /questions or /results/:attemptId:
+
+If not authenticated → redirect to /auth?redirect=/ai-pm-readiness/start
+
+Access to /share/:token:
+
+Always allowed; uses token to fetch safe subset of result.
+
+7.3 Data model (simplified)
+
+User
+
+id, name, email, year, background, created_at, etc.
+
+AssessmentAttempt
+
+id
+
+user_id
+
+scores_by_dimension (JSON)
+
+total_score
+
+band
+
+created_at
+
+public_share_token (nullable)
+
+AssessmentAnswer (optional, if you want granular data)
+
+id
+
+attempt_id
+
+question_id
+
+answer_value (1–5)
+
+7.4 Tracking & optimisation
+
+Instrument:
+
+assessment_landing_viewed
+
+assessment_start_clicked
+
+signup_completed_for_assessment
+
+assessment_started
+
+assessment_completed
+
+result_viewed
+
+share_clicked (by channel)
+
+cta_clicked_from_results (join waitlist, view curriculum, etc.)
+
+This lets you test:
+
+Where drop-off happens
+
+Whether signup-before-questions is hurting completion (if yes, consider “name + email only” as a lighter first step in future)
