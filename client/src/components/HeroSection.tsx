@@ -52,7 +52,7 @@ export default function HeroSection({ onJoinWaitlist, onScheduleCall }: HeroSect
             Designed for Non-Tech Students & Graduates
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-3 justify-center" style={{ marginBottom: '14px' }}>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center" style={{ marginBottom: '10px' }}>
             <Button 
               size="lg" 
               className="text-base"
@@ -71,6 +71,25 @@ export default function HeroSection({ onJoinWaitlist, onScheduleCall }: HeroSect
               Schedule a Call
             </Button>
           </div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+            className="text-center"
+            style={{ marginBottom: '14px' }}
+          >
+            <p className="text-sm text-white/70">
+              Not sure if you're ready yet?{" "}
+              <a
+                href="/ai-pm-readiness"
+                className="text-white/90 hover:text-white underline underline-offset-4"
+                data-testid="link-readiness-check"
+              >
+                Take the AI PM Readiness Check →
+              </a>
+            </p>
+          </motion.div>
 
           {/* Social Proof Pill */}
           <motion.div

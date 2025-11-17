@@ -6,6 +6,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import LandingPage from "@/pages/LandingPage";
 import ResourcesPage from "@/pages/ResourcesPage";
 import ResourcesAdminDashboard from "@/pages/ResourcesAdminDashboard";
+import AssessmentLandingPage from "@/pages/AssessmentLandingPage";
+import AssessmentStartPage from "@/pages/AssessmentStartPage";
+import AssessmentQuestionsPage from "@/pages/AssessmentQuestionsPage";
+import AssessmentResultsPage from "@/pages/AssessmentResultsPage";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -14,6 +18,10 @@ function Router() {
       <Route path="/" component={LandingPage} />
       <Route path="/resources" component={ResourcesPage} />
       <Route path="/admin/resources" component={ResourcesAdminDashboard} />
+      <Route path="/ai-pm-readiness" component={AssessmentLandingPage} />
+      <Route path="/ai-pm-readiness/start" component={AssessmentStartPage} />
+      <Route path="/ai-pm-readiness/questions" component={AssessmentQuestionsPage} />
+      <Route path="/ai-pm-readiness/results/:attemptId" component={AssessmentResultsPage} />
       <Route component={NotFound} />
     </Switch>
   );
