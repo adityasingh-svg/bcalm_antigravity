@@ -87,26 +87,40 @@ A comprehensive assessment system that evaluates student preparedness for AI Pro
 - **Start Fresh**: Users can discard incomplete attempts and restart from scratch
 - **Personalized Results**: Dimension-level breakdown showing scores and gaps, with contextual CTAs based on readiness band
 - **Auth Integration**: Uses existing resources_users authentication system with JWT tokens
+- **Shareable Results**: Viral sharing feature for lead generation with privacy-first design
 
 **Frontend Pages:**
 - `/ai-pm-readiness`: Landing page with hero, benefits, and CTA
 - `/ai-pm-readiness/start`: Intro screen with format explanation and resume/start fresh options
 - `/ai-pm-readiness/questions`: Question runner with one question per screen, progress tracking, and auto-advance
-- `/ai-pm-readiness/results/:attemptId`: Results page with total score, readiness band, dimension breakdown, and CTAs
+- `/ai-pm-readiness/results/:attemptId`: Results page with total score, readiness band, dimension breakdown, share buttons, and CTAs
+- `/ai-pm-readiness/share/:shareToken`: Public share page showing first name + initial, readiness band, score range, and CTA
 
 **Backend API:**
 - `GET /api/assessment/questions`: Returns all 24 questions
 - `POST /api/assessment/attempts`: Creates new attempt or returns existing incomplete
 - `DELETE /api/assessment/attempts/incomplete`: Clears user's incomplete attempt
 - `POST /api/assessment/answers/:attemptId`: Saves answer with autosave
-- `POST /api/assessment/complete/:attemptId`: Completes attempt and calculates scores
-- `GET /api/assessment/results/:attemptId`: Returns results with dimension analysis
+- `POST /api/assessment/complete/:attemptId`: Completes attempt, calculates scores, and generates unique shareToken
+- `GET /api/assessment/results/:attemptId`: Returns results with dimension analysis (authenticated)
 - `GET /api/assessment/resume`: Checks for incomplete attempts
+- `GET /api/assessment/share/:shareToken`: Public endpoint returning display name, readiness band, score range (no authentication required)
+
+**Shareable Results Feature (November 2025):**
+- **Unique Share Links**: Each completed assessment gets a unique shareToken generated via nanoid
+- **Privacy-First Design**: Public share page only shows first name + last initial (e.g., "John D."), readiness band, and score range
+- **Viral Sharing Options**: 
+  - LinkedIn sharing with pre-filled text
+  - WhatsApp sharing via deep link
+  - Copy link with clipboard API and toast feedback
+- **Lead Generation**: Public share page includes prominent CTA to take assessment, driving new signups
+- **No Authentication Required**: Share pages are publicly accessible without login to maximize viral reach
 
 **Technical Implementation:**
-- Database: 3 new tables with proper FK constraints and cascade deletes
-- Authentication: All routes protected with JWT middleware
+- Database: 3 tables (assessment_questions, assessment_attempts with shareToken field, assessment_answers) with proper FK constraints
+- Authentication: Assessment routes protected with JWT middleware; share endpoint is public
 - Validation: Zod schemas for request/response validation
 - State Management: React Query for server state, local state for UI
 - Error Handling: Proper loading states, error boundaries, and user feedback
-- Testing: E2E tests with Playwright covering full flow, autosave, and start fresh
+- Privacy: Only first name + initial exposed publicly, full data requires authentication
+- Testing: E2E tests with Playwright covering full flow including public share page
