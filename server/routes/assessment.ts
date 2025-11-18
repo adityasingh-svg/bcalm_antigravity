@@ -230,4 +230,46 @@ router.get("/resume", authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
+router.get("/share/:shareToken", async (req, res) => {
+  try {
+    const { shareToken } = req.params;
+    
+    const attempt = await storage.getAssessmentAttemptByShareToken(shareToken);
+    
+    if (!attempt) {
+      return res.status(404).json({ error: "Share link not found" });
+    }
+
+    if (!attempt.isCompleted) {
+      return res.status(400).json({ error: "Assessment not yet completed" });
+    }
+
+    const user = await storage.getResourcesUserById(attempt.userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const firstName = user.name.split(' ')[0];
+    const lastInitial = user.name.split(' ')[1]?.[0] || '';
+    const displayName = lastInitial ? `${firstName} ${lastInitial}.` : firstName;
+
+    const scoreRange = 
+      attempt.readinessBand === "Internship Ready" ? "96-120" :
+      attempt.readinessBand === "On Track" ? "72-95" :
+      attempt.readinessBand === "Building Foundation" ? "48-71" :
+      "0-47";
+
+    res.json({
+      displayName,
+      readinessBand: attempt.readinessBand,
+      scoreRange,
+      totalScore: attempt.totalScore,
+    });
+  } catch (error) {
+    console.error("Error fetching share data:", error);
+    res.status(500).json({ error: "Failed to fetch share data" });
+  }
+});
+
 export default router;
