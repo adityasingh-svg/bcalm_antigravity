@@ -1,0 +1,331 @@
+GOAL
+Redesign the top of the Bcalm landing page to create a clean, premium, high-converting experience for 3rd–4th year students and recent graduates.
+We want:
+A decluttered hero (Fold 1) focused on: understanding + primary action
+
+
+A proof fold (Fold 2) focused on: “Why Bcalm Works” via Instructor + 10x Shortlist
+
+
+A navigation/quicklinks fold (Fold 3) to help students explore details (Curriculum, Instructor, Outcomes, Pricing, etc.)
+
+
+Everything should be mobile-first, then scale to desktop.
+
+1️⃣ FOLD 1 – HERO (TOP OF PAGE)
+1.1 Structure & Order (MUST follow this exactly)
+Inside the main container (same max-width for all sections):
+Header bar (already exists):
+
+
+Left: Bcalm wordmark
+
+
+Right: Free Resources pill CTA
+
+
+Hero content, in this order:
+
+
+Headline
+
+
+Subheadline
+
+
+Primary CTA
+
+
+Social proof
+
+
+Cohort info line
+
+
+Secondary inline links (Schedule + Readiness)
+
+
+Then a breathing gap before next section.
+
+
+1.2 Visual Anchor Behind Headline
+Add a very subtle gradient/glow behind or around the headline text to create a visual anchor.
+Can be a soft radial gradient or blurred “blob” in brand purple/blue.
+
+
+Low opacity, not distracting.
+
+
+Purpose: make the hero feel intentional and premium, not just text on a background.
+
+
+1.3 Hero Copy (Text)
+Headline:
+Become interview-ready for AI Product roles in 30 days
+(Ensure line breaks are clean; don’t split “AI Product roles” awkwardly.)
+Subheadline:
+Designed for non-tech students & recent graduates.
+1.4 Primary CTA (Main Action)
+Below the subheadline:
+[ Join the Waitlist ]
+Solid fill (brand purple gradient or flat purple).
+
+
+Full-width on mobile, sized nicely on desktop.
+
+
+This should be the most visually dominant element in the hero.
+
+
+1.5 Social Proof (AFTER the CTA)
+Directly below the primary CTA, add a small social proof element:
+🧑‍🎓 Trusted by 200+ students from IITs, BITS, NITs & IIITs
+Important:
+This comes after the CTA, not before (to avoid interrupting the decision to act).
+
+
+Style it as:
+
+
+small text
+
+
+either a light chip or just inline text
+
+
+background (if any) should be very light (e.g. bg-purple-50)
+
+
+no heavy block or big pill like a second button.
+
+
+1.6 Cohort Info (Small Line, Not a Card)
+Under the social proof, show next cohort info as a simple line, not a full card:
+📅 Next cohort starts: December 2, 2025
+Keep it small, calm, and text-based.
+
+
+No heavy card, no box shadow.
+
+
+1.7 Secondary Actions (Inline Links, Very Light)
+Under the cohort info:
+Schedule a call · Take the AI PM Readiness Check →
+Plain text links, no background.
+
+
+Subtle grey color (e.g. text-gray-400), hover to slightly darker.
+
+
+Align center on mobile and desktop.
+
+
+These should not visually compete with the primary CTA.
+
+
+1.8 Spacing (Vertical Rhythm)
+On mobile:
+Headline → subheadline: 12–16px
+
+
+Subheadline → CTA: 16–20px
+
+
+CTA → social proof: 10–14px
+
+
+Social proof → cohort line: 8–10px
+
+
+Cohort line → secondary links row: 8–10px
+
+
+Secondary links row → next section (Why Bcalm Works): 28–36px
+
+
+The last gap is key to create a distinct “end” of hero and start of Fold 2.
+
+2️⃣ FOLD 2 – “WHY BCALM WORKS” (PROOF FOLD)
+This is immediately below the hero and starts with a section heading.
+2.1 Section Heading
+Centered within the same container:
+Why Bcalm Works
+ Built from real hiring experience, real product journeys, and real outcomes.
+Heading: larger, semi-bold.
+
+
+Subtext: smaller, muted grey.
+
+
+2.2 Two Main Proof Cards
+Under the heading, show two stacked cards on mobile, side-by-side on desktop:
+Card 1: Instructor – credibility / aspiration
+
+
+Card 2: 10x Shortlist – tangible career outcome
+
+
+These should feel like Fold 2 core content, not part of hero.
+2.2.1 Card 1 – Instructor (“Learn from a Product Leader”)
+Card title:
+Learn from a Product Leader
+Card content (bullets, max 3):
+Built large-scale products at Zepto, Apollo 247, Toppr & Housing.com
+
+
+Grew his career from ₹3.2 LPA → ₹2.4 Cr PA
+
+
+Senior Director of Product at a $7B YC-backed company
+
+
+Design:
+Light background (e.g. bg-slate-900 or bg-[#0f172a] if staying dark, or a very soft light tint if you want contrast).
+
+
+Rounded corners (e.g. 16px).
+
+
+Soft shadow or border, but lighter than hero CTAs.
+
+
+On mobile: full-width stack.
+
+
+On desktop: left card in a two-column grid with equal width.
+
+
+You can optionally include a small circular instructor photo at the top-left to humanize it.
+2.2.2 Card 2 – Shortlist (“10x Your Shortlist Chances”)
+Card title:
+10x Your Shortlist Chances
+Card content (bullets, max 3):
+Learn how to craft a resume tailored for AI/PM roles, not generic applications
+
+
+Build a portfolio that proves you can solve real product problems
+
+
+Use insider hiring signals most candidates never see to stand out in shortlisting
+
+
+Design:
+ Same card style as Card 1 for visual consistency.
+2.3 Layout & Spacing
+On mobile:
+Section heading → subtext: 8–12px
+
+
+Subtext → Card 1: 20–24px
+
+
+Card 1 → Card 2: 16–20px
+
+
+Card 2 → Quicklinks (Fold 3): 24–32px
+
+
+On desktop:
+Heading centered at top
+
+
+Two cards side-by-side in a responsive grid (grid-cols-2 on md+, grid-cols-1 on mobile)
+
+
+Same vertical spacing above/below.
+
+
+
+3️⃣ FOLD 3 – QUICKLINKS / SUB-NAV
+The quicklinks help students jump to the parts they care about after they’ve already seen:
+what Bcalm is (hero)
+
+
+why it’s legit for them (Fold 2)
+
+
+3.1 Quicklinks Placement
+Place quicklinks after the two cards, as a new, slim strip.
+Two possible implementations – choose A if possible, B if you want simpler for v1.
+
+Option A – Sticky Sub-Nav (Preferred)
+Behavior:
+Quicklinks row appears below the cards like a normal section.
+
+
+As the user scrolls down and this row reaches the top of the viewport, it becomes sticky (fixed at top) beneath the main header.
+
+
+Row content (links):
+Overview · Curriculum · Instructor · Outcomes · Reviews · Pricing · FAQ
+Each link scrolls to an anchor (#overview, #curriculum, etc.).
+
+
+On mobile, this can be a horizontally scrollable row of pills or text links.
+
+
+Design:
+Height: ~44–48px.
+
+
+Background: solid (e.g. same as page background).
+
+
+Border-bottom: very light (e.g. border-b border-slate-800 if dark).
+
+
+Text: small, muted by default; darker on hover/active.
+
+
+Active tab: slightly bolder or underlined.
+
+
+Row content as above.
+Interaction:
+Each link is an anchor to a section further down.
+
+
+Styling: small, inline, center-aligned, subtle bottom border or spacing.
+
+
+
+4️⃣ ACCESSIBILITY, COGNITIVE LOAD & MENTAL MODELS
+Please consciously design for:
+4.1 Cognitive Flow
+User first understands: “Is this for me?” (hero text)
+
+
+Then sees what to do: “Join the Waitlist.”
+
+
+Then sees reassurance: “Trusted by students like me; there’s a concrete cohort date.”
+
+
+Then sees: “Why should I believe this program?” → Instructor + Shortlist cards.
+
+
+THEN: “Let me explore in detail” → quicklinks.
+
+
+Do not surface extra blocks/cards in the hero above the fold.
+4.2 Visual Simplicity
+Only one solid primary CTA in the hero.
+
+
+Everything else should use lighter backgrounds, smaller fonts, or inline text.
+
+
+Avoid more than one heavy block per fold.
+
+
+4.3 Mobile-first
+Ensure all text wraps nicely and nothing overflows.
+
+
+Test on 375px width viewport.
+
+
+Full-width cards on mobile, grid on desktop.
+
+
+
