@@ -106,6 +106,7 @@ export const assessmentAttempts = pgTable("assessment_attempts", {
   readinessBand: text("readiness_band"),
   scoresJson: text("scores_json"),
   isCompleted: boolean("is_completed").notNull().default(false),
+  shareToken: varchar("share_token", { length: 32 }).unique(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   completedAt: timestamp("completed_at"),
 });

@@ -260,6 +260,9 @@ export class DatabaseStorage implements IStorage {
     readinessBand: string,
     scoresJson: string
   ): Promise<AssessmentAttempt | undefined> {
+    const { nanoid } = await import("nanoid");
+    const shareToken = nanoid(16);
+    
     const [updated] = await db
       .update(assessmentAttempts)
       .set({
@@ -268,10 +271,19 @@ export class DatabaseStorage implements IStorage {
         scoresJson,
         isCompleted: true,
         completedAt: new Date(),
+        shareToken,
       })
       .where(eq(assessmentAttempts.id, attemptId))
       .returning();
     return updated || undefined;
+  }
+
+  async getAssessmentAttemptByShareToken(shareToken: string): Promise<AssessmentAttempt | undefined> {
+    const [attempt] = await db
+      .select()
+      .from(assessmentAttempts)
+      .where(eq(assessmentAttempts.shareToken, shareToken));
+    return attempt || undefined;
   }
 }
 
