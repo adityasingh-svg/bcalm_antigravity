@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 import rakeshImage from "@assets/rakesh_malloju.png";
-import nehaImage from "@assets/generated_images/Female_AI_Strategy_Leader_headshot_9b93d21c.png";
+import adityaImage from "@assets/image_1763560763518.png";
 import aaravImage from "@assets/generated_images/Male_startup_founder_headshot_77d82d0a.png";
 
 const instructors = [
@@ -14,11 +14,11 @@ const instructors = [
     initials: "RM"
   },
   {
-    name: "Neha Sharma",
-    title: "AI Strategy Lead",
-    company: "Microsoft",
-    image: nehaImage,
-    initials: "NS"
+    name: "Aditya Singh",
+    title: "Product Manager",
+    company: "Apollo247",
+    image: adityaImage,
+    initials: "AS"
   },
   {
     name: "Aarav Patel",
