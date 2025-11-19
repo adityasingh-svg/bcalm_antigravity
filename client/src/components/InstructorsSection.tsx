@@ -1,16 +1,16 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
-import rahulImage from "@assets/generated_images/Male_AI_Product_Manager_headshot_204fb78a.png";
+import rakeshImage from "@assets/rakesh_malloju.png";
 import nehaImage from "@assets/generated_images/Female_AI_Strategy_Leader_headshot_9b93d21c.png";
 import aaravImage from "@assets/generated_images/Male_startup_founder_headshot_77d82d0a.png";
 
 const instructors = [
   {
-    name: "Rahul Mehta",
-    title: "Senior AI PM",
-    company: "Google",
-    image: rahulImage,
+    name: "Rakesh Malloju",
+    title: "Senior Director of Product",
+    company: "Zepto",
+    image: rakeshImage,
     initials: "RM"
   },
   {

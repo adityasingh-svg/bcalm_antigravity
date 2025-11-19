@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
+import WhyBcalmWorksSection from "@/components/WhyBcalmWorksSection";
+import StickyQuicklinks from "@/components/StickyQuicklinks";
 import CareerSupportSection from "@/components/CareerSupportSection";
 import AboutSection from "@/components/AboutSection";
 import CurriculumSection from "@/components/CurriculumSection";
@@ -36,10 +38,17 @@ export default function LandingPage() {
     <div className="min-h-screen">
       <Navbar />
       
+      {/* Fold 1 - Hero */}
       <HeroSection 
         onJoinWaitlist={() => setWaitlistOpen(true)} 
         onScheduleCall={() => setScheduleOpen(true)} 
       />
+      
+      {/* Fold 2 - Why Bcalm Works (Proof) */}
+      <WhyBcalmWorksSection />
+      
+      {/* Fold 3 - Sticky Quicklinks */}
+      <StickyQuicklinks />
       
       <CareerSupportSection />
       
