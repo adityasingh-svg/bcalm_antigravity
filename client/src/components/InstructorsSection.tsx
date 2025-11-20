@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 import rakeshImage from "@assets/rakesh_malloju.png";
 import adityaImage from "@assets/image_1763560763518.png";
-import abhishekImage from "@assets/image_1763561082510.png";
+import akhilImage from "@assets/image_1763636682683.png";
 
 const instructors = [
   {
@@ -21,11 +21,11 @@ const instructors = [
     initials: "AS"
   },
   {
-    name: "Abhishek Paul",
-    title: "Founder",
-    company: "Locofy",
-    image: abhishekImage,
-    initials: "AP"
+    name: "Akhil Joy",
+    title: "Product Design Leader",
+    company: "Topmate.io",
+    image: akhilImage,
+    initials: "AJ"
   }
 ];
 
