@@ -147,6 +147,15 @@ The landing page hero has been redesigned with a three-fold structure for improv
 - **Card 2 - Shortlist**: "10x Your Shortlist Chances" with 3 outcome bullets (portfolio projects, optimized resume, insider signals)
 - **Responsive Layout**: Side-by-side on desktop, stacked vertically on mobile
 
+**Instructors Section** (positioned immediately after Why Bcalm Works):
+- Heading: "Learn Directly from AI Product Leaders"
+- Three instructor profiles with avatars, name, title, company, and college
+- **Rakesh Malloju**: Senior Director of Product at Zepto, IIM Calcutta
+- **Aditya Singh**: Product Manager at Apollo247, IIT Delhi
+- **Akhil Joy**: Product Design Leader at Topmate.io, IIT Delhi
+- Three-column grid on desktop, stacked on mobile
+- Hover elevation effect on cards
+
 **Fold 3 - Sticky Quicklinks:**
 - New `StickyQuicklinks` component that becomes sticky (fixed position) when scrolling
 - **Navigation Links**: Overview, Curriculum, Instructor, Outcomes, Reviews, Pricing, FAQ

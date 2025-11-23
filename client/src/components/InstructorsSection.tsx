@@ -10,6 +10,7 @@ const instructors = [
     name: "Rakesh Malloju",
     title: "Senior Director of Product",
     company: "Zepto",
+    college: "IIM Calcutta",
     image: rakeshImage,
     initials: "RM"
   },
@@ -17,6 +18,7 @@ const instructors = [
     name: "Aditya Singh",
     title: "Product Manager",
     company: "Apollo247",
+    college: "IIT Delhi",
     image: adityaImage,
     initials: "AS"
   },
@@ -24,6 +26,7 @@ const instructors = [
     name: "Akhil Joy",
     title: "Product Design Leader",
     company: "Topmate.io",
+    college: "IIT Delhi",
     image: akhilImage,
     initials: "AJ"
   }
@@ -70,8 +73,11 @@ export default function InstructorsSection() {
                     <p className="text-sm text-muted-foreground mb-1">
                       {instructor.title}
                     </p>
-                    <p className="text-sm font-medium text-primary">
+                    <p className="text-sm font-medium text-primary mb-1">
                       {instructor.company}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {instructor.college}
                     </p>
                   </div>
                 </CardContent>

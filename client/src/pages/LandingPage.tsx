@@ -47,6 +47,9 @@ export default function LandingPage() {
       {/* Fold 2 - Why Bcalm Works (Proof) */}
       <WhyBcalmWorksSection />
       
+      {/* Instructors Section - Directly after Why Bcalm Works */}
+      <InstructorsSection />
+      
       {/* Fold 3 - Sticky Quicklinks */}
       <StickyQuicklinks />
       
@@ -59,8 +62,6 @@ export default function LandingPage() {
       <WhyBcalmSection />
       
       <TestimonialsSection />
-      
-      <InstructorsSection />
       
       <PricingSection 
         onEnroll={handleEnroll}
