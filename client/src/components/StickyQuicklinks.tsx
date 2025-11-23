@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import bcalmLogo from "@assets/587825421_122110881585061636_4522478478515908937_n_1763885253278.jpg";
 
 const quickLinks = [
   { name: "Overview", href: "#about" },
@@ -38,21 +37,6 @@ export default function StickyQuicklinks() {
       >
         <div className="container mx-auto px-4" style={{ maxWidth: '1080px' }}>
           <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-3">
-            {isSticky && (
-              <img 
-                src={bcalmLogo} 
-                alt="Bcalm"
-                className="mr-2 flex-shrink-0"
-                style={{
-                  height: '28px',
-                  width: '28px',
-                  objectFit: 'cover',
-                  objectPosition: 'center 20%',
-                  borderRadius: '4px'
-                }}
-                data-testid="logo-bcalm-sticky"
-              />
-            )}
             {quickLinks.map((link, index) => (
               <a
                 key={index}
