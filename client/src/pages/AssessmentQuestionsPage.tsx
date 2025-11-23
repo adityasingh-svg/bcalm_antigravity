@@ -56,7 +56,18 @@ export default function AssessmentQuestionsPage() {
       return await response.json();
     },
     onSuccess: (data: any) => {
-      trackEvent("assessment_completed", { score: data.totalScore });
+      const getScoreBand = (score: number) => {
+        if (score >= 96) return "96-120";
+        if (score >= 72) return "72-95";
+        if (score >= 48) return "48-71";
+        return "0-47";
+      };
+      
+      trackEvent("assessment_completed", {
+        score: data.totalScore,
+        readinessBand: data.readinessBand,
+        scoreBand: getScoreBand(data.totalScore)
+      });
       queryClient.invalidateQueries({ queryKey: ["/api/assessment/resume"] });
       setLocation(`/ai-pm-readiness/results/${data.id}`);
     },

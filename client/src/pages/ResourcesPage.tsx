@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { trackEvent } from "@/lib/analytics";
 import { motion } from "framer-motion";
 import { Download, FileText, Video, ExternalLink, Book, Lightbulb } from "lucide-react";
 import type { Resource } from "@shared/resourcesSchema";
@@ -138,6 +139,14 @@ export default function ResourcesPage() {
         localStorage.setItem("resources_user", JSON.stringify(result.user));
         setToken(result.token);
         setShowAuthDialog(false);
+        
+        // Track signup/login events
+        if (isLogin) {
+          trackEvent("user_login", { email: data.email });
+        } else {
+          trackEvent("user_signup", { name: data.name || "", email: data.email });
+        }
+        
         toast({
           title: isLogin ? "Logged in successfully" : "Account created successfully",
           description: `Welcome, ${result.user.name}!`,
