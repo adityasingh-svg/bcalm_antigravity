@@ -26,7 +26,7 @@ const instructors = [
     name: "Akhil Joy",
     title: "Product Design Leader",
     company: "Topmate.io",
-    college: "IIT Delhi",
+    college: "MGU",
     image: akhilImage,
     initials: "AJ"
   }
