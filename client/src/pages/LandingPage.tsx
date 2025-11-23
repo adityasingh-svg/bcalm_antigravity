@@ -44,11 +44,11 @@ export default function LandingPage() {
         onScheduleCall={() => setScheduleOpen(true)} 
       />
       
+      {/* Instructors Section - Above Why Bcalm Works */}
+      <InstructorsSection />
+      
       {/* Fold 2 - Why Bcalm Works (Proof) */}
       <WhyBcalmWorksSection />
-      
-      {/* Instructors Section - Directly after Why Bcalm Works */}
-      <InstructorsSection />
       
       {/* Fold 3 - Sticky Quicklinks */}
       <StickyQuicklinks />
