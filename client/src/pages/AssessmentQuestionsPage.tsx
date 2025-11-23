@@ -30,8 +30,13 @@ export default function AssessmentQuestionsPage() {
   const attemptIdRef = useRef<string | null>(null);
   const answersRef = useRef<Record<string, number>>({});
   const currentQuestionIndexRef = useRef(0);
+  const questionsRef = useRef<AssessmentQuestion[] | null>(null);
+  const hasTrackedDropRef = useRef(false); // Prevent duplicate tracking
+
+  console.log("✅ AssessmentQuestionsPage mounted");
 
   useEffect(() => {
+    console.log("📍 Page view effect running");
     trackPageView();
   }, []);
 
@@ -61,10 +66,16 @@ export default function AssessmentQuestionsPage() {
           restoredAnswers[ans.questionId] = ans.answerValue;
         }
         setAnswers(restoredAnswers);
+        // Synchronously update answers ref
+        answersRef.current = restoredAnswers;
+        
         // Set current index to the next unanswered question, or last if all answered
         if (questions) {
           const nextIndex = questions.findIndex(q => !restoredAnswers[q.id]);
-          setCurrentQuestionIndex(nextIndex === -1 ? questions.length - 1 : nextIndex);
+          const finalIndex = nextIndex === -1 ? questions.length - 1 : nextIndex;
+          setCurrentQuestionIndex(finalIndex);
+          // Synchronously update index ref
+          currentQuestionIndexRef.current = finalIndex;
         }
       }
       
@@ -119,7 +130,8 @@ export default function AssessmentQuestionsPage() {
     attemptIdRef.current = attemptId;
     answersRef.current = answers;
     currentQuestionIndexRef.current = currentQuestionIndex;
-  }, [attemptId, answers, currentQuestionIndex]);
+    questionsRef.current = questions || null;
+  }, [attemptId, answers, currentQuestionIndex, questions]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -135,18 +147,58 @@ export default function AssessmentQuestionsPage() {
 
   // Track assessment_dropped when user leaves without completing
   useEffect(() => {
-    return () => {
-      if (questions && !assessmentCompletedRef.current && attemptIdRef.current) {
-        const totalQuestions = questions.length;
-        const answeredQuestions = Object.keys(answersRef.current).length;
-        const currentQuestion = currentQuestionIndexRef.current + 1;
+    console.log("🎯 Assessment drop tracker mounted");
+    
+    const handleAssessmentDrop = () => {
+      // Prevent duplicate tracking
+      if (hasTrackedDropRef.current) {
+        console.log("⏭️ Drop already tracked, skipping");
+        return;
+      }
+      
+      const currentQuestions = questionsRef.current;
+      console.log("🔔 handleAssessmentDrop called", {
+        hasQuestions: !!currentQuestions,
+        isCompleted: assessmentCompletedRef.current,
+        hasAttemptId: !!attemptIdRef.current,
+        answersCount: Object.keys(answersRef.current).length
+      });
+      
+      if (currentQuestions && !assessmentCompletedRef.current && attemptIdRef.current) {
+        const totalQuestions = currentQuestions.length;
+        const currentQuestionIndex = currentQuestionIndexRef.current;
+        const currentQuestion = currentQuestions[currentQuestionIndex];
+        
+        // Count all answered questions (simply the number of saved answers)
+        const allAnswers = answersRef.current;
+        const answeredQuestions = Object.keys(allAnswers).length;
+        
+        console.log("🚪 Assessment dropped:", {
+          totalQuestions,
+          answeredQuestions,
+          currentQuestion: currentQuestion?.questionText || "Unknown question"
+        });
         
         trackEvent("assessment_dropped", {
           totalQuestions: totalQuestions,
           answeredQuestions: answeredQuestions,
-          currentQuestion: currentQuestion
+          currentQuestion: currentQuestion?.questionText || "Unknown question"
         });
+        
+        hasTrackedDropRef.current = true;
       }
+    };
+
+    // Only track on beforeunload (page close/refresh) and component unmount (React navigation)
+    // Removed visibilitychange to avoid duplicate events when user switches tabs
+    window.addEventListener("beforeunload", handleAssessmentDrop);
+    console.log("📌 Event listeners registered");
+
+    // Cleanup event listeners and track on component unmount (React navigation)
+    return () => {
+      console.log("🧹 Cleanup running - component unmounting");
+      window.removeEventListener("beforeunload", handleAssessmentDrop);
+      handleAssessmentDrop();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty deps - cleanup only on unmount, reads from refs
@@ -174,6 +226,9 @@ export default function AssessmentQuestionsPage() {
   const handleAnswer = (value: number) => {
     const newAnswers = { ...answers, [currentQuestion.id]: value };
     setAnswers(newAnswers);
+    
+    // Synchronously update refs to avoid race condition with unmount
+    answersRef.current = newAnswers;
 
     saveAnswerMutation.mutate({
       questionId: currentQuestion.id,
@@ -182,7 +237,10 @@ export default function AssessmentQuestionsPage() {
 
     setTimeout(() => {
       if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        const nextIndex = currentQuestionIndex + 1;
+        setCurrentQuestionIndex(nextIndex);
+        // Synchronously update index ref
+        currentQuestionIndexRef.current = nextIndex;
       } else {
         completeAssessmentMutation.mutate();
       }
@@ -191,7 +249,10 @@ export default function AssessmentQuestionsPage() {
 
   const handleBack = () => {
     if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
+      const prevIndex = currentQuestionIndex - 1;
+      setCurrentQuestionIndex(prevIndex);
+      // Synchronously update index ref
+      currentQuestionIndexRef.current = prevIndex;
     }
   };
 
