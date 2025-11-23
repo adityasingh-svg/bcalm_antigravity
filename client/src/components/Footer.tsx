@@ -1,6 +1,7 @@
 import { SiLinkedin, SiX, SiInstagram } from "react-icons/si";
 import { Mail, MessageCircle } from "lucide-react";
 import { Link } from "wouter";
+import bcalmLogo from "@assets/587825421_122110881585061636_4522478478515908937_n_1763885253278.jpg";
 
 export default function Footer() {
   return (
@@ -8,7 +9,18 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           <div>
-            <h3 className="font-bold text-lg mb-4">Bcalm</h3>
+            <img 
+              src={bcalmLogo} 
+              alt="Bcalm - AI Product Manager Launchpad"
+              className="mb-4"
+              style={{
+                height: '60px',
+                width: 'auto',
+                objectFit: 'contain',
+                objectPosition: 'left center'
+              }}
+              data-testid="logo-bcalm-footer"
+            />
             <p className="text-sm text-muted-foreground">
               AI Product Manager Launchpad - Transform into an AI PM in 30 days with industry leaders.
             </p>

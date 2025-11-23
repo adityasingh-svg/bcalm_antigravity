@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import bcalmLogo from "@assets/587825421_122110881585061636_4522478478515908937_n_1763885253278.jpg";
 
 export default function Navbar() {
   return (
@@ -11,23 +12,20 @@ export default function Navbar() {
     >
       <div className="container mx-auto max-w-6xl">
         <div className="flex items-center justify-between" style={{ padding: '16px 24px' }}>
-          <div 
-            className="font-semibold select-none"
-            style={{
-              color: '#111111',
-              fontSize: 'clamp(17px, 2.5vw, 20px)',
-              fontWeight: 600,
-              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-              letterSpacing: '0.75px',
-              whiteSpace: 'nowrap',
-              display: 'flex',
-              alignItems: 'baseline'
-            }}
-            data-testid="logo-bcalm"
-          >
-            <span style={{ marginRight: '-1.5px' }}>B</span>
-            <span style={{ letterSpacing: '1px' }}>calm</span>
-          </div>
+          <Link href="/">
+            <img 
+              src={bcalmLogo} 
+              alt="Bcalm - AI Product Manager Launchpad"
+              className="select-none cursor-pointer"
+              style={{
+                height: 'clamp(35px, 5vw, 45px)',
+                width: 'auto',
+                objectFit: 'contain',
+                objectPosition: 'left center'
+              }}
+              data-testid="logo-bcalm"
+            />
+          </Link>
           
           <Link 
             href="/resources"
