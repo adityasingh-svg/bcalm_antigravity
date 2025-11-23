@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackPageView, getUtmParams, getPagePath } from "@/lib/analytics";
 import { ChevronLeft } from "lucide-react";
 import type { AssessmentQuestion } from "@shared/schema";
 
@@ -24,6 +24,16 @@ export default function AssessmentQuestionsPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<string, number>>({});
+  const assessmentCompletedRef = useRef(false);
+  
+  // Refs to track latest state for cleanup function
+  const attemptIdRef = useRef<string | null>(null);
+  const answersRef = useRef<Record<string, number>>({});
+  const currentQuestionIndexRef = useRef(0);
+
+  useEffect(() => {
+    trackPageView();
+  }, []);
 
   const { data: questions, isLoading: loadingQuestions } = useQuery<AssessmentQuestion[]>({
     queryKey: ["/api/assessment/questions"],
@@ -37,7 +47,12 @@ export default function AssessmentQuestionsPage() {
     },
     onSuccess: (data: any) => {
       setAttemptId(data.id);
-      trackEvent("assessment_started");
+      const utmParams = getUtmParams();
+      const pagePath = getPagePath();
+      trackEvent("assessment_started", { 
+        pagePath: pagePath, 
+        utm: utmParams 
+      });
     },
   });
 
@@ -56,6 +71,8 @@ export default function AssessmentQuestionsPage() {
       return await response.json();
     },
     onSuccess: (data: any) => {
+      assessmentCompletedRef.current = true;
+      
       const getScoreBand = (score: number) => {
         if (score >= 96) return "96-120";
         if (score >= 72) return "72-95";
@@ -63,15 +80,25 @@ export default function AssessmentQuestionsPage() {
         return "0-47";
       };
       
+      const pagePath = getPagePath();
+      
       trackEvent("assessment_completed", {
         score: data.totalScore,
         readinessBand: data.readinessBand,
-        scoreBand: getScoreBand(data.totalScore)
+        scoreBand: getScoreBand(data.totalScore),
+        pagePath: pagePath
       });
       queryClient.invalidateQueries({ queryKey: ["/api/assessment/resume"] });
       setLocation(`/ai-pm-readiness/results/${data.id}`);
     },
   });
+
+  // Keep refs in sync with state
+  useEffect(() => {
+    attemptIdRef.current = attemptId;
+    answersRef.current = answers;
+    currentQuestionIndexRef.current = currentQuestionIndex;
+  }, [attemptId, answers, currentQuestionIndex]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -83,6 +110,24 @@ export default function AssessmentQuestionsPage() {
       createAttemptMutation.mutate();
     }
   }, [isAuthenticated, questions, attemptId, createAttemptMutation.isPending]);
+
+  // Track assessment_dropped when user leaves without completing
+  useEffect(() => {
+    return () => {
+      if (questions && !assessmentCompletedRef.current && attemptIdRef.current) {
+        const totalQuestions = questions.length;
+        const answeredQuestions = Object.keys(answersRef.current).length;
+        const currentQuestion = currentQuestionIndexRef.current + 1;
+        
+        trackEvent("assessment_dropped", {
+          totalQuestions: totalQuestions,
+          answeredQuestions: answeredQuestions,
+          currentQuestion: currentQuestion
+        });
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps - cleanup only on unmount, reads from refs
 
   if (!isAuthenticated || loadingQuestions || !questions || (!attemptId && createAttemptMutation.isPending)) {
     return (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { trackEvent, trackPageView, getUtmParams, getPagePath } from "@/lib/analytics";
 
 const authSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -27,6 +28,10 @@ export default function AssessmentLandingPage() {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const { toast } = useToast();
+
+  useEffect(() => {
+    trackPageView();
+  }, []);
 
   const form = useForm<AuthFormData>({
     resolver: zodResolver(isLogin ? authSchema.omit({ name: true }) : authSchema),
@@ -47,6 +52,28 @@ export default function AssessmentLandingPage() {
         localStorage.setItem("resources_token", result.token);
         localStorage.setItem("resources_user", JSON.stringify(result.user));
         setShowAuthDialog(false);
+        
+        // Track signup/login events with UTM params and page path
+        const utmParams = getUtmParams();
+        const pagePath = getPagePath();
+        
+        if (isLogin) {
+          trackEvent("user_login", { 
+            email: data.email,
+            pagePath: pagePath,
+            utm: utmParams,
+            navigationSource: null
+          });
+        } else {
+          trackEvent("user_signup", { 
+            name: data.name || "", 
+            email: data.email,
+            pagePath: pagePath,
+            utm: utmParams,
+            navigationSource: null
+          });
+        }
+        
         toast({
           title: isLogin ? "Logged in successfully" : "Account created successfully",
           description: `Welcome, ${result.user.name}!`,

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackPageView, getUtmParams, getPagePath } from "@/lib/analytics";
 import { motion } from "framer-motion";
 import { Download, FileText, Video, ExternalLink, Book, Lightbulb } from "lucide-react";
 import type { Resource } from "@shared/resourcesSchema";
@@ -115,6 +115,10 @@ export default function ResourcesPage() {
   const { toast } = useToast();
   const [token, setToken] = useState<string | null>(localStorage.getItem("resources_token"));
 
+  useEffect(() => {
+    trackPageView();
+  }, []);
+
   const { data: resources, isLoading } = useQuery<Resource[]>({
     queryKey: ["/api/resources"],
   });
@@ -140,11 +144,25 @@ export default function ResourcesPage() {
         setToken(result.token);
         setShowAuthDialog(false);
         
-        // Track signup/login events
+        // Track signup/login events with UTM params and page path
+        const utmParams = getUtmParams();
+        const pagePath = getPagePath();
+        
         if (isLogin) {
-          trackEvent("user_login", { email: data.email });
+          trackEvent("user_login", { 
+            email: data.email,
+            pagePath: pagePath,
+            utm: utmParams,
+            navigationSource: null
+          });
         } else {
-          trackEvent("user_signup", { name: data.name || "", email: data.email });
+          trackEvent("user_signup", { 
+            name: data.name || "", 
+            email: data.email,
+            pagePath: pagePath,
+            utm: utmParams,
+            navigationSource: null
+          });
         }
         
         toast({

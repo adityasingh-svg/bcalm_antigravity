@@ -72,7 +72,7 @@ export function trackInitialLanding() {
   const utmParams = getUtmParams();
   const referrer = getReferrer();
   
-  trackEvent("initial_page_view", {
+  trackEvent("first_page_launch", {
     pageName: getPageName(),
     pageUrl: window.location.href,
     pagePath: getPagePath(),

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { trackPageView } from "@/lib/analytics";
 import { motion } from "framer-motion";
 import { TrendingUp, BookOpen, Target, Share2, Copy, Check } from "lucide-react";
 import { SiLinkedin, SiWhatsapp } from "react-icons/si";
@@ -56,6 +57,10 @@ export default function AssessmentResultsPage() {
     queryKey: ["/api/assessment/results", attemptId],
     enabled: isAuthenticated && !!attemptId,
   });
+
+  useEffect(() => {
+    trackPageView();
+  }, []);
 
   useEffect(() => {
     if (!isAuthenticated) {

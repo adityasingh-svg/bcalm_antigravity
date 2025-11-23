@@ -4,7 +4,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { trackPageView } from "@/lib/analytics";
+import { trackInitialLanding } from "@/lib/analytics";
 import LandingPage from "@/pages/LandingPage";
 import ResourcesPage from "@/pages/ResourcesPage";
 import ResourcesAdminDashboard from "@/pages/ResourcesAdminDashboard";
@@ -33,7 +33,7 @@ function Router() {
 
 function App() {
   useEffect(() => {
-    trackPageView();
+    trackInitialLanding();
   }, []);
 
   return (

@@ -14,6 +14,7 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import WaitlistDialog from "@/components/WaitlistDialog";
 import ScheduleCallDialog from "@/components/ScheduleCallDialog";
+import { trackPageView } from "@/lib/analytics";
 
 export default function LandingPage() {
   const [waitlistOpen, setWaitlistOpen] = useState(false);
@@ -21,6 +22,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = 'smooth';
+    trackPageView();
     return () => {
       document.documentElement.style.scrollBehavior = 'auto';
     };
