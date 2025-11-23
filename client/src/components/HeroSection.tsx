@@ -56,30 +56,38 @@ export default function HeroSection({ onJoinWaitlist, onScheduleCall }: HeroSect
             Designed for non-tech students & recent graduates
           </p>
           
-          {/* Primary CTA - Full width on mobile */}
-          <div className="md:max-w-md md:mx-auto mb-3 md:mb-4">
+          {/* CTAs - Side by side on desktop, stacked on mobile */}
+          <div className="flex flex-col md:flex-row gap-3 md:gap-4 md:max-w-2xl md:mx-auto mb-3 md:mb-4">
+            {/* Primary CTA - WhatsApp Contact */}
             <Button 
               size="lg" 
-              className="w-screen -ml-4 md:w-full md:ml-0 text-base rounded-none md:rounded-lg"
+              className="w-screen -ml-4 md:w-full md:ml-0 text-base rounded-none md:rounded-lg text-white hover:text-white border-0"
+              style={{
+                backgroundColor: '#25D366',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#20BD5A';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#25D366';
+              }}
               onClick={() => window.open('https://wa.me/919398354912?text=Hi%2C%20I%27m%20interested%20in%20the%20AI%20PM%20Launchpad%20program', '_blank')}
               data-testid="button-contact-whatsapp"
             >
               <SiWhatsapp className="mr-2 h-5 w-5" />
-              Contact on WhatsApp
+              Contact us
             </Button>
-          </div>
 
-          {/* Secondary CTA - Download Free Resources */}
-          <div className="md:max-w-md md:mx-auto mb-3 md:mb-4">
-            <Link href="/resources">
+            {/* Secondary CTA - Free Resources */}
+            <Link href="/resources" className="block w-screen -ml-4 md:w-full md:ml-0">
               <Button 
                 size="lg" 
                 variant="outline"
-                className="w-screen -ml-4 md:w-full md:ml-0 text-base rounded-none md:rounded-lg bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 hover:text-white hover:border-white/30"
+                className="w-full text-base rounded-none md:rounded-lg bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 hover:text-white hover:border-white/30"
                 data-testid="button-download-resources"
               >
                 <Download className="mr-2 h-5 w-5" />
-                Download Free Resources
+                Free resources
               </Button>
             </Link>
           </div>

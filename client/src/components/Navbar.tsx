@@ -16,9 +16,8 @@ export default function Navbar() {
             <img 
               src={bcalmLogo} 
               alt="Bcalm - AI Product Manager Launchpad"
-              className="select-none cursor-pointer"
+              className="select-none cursor-pointer h-8 md:h-12"
               style={{
-                height: 'clamp(35px, 5vw, 45px)',
                 width: 'auto',
                 objectFit: 'contain',
                 objectPosition: 'left center'

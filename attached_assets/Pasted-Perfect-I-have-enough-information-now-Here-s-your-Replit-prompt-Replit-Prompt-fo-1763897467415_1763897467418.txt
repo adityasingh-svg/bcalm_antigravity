@@ -1,0 +1,46 @@
+Perfect! I have enough information now. Here's your **Replit prompt**:
+
+---
+
+## Replit Prompt for Bcalm.org Changes
+
+You are working on the Bcalm.org website, a React 18 + TypeScript full-stack application with Vite, Tailwind CSS, and Shadcn UI. Make the following changes:
+
+### 1. **Logo Size & Positioning**
+- Find the logo component in the header/navigation area
+- Resize the logo to **40-48px height** (standard best practice for web logos)
+- Ensure it has proper padding (suggest 12-16px) on the top-left
+- Add responsive sizing: slightly smaller on mobile (32-36px) if needed
+- Maintain aspect ratio
+
+### 2. **Update CTA Button Text**
+- Find the hero section component that contains the current CTAs
+- Replace the text "Contact on WhatsApp" with "Contact us"
+- Replace the text "Download Free Resources" with "Free resources"
+- Keep all other functionality intact
+
+### 3. **Redesign "Contact us" Button with WhatsApp Branding**
+- Change the "Contact us" button color from purple to **WhatsApp green (#25D366)**
+- Add the **WhatsApp icon from Lucide React** (use `<MessageCircle />` or `<Phone />` icon, whichever looks best) to the left of the text
+- Maintain hover states and accessibility
+- Ensure the button maintains proper contrast and readability
+
+### 4. **Position CTAs Side-by-Side**
+- Use flexbox to arrange "Contact us" and "Free resources" buttons horizontally on desktop
+- Add appropriate gap spacing between buttons (suggest 12-16px)
+- **On mobile:** Stack buttons vertically for better UX (use responsive Tailwind classes like `flex-col md:flex-row`)
+- Ensure buttons remain clickable and properly sized on all devices
+
+### 5. **Keep "Free resources" Button Styling Unchanged**
+- The "Free resources" button should retain its current dark/grey styling
+- Only the "Contact us" button should have the WhatsApp green treatment
+
+### Additional Notes:
+- Use Tailwind CSS for all styling changes
+- Maintain TypeScript type safety
+- Ensure the changes are responsive and mobile-first
+- Test the layout on mobile, tablet, and desktop viewports
+
+---
+
+**Would you like me to proceed with this prompt, or would you like any adjustments?**
