@@ -40,6 +40,12 @@ export default function AssessmentQuestionsPage() {
     enabled: isAuthenticated,
   });
 
+  // Fetch resume data to check if resuming incomplete attempt
+  const { data: resumeData } = useQuery<{ hasIncomplete: boolean; attempt?: any; answeredCount?: number }>({
+    queryKey: ["/api/assessment/resume"],
+    enabled: isAuthenticated,
+  });
+
   const createAttemptMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/assessment/attempts", {});
@@ -47,6 +53,21 @@ export default function AssessmentQuestionsPage() {
     },
     onSuccess: (data: any) => {
       setAttemptId(data.id);
+      
+      // If resuming, restore answers and current question index
+      if (data.answers && Object.keys(data.answers).length > 0) {
+        const restoredAnswers: Record<string, number> = {};
+        for (const ans of data.answers) {
+          restoredAnswers[ans.questionId] = ans.answerValue;
+        }
+        setAnswers(restoredAnswers);
+        // Set current index to the next unanswered question, or last if all answered
+        if (questions) {
+          const nextIndex = questions.findIndex(q => !restoredAnswers[q.id]);
+          setCurrentQuestionIndex(nextIndex === -1 ? questions.length - 1 : nextIndex);
+        }
+      }
+      
       const utmParams = getUtmParams();
       const pagePath = getPagePath();
       trackEvent("assessment_started", { 
@@ -106,10 +127,11 @@ export default function AssessmentQuestionsPage() {
       return;
     }
 
-    if (questions && !attemptId && !createAttemptMutation.isPending) {
+    // Only create attempt if we're not already loading resume data
+    if (questions && !attemptId && !createAttemptMutation.isPending && resumeData !== undefined) {
       createAttemptMutation.mutate();
     }
-  }, [isAuthenticated, questions, attemptId, createAttemptMutation.isPending]);
+  }, [isAuthenticated, questions, attemptId, createAttemptMutation.isPending, resumeData]);
 
   // Track assessment_dropped when user leaves without completing
   useEffect(() => {
