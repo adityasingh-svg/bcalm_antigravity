@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
-import { Linkedin } from "lucide-react";
+import { SiLinkedin } from "react-icons/si";
 import rakeshImage from "@assets/rakesh_malloju.png";
 import adityaImage from "@assets/image_1763560763518.png";
 import akhilImage from "@assets/image_1763636682683.png";
@@ -79,10 +79,10 @@ export default function InstructorsSection() {
                         href={instructor.linkedinUrl} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-primary hover:text-primary/80 transition-colors"
+                        className="text-[#0A66C2] hover:text-[#084596] transition-colors"
                         data-testid={`link-linkedin-${instructor.name.replace(/\s+/g, '-').toLowerCase()}`}
                       >
-                        <Linkedin className="h-5 w-5" />
+                        <SiLinkedin className="h-5 w-5" />
                       </a>
                     </div>
                     <p className="text-sm text-muted-foreground mb-1">
