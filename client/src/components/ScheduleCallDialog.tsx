@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,9 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
+import { Calendar } from "lucide-react";
 
 interface ScheduleCallDialogProps {
   open: boolean;
@@ -17,24 +15,33 @@ interface ScheduleCallDialogProps {
 }
 
 export default function ScheduleCallDialog({ open, onOpenChange }: ScheduleCallDialogProps) {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    college: "",
-    phone: ""
-  });
-  const { toast } = useToast();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Schedule call submission:", formData);
-    toast({
-      title: "Call scheduled!",
-      description: "Our team will reach out to you within 24 hours.",
-    });
-    onOpenChange(false);
-    setFormData({ name: "", email: "", college: "", phone: "" });
+  const openCalendly = () => {
+    // @ts-ignore - Calendly is loaded via script
+    if (window.Calendly) {
+      // @ts-ignore
+      window.Calendly.initPopupWidget({
+        url: 'https://calendly.com/aditya-singh-bcalm/30min'
+      });
+    }
   };
+
+  useEffect(() => {
+    // Load Calendly script
+    const script = document.createElement('script');
+    script.src = 'https://assets.calendly.com/assets/external/widget.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    const link = document.createElement('link');
+    link.href = 'https://assets.calendly.com/assets/external/widget.css';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+
+    return () => {
+      document.body.removeChild(script);
+      document.head.removeChild(link);
+    };
+  }, []);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -42,60 +49,29 @@ export default function ScheduleCallDialog({ open, onOpenChange }: ScheduleCallD
         <DialogHeader>
           <DialogTitle>Schedule a Call</DialogTitle>
           <DialogDescription>
-            Speak with our team to learn more about the program and ask any questions.
+            Book a 30-minute consultation with our team to learn more about the AI PM Launchpad program.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="call-name">Full Name</Label>
-            <Input
-              id="call-name"
-              placeholder="Enter your name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-              data-testid="input-call-name"
-            />
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <h4 className="font-medium text-sm">What to expect:</h4>
+            <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+              <li>Program overview and curriculum details</li>
+              <li>Career support and outcomes discussion</li>
+              <li>Q&A about your specific background</li>
+              <li>Next steps and enrollment process</li>
+            </ul>
           </div>
-          <div>
-            <Label htmlFor="call-email">Email</Label>
-            <Input
-              id="call-email"
-              type="email"
-              placeholder="your.email@example.com"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-              data-testid="input-call-email"
-            />
-          </div>
-          <div>
-            <Label htmlFor="call-college">College/University</Label>
-            <Input
-              id="call-college"
-              placeholder="e.g., IIT Delhi, BITS Pilani"
-              value={formData.college}
-              onChange={(e) => setFormData({ ...formData, college: e.target.value })}
-              required
-              data-testid="input-call-college"
-            />
-          </div>
-          <div>
-            <Label htmlFor="call-phone">Phone Number</Label>
-            <Input
-              id="call-phone"
-              type="tel"
-              placeholder="+91 XXXXX XXXXX"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              required
-              data-testid="input-call-phone"
-            />
-          </div>
-          <Button type="submit" className="w-full" data-testid="button-submit-call">
-            Request Call
+          
+          <Button
+            onClick={openCalendly}
+            className="w-full"
+            data-testid="button-open-calendly"
+          >
+            <Calendar className="mr-2 h-4 w-4" />
+            Select a Time Slot
           </Button>
-        </form>
+        </div>
       </DialogContent>
     </Dialog>
   );
