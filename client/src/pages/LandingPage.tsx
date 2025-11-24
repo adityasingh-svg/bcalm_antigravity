@@ -29,7 +29,7 @@ export default function LandingPage() {
   }, []);
 
   const handleDownloadCurriculum = () => {
-    console.log('Download curriculum clicked');
+    // Curriculum download handler
   };
 
   const handleEnroll = () => {

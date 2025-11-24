@@ -11,8 +11,6 @@ export async function trackEvent(eventName: string, data: Record<string, any> = 
   try {
     const userId = getUserId();
     
-    console.log('📊 Tracking event:', eventName, data);
-    
     // Send to backend analytics endpoint
     const response = await fetch('/api/analytics/track', {
       method: 'POST',
@@ -27,13 +25,11 @@ export async function trackEvent(eventName: string, data: Record<string, any> = 
     });
 
     if (!response.ok) {
-      console.error("❌ Analytics tracking error:", response.statusText);
+      console.error("Analytics tracking error:", response.statusText);
       return;
     }
-
-    console.log('✅ Event tracked successfully:', eventName);
   } catch (error) {
-    console.error("❌ Error tracking event:", error);
+    console.error("Error tracking event:", error);
   }
 }
 

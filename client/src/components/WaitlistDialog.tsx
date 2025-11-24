@@ -27,7 +27,6 @@ export default function WaitlistDialog({ open, onOpenChange }: WaitlistDialogPro
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Waitlist submission:", formData);
     toast({
       title: "Welcome to the waitlist!",
       description: "We'll be in touch soon with next steps.",

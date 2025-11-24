@@ -33,8 +33,6 @@ export default function AssessmentQuestionsPage() {
   const questionsRef = useRef<AssessmentQuestion[] | null>(null);
   const hasTrackedDropRef = useRef(false); // Prevent duplicate tracking
 
-  console.log("✅ AssessmentQuestionsPage mounted");
-
   const { data: questions, isLoading: loadingQuestions } = useQuery<AssessmentQuestion[]>({
     queryKey: ["/api/assessment/questions"],
     enabled: isAuthenticated,
@@ -142,22 +140,13 @@ export default function AssessmentQuestionsPage() {
 
   // Track assessment_dropped when user leaves without completing
   useEffect(() => {
-    console.log("🎯 Assessment drop tracker mounted");
-    
     const handleAssessmentDrop = () => {
       // Prevent duplicate tracking
       if (hasTrackedDropRef.current) {
-        console.log("⏭️ Drop already tracked, skipping");
         return;
       }
       
       const currentQuestions = questionsRef.current;
-      console.log("🔔 handleAssessmentDrop called", {
-        hasQuestions: !!currentQuestions,
-        isCompleted: assessmentCompletedRef.current,
-        hasAttemptId: !!attemptIdRef.current,
-        answersCount: Object.keys(answersRef.current).length
-      });
       
       if (currentQuestions && !assessmentCompletedRef.current && attemptIdRef.current) {
         const totalQuestions = currentQuestions.length;
@@ -167,12 +156,6 @@ export default function AssessmentQuestionsPage() {
         // Count all answered questions (simply the number of saved answers)
         const allAnswers = answersRef.current;
         const answeredQuestions = Object.keys(allAnswers).length;
-        
-        console.log("🚪 Assessment dropped:", {
-          totalQuestions,
-          answeredQuestions,
-          currentQuestion: currentQuestion?.questionText || "Unknown question"
-        });
         
         trackEvent("assessment_dropped", {
           totalQuestions: totalQuestions,
@@ -187,11 +170,9 @@ export default function AssessmentQuestionsPage() {
     // Only track on beforeunload (page close/refresh) and component unmount (React navigation)
     // Removed visibilitychange to avoid duplicate events when user switches tabs
     window.addEventListener("beforeunload", handleAssessmentDrop);
-    console.log("📌 Event listeners registered");
 
     // Cleanup event listeners and track on component unmount (React navigation)
     return () => {
-      console.log("🧹 Cleanup running - component unmounting");
       window.removeEventListener("beforeunload", handleAssessmentDrop);
       handleAssessmentDrop();
     };

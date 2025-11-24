@@ -185,8 +185,6 @@ router.get("/download/:resourceId", async (req: AuthRequest, res: Response) => {
     const filename = resource.originalFileName || path.basename(filePath);
     const mimeType = resource.mimeType || "application/octet-stream";
 
-    console.log(`Streaming file: ${filename} (${stats.size} bytes)`);
-
     res.setHeader("Content-Type", mimeType);
     res.setHeader("Content-Length", stats.size);
     res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
@@ -201,7 +199,6 @@ router.get("/download/:resourceId", async (req: AuthRequest, res: Response) => {
     });
 
     fileStream.on("end", async () => {
-      console.log(`File stream completed: ${filename}`);
       try {
         await storage.logDownload({
           userId: req.user!.userId,
