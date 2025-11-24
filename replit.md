@@ -65,6 +65,7 @@ A comprehensive analytics tracking system for multi-channel campaigns with UTM p
   );
   ```
 - **Supabase Configuration**: Client configured in `client/src/lib/supabase.ts` using environment variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+- **Production Deployment**: The `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set in the shared environment and are automatically embedded into the production JavaScript bundle during the build process. Ensure these variables are available in the environment before publishing to Replit.
 
 ## External Dependencies
 
