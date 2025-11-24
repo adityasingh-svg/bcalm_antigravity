@@ -11,12 +11,12 @@ export default function Navbar() {
       }}
     >
       <div className="container mx-auto max-w-6xl">
-        <div className="flex items-center justify-between px-4 md:px-6">
-          <Link href="/" className="py-4 -ml-24">
+        <div className="flex items-center justify-between px-3 md:px-6 gap-4">
+          <Link href="/" className="py-3 md:py-4 flex-shrink-0">
             <img 
               src={bcalmLogo} 
               alt="Bcalm - AI Product Manager Launchpad"
-              className="select-none cursor-pointer h-13 md:h-16 w-auto"
+              className="select-none cursor-pointer h-10 md:h-16 w-auto"
               style={{
                 objectFit: 'contain',
                 objectPosition: 'left center'
@@ -27,9 +27,9 @@ export default function Navbar() {
           
           <Link 
             href="/resources"
-            className="rounded-full font-medium transition-all duration-200"
+            className="rounded-full font-medium transition-all duration-200 flex-shrink-0 whitespace-nowrap text-xs md:text-sm"
             style={{
-              padding: '6px 16px',
+              padding: '6px 12px',
               backgroundColor: '#f5f3ff',
               color: '#6c47ff',
               textDecoration: 'none'
