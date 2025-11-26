@@ -15,6 +15,7 @@ const AssessmentQuestionsPage = lazy(() => import("@/pages/AssessmentQuestionsPa
 const AssessmentResultsPage = lazy(() => import("@/pages/AssessmentResultsPage"));
 const ShareResultsPage = lazy(() => import("@/pages/ShareResultsPage"));
 const NotFound = lazy(() => import("@/pages/not-found"));
+const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 
 function LoadingFallback() {
   return (
@@ -74,6 +75,13 @@ function Router() {
         {() => (
           <Suspense fallback={<LoadingFallback />}>
             <AssessmentResultsPage />
+          </Suspense>
+        )}
+      </Route>
+      <Route path="/privacy-policy">
+        {() => (
+          <Suspense fallback={<LoadingFallback />}>
+            <PrivacyPolicy />
           </Suspense>
         )}
       </Route>
