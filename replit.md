@@ -47,6 +47,20 @@ The landing page hero features a redesigned three-fold structure for improved co
 - **Instructors Section**: Features profiles of three AI Product Leaders (Rakesh Malloju, Aditya Singh, Akhil Joy) with their credentials.
 - **Fold 3 - Sticky Quicklinks**: A `StickyQuicklinks` component provides navigation to key sections (Overview, Curriculum, Instructor, Outcomes, Reviews, Pricing, FAQ) via anchor links, with horizontal scroll on mobile.
 
+#### Hackathon Landing Page
+
+A dedicated landing page at `/hackathon` for "Think Beyond Data and Analysis" hackathon targeting Business Analysts, Data Analysts, and college students.
+- **URL**: bcalm.org/hackathon
+- **Sections**: Hero, Features (3 cards), How It Works (4-step timeline), Why Join (3 reasons), Testimonials (3 cards), Registration Form, FAQ Accordion, Footer
+- **Registration Flow**: Form with Full Name, Phone, Gmail, Company/College → OTP verification modal → Success screen with countdown timer
+- **Database**: `hackathon_registrations` table stores registrations with OTP verification
+- **API Endpoints**:
+  - `POST /api/hackathon/register` - Creates registration, generates OTP
+  - `POST /api/hackathon/verify` - Verifies OTP and completes registration
+  - `POST /api/hackathon/resend-otp` - Resends OTP
+- **OTP System**: Currently uses generated codes stored in database. For production SMS delivery, Twilio integration is required (see setup instructions below).
+- **UTM Tracking**: Captures utm_source, utm_medium, utm_campaign from URL parameters
+
 #### GTM Attribution Tracking
 
 A comprehensive analytics tracking system for multi-channel campaigns with UTM parameter support.
