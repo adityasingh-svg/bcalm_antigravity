@@ -1,77 +1,42 @@
 // Twilio SMS Service for Hackathon OTP
-// Uses Replit Twilio integration for secure credential management
+// Uses environment variables for Twilio credentials
 
 import twilio from 'twilio';
 
-async function getCredentials() {
-  const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
-  const xReplitToken = process.env.REPL_IDENTITY 
-    ? 'repl ' + process.env.REPL_IDENTITY 
-    : process.env.WEB_REPL_RENEWAL 
-    ? 'depl ' + process.env.WEB_REPL_RENEWAL 
-    : null;
+function getCredentials() {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const apiKey = process.env.TWILIO_API_KEY;
+  const apiKeySecret = process.env.TWILIO_API_KEY_SECRET;
+  const phoneNumber = process.env.TWILIO_PHONE_NUMBER;
 
-  if (!xReplitToken) {
-    throw new Error('X_REPLIT_TOKEN not found for repl/depl');
+  if (!accountSid || !apiKey || !apiKeySecret) {
+    throw new Error('Twilio credentials not configured. Please set TWILIO_ACCOUNT_SID, TWILIO_API_KEY, and TWILIO_API_KEY_SECRET environment variables.');
   }
 
-  const response = await fetch(
-    'https://' + hostname + '/api/v2/connection?include_secrets=true&connector_names=twilio',
-    {
-      headers: {
-        'Accept': 'application/json',
-        'X_REPLIT_TOKEN': xReplitToken
-      }
-    }
-  );
-  
-  const data = await response.json();
-  console.log('Twilio connector response items count:', data.items?.length);
-  
-  const connectionSettings = data.items?.[0];
-  
-  if (connectionSettings) {
-    console.log('Twilio settings keys:', Object.keys(connectionSettings.settings || {}));
-    console.log('Account SID first 5 chars:', connectionSettings.settings?.account_sid?.substring(0, 5));
-    console.log('API Key first 5 chars:', connectionSettings.settings?.api_key?.substring(0, 5));
-    console.log('Has phone number:', !!connectionSettings.settings?.phone_number);
-  }
-
-  if (!connectionSettings || (!connectionSettings.settings.account_sid || !connectionSettings.settings.api_key || !connectionSettings.settings.api_key_secret)) {
-    throw new Error('Twilio not connected');
-  }
   return {
-    accountSid: connectionSettings.settings.account_sid,
-    apiKey: connectionSettings.settings.api_key,
-    apiKeySecret: connectionSettings.settings.api_key_secret,
-    phoneNumber: connectionSettings.settings.phone_number
+    accountSid,
+    apiKey,
+    apiKeySecret,
+    phoneNumber
   };
 }
 
-export async function getTwilioClient() {
-  const { accountSid, apiKey, apiKeySecret } = await getCredentials();
-  return twilio(apiKey, apiKeySecret, {
-    accountSid
-  });
+export function getTwilioClient() {
+  const { accountSid, apiKey, apiKeySecret } = getCredentials();
+  return twilio(apiKey, apiKeySecret, { accountSid });
 }
 
-export async function getAccountSid() {
-  const { accountSid } = await getCredentials();
-  return accountSid;
-}
-
-export async function getTwilioFromPhoneNumber() {
-  const { phoneNumber } = await getCredentials();
+export function getTwilioFromPhoneNumber() {
+  const { phoneNumber } = getCredentials();
   return phoneNumber;
 }
 
 export async function sendOtpSms(toPhoneNumber: string, otp: string): Promise<boolean> {
   try {
-    const credentials = await getCredentials();
+    const credentials = getCredentials();
     
     if (!credentials.accountSid?.startsWith('AC')) {
       console.warn('Twilio Account SID must start with "AC". Current value appears incorrect.');
-      console.warn('Please update the Twilio integration with valid credentials from your Twilio console.');
       return false;
     }
     
@@ -80,8 +45,8 @@ export async function sendOtpSms(toPhoneNumber: string, otp: string): Promise<bo
       return false;
     }
     
-    const client = await getTwilioClient();
-    const fromNumber = await getTwilioFromPhoneNumber();
+    const client = getTwilioClient();
+    const fromNumber = getTwilioFromPhoneNumber();
     
     if (!fromNumber) {
       console.error('No Twilio phone number configured');
@@ -106,9 +71,9 @@ export async function sendOtpSms(toPhoneNumber: string, otp: string): Promise<bo
   }
 }
 
-export async function isTwilioConfigured(): Promise<boolean> {
+export function isTwilioConfigured(): boolean {
   try {
-    await getCredentials();
+    getCredentials();
     return true;
   } catch {
     return false;
