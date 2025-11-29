@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { storage } from "../storage";
 import { insertHackathonRegistrationSchema } from "@shared/schema";
+import { sendOtpSms, isTwilioConfigured } from "../services/twilio";
 
 const router = Router();
 
@@ -53,6 +54,14 @@ router.post("/register", async (req: Request, res: Response) => {
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
     
     await storage.updateHackathonOtp(registration.id, otp, expiresAt);
+
+    const twilioConfigured = await isTwilioConfigured();
+    if (twilioConfigured) {
+      const smsSent = await sendOtpSms(phone, otp);
+      if (!smsSent) {
+        console.warn("SMS failed to send, OTP still stored in database");
+      }
+    }
 
     res.json({ 
       id: registration.id, 
@@ -118,6 +127,14 @@ router.post("/resend-otp", async (req: Request, res: Response) => {
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
     
     await storage.updateHackathonOtp(registrationId, otp, expiresAt);
+
+    const twilioConfigured = await isTwilioConfigured();
+    if (twilioConfigured) {
+      const smsSent = await sendOtpSms(registration.phone, otp);
+      if (!smsSent) {
+        console.warn("SMS failed to send on resend, OTP still stored in database");
+      }
+    }
 
     res.json({ 
       success: true, 
