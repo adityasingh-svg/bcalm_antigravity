@@ -7,7 +7,7 @@ export default function Navbar() {
     <nav
       className="fixed top-0 left-0 right-0 z-50 overflow-visible"
       style={{
-        height: '71px',
+        height: '75px',
         background: '#FFFFFF',
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
       }}
