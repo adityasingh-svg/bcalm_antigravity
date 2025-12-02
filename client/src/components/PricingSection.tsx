@@ -5,19 +5,18 @@ import { Check, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 
 const includedFeatures = [
-  "30 days of live sessions with AI PMs",
-  "5 hands-on simulations + full capstone",
-  "Weekly assignments + detailed feedback",
-  "1:1 mentorship sessions",
-  "Resume optimization",
-  "Portfolio creation support",
-  "Mock interviews (AI, PM, product sense, strategy)",
-  "Curated job & internship board",
-  "Interview frameworks & templates",
-  "Lifetime access to session recordings",
+  "30 days of structured interview prep",
+  "AI-powered resume scoring + expert review",
+  "Weekly practice sessions + detailed feedback",
+  "1:1 mentorship with industry experts",
+  "Unlimited mock interviews with feedback",
+  "Role-specific prep (PM, Analyst, Ops, Tech)",
+  "Interview frameworks & answer templates",
+  "Curated job board + referral access",
+  "Salary negotiation masterclass",
+  "Lifetime access to all resources",
   "Lifetime alumni community",
-  "Certificate of Completion",
-  "Alumni referrals (subject to availability)"
+  "Certificate of Completion"
 ];
 
 interface PricingSectionProps {
@@ -40,7 +39,7 @@ export default function PricingSection({ onEnroll, onJoinWaitlist }: PricingSect
             Program Fee & Everything You Get
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Comprehensive training with lifetime access and career support
+            Complete interview preparation with lifetime access and career support
           </p>
         </motion.div>
         
@@ -64,10 +63,10 @@ export default function PricingSection({ onEnroll, onJoinWaitlist }: PricingSect
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                   <Shield className="h-4 w-4 text-primary" />
-                  <span className="font-medium">7-Day Refund Guarantee</span>
+                  <span className="font-medium">30-Day Refund Guarantee</span>
                 </div>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Try the program for 7 days — if you don't see value, get a full refund. No questions asked.
+                  Try the full program — if you don't see value, get a full refund. No questions asked.
                 </p>
               </div>
             </CardHeader>
