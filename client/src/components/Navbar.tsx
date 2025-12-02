@@ -16,7 +16,7 @@ export default function Navbar() {
             <img 
               src={bcalmLogo} 
               alt="Bcalm - Crack Any Interview in 30 Days"
-              className="select-none cursor-pointer h-11 md:h-16 w-auto"
+              className="select-none cursor-pointer h-14 md:h-20 w-auto"
               style={{
                 objectFit: 'contain',
                 objectPosition: 'left center'
