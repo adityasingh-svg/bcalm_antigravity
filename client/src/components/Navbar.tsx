@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { Upload } from "lucide-react";
 import bcalmLogo from "@assets/Bcalm-logo-Nobackground_1764679699958.png";
 
 export default function Navbar() {
@@ -6,8 +7,7 @@ export default function Navbar() {
     <nav
       className="fixed top-0 left-0 right-0 z-50"
       style={{
-        backgroundColor: '#ffffff',
-        borderBottom: '1px solid rgba(0,0,0,0.05)'
+        backgroundColor: '#F3E5F5',
       }}
     >
       <div className="container mx-auto max-w-6xl">
@@ -15,7 +15,7 @@ export default function Navbar() {
           <Link href="/" className="py-3 md:py-4 flex-shrink-0">
             <img 
               src={bcalmLogo} 
-              alt="Bcalm - AI Product Manager Launchpad"
+              alt="Bcalm - Crack Any Interview in 30 Days"
               className="select-none cursor-pointer h-10 md:h-16 w-auto"
               style={{
                 objectFit: 'contain',
@@ -26,27 +26,27 @@ export default function Navbar() {
           </Link>
           
           <Link 
-            href="/resources"
-            className="rounded-full font-medium transition-all duration-200 flex-shrink-0 whitespace-nowrap text-xs md:text-sm"
+            href="/coming-soon/upload-resume"
+            className="rounded-full font-medium transition-all duration-200 flex-shrink-0 whitespace-nowrap text-xs md:text-sm flex items-center gap-2"
             style={{
-              padding: '6px 12px',
-              backgroundColor: '#f5f3ff',
-              color: '#6c47ff',
-              textDecoration: 'none'
+              padding: '8px 16px',
+              backgroundColor: '#1a1a2e',
+              color: '#ffffff',
+              textDecoration: 'none',
+              boxShadow: '0 2px 8px rgba(26, 26, 46, 0.25)'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#ebe4ff';
-              e.currentTarget.style.color = '#5a38f0';
-              e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+              e.currentTarget.style.backgroundColor = '#2d2d4a';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(26, 26, 46, 0.35)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#f5f3ff';
-              e.currentTarget.style.color = '#6c47ff';
-              e.currentTarget.style.boxShadow = '';
+              e.currentTarget.style.backgroundColor = '#1a1a2e';
+              e.currentTarget.style.boxShadow = '0 2px 8px rgba(26, 26, 46, 0.25)';
             }}
-            data-testid="link-free-resources"
+            data-testid="button-upload-resume-nav"
           >
-            Free Resources
+            <Upload className="h-4 w-4" />
+            Upload Resume
           </Link>
         </div>
       </div>
