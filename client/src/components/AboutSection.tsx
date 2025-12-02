@@ -16,7 +16,7 @@ export default function AboutSection() {
           </h2>
           
           <p className="text-lg text-foreground/90 leading-relaxed">
-            This program is created especially for graduating students and early-career professionals from India's top colleges. You'll learn what companies expect from entry-level AI PMs, how to build a job-ready portfolio, and how to confidently navigate PM + AI interviews. Each week blends live learning, hands-on assignments, and personalized guidance.
+            Built for graduating students and early-career professionals from India's top colleges who want to land their dream job. You'll get AI-powered resume feedback, practice with realistic mock interviews, and learn exactly what hiring managers look for. Each week blends expert guidance, hands-on practice, and personalized feedback to get you interview-ready in 30 days.
           </p>
         </motion.div>
       </div>
