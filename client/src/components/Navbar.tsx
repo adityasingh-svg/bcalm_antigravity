@@ -7,7 +7,7 @@ export default function Navbar() {
     <nav
       className="fixed top-0 left-0 right-0 z-50"
       style={{
-        backgroundColor: '#E8D5F2',
+        backgroundColor: '#F3E8F9',
       }}
     >
       <div className="container mx-auto max-w-6xl">
