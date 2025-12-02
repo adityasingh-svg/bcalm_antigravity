@@ -64,27 +64,10 @@ export default function HeroSection() {
           
           {/* CTAs - Side by side on desktop, stacked on mobile */}
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 sm:max-w-lg sm:mx-auto mb-6 md:mb-8 px-4 sm:px-0 justify-center sm:justify-center">
-            {/* Primary CTA - Practice Interviews */}
-            <Link href="/coming-soon/practice-interviews" className="block w-full sm:w-auto">
-              <Button 
-                className="w-full sm:w-auto text-base rounded-lg text-white hover:text-white border-0 py-3 md:py-4 px-6 md:px-8 bg-primary hover:bg-primary/90"
-                onClick={() => {
-                  trackEvent("practice_interviews_clicked", {
-                    device: navigator.userAgent
-                  });
-                }}
-                data-testid="button-practice-interviews"
-              >
-                <Mic className="mr-2 h-5 w-5" />
-                Practice Interviews
-              </Button>
-            </Link>
-
-            {/* Secondary CTA - Upload Resume */}
+            {/* Primary CTA - Upload Resume */}
             <Link href="/coming-soon/upload-resume" className="block w-full sm:w-auto">
               <Button 
-                variant="outline"
-                className="w-full sm:w-auto text-base rounded-lg bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 hover:text-white hover:border-white/30 py-3 md:py-4 px-6 md:px-8"
+                className="w-full sm:w-auto text-base rounded-lg text-white hover:text-white border-0 py-3 md:py-4 px-6 md:px-8 bg-primary hover:bg-primary/90"
                 onClick={() => {
                   trackEvent("upload_resume_clicked", {
                     device: navigator.userAgent
@@ -94,6 +77,23 @@ export default function HeroSection() {
               >
                 <Upload className="mr-2 h-5 w-5" />
                 Upload Resume
+              </Button>
+            </Link>
+
+            {/* Secondary CTA - Practice Interviews */}
+            <Link href="/coming-soon/practice-interviews" className="block w-full sm:w-auto">
+              <Button 
+                variant="outline"
+                className="w-full sm:w-auto text-base rounded-lg bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 hover:text-white hover:border-white/30 py-3 md:py-4 px-6 md:px-8"
+                onClick={() => {
+                  trackEvent("practice_interviews_clicked", {
+                    device: navigator.userAgent
+                  });
+                }}
+                data-testid="button-practice-interviews"
+              >
+                <Mic className="mr-2 h-5 w-5" />
+                Practice Interviews
               </Button>
             </Link>
           </div>
