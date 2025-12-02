@@ -8,7 +8,7 @@ export default function Navbar() {
       className="fixed top-0 left-0 right-0 z-50"
       style={{
         height: '74px',
-        background: 'linear-gradient(to right, #20004F, #0C0F2A)',
+        background: 'transparent',
       }}
     >
       <div className="container mx-auto max-w-6xl h-full">
@@ -31,17 +31,22 @@ export default function Navbar() {
             className="font-medium transition-all duration-300 flex-shrink-0 whitespace-nowrap text-sm flex items-center gap-2"
             style={{
               padding: '12px 20px',
-              backgroundColor: '#6A0DFF',
+              backgroundColor: 'transparent',
               color: '#FFFFFF',
               textDecoration: 'none',
               borderRadius: '8px',
+              border: '1px solid rgba(255, 255, 255, 0.7)',
               fontFamily: 'Inter, Poppins, sans-serif',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#7B27FF';
+              e.currentTarget.style.backgroundColor = '#FFFFFF';
+              e.currentTarget.style.color = '#1a0b2e';
+              e.currentTarget.style.borderColor = '#FFFFFF';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#6A0DFF';
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = '#FFFFFF';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.7)';
             }}
             data-testid="button-upload-resume-nav"
           >
