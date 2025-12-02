@@ -7,55 +7,55 @@ import { motion, AnimatePresence } from "framer-motion";
 const weeks = [
   {
     week: "Week 1",
-    title: "AI & Product Foundations",
+    title: "Resume & Profile Optimization",
     whatYouLearn: [
-      "Modern AI PM role across B2B/B2C",
-      "Product lifecycle: Discovery → Delivery → Iteration",
-      "Core PM frameworks: CIRCLES, JTBD, PR/FAQ",
-      "AI fundamentals: prompts, inputs/outputs, evaluation",
-      "How PMs work with AI engineers, designers, and data teams"
+      "AI-powered resume analysis and scoring",
+      "Crafting achievement-focused bullet points that pass ATS",
+      "LinkedIn optimization for recruiter visibility",
+      "Identifying and filling skill gaps for target roles",
+      "Building a compelling personal narrative"
     ],
-    outcome: "Understand how AI-first products are conceptualized, designed, and launched.",
-    assignment: "Redesign one existing product feature using AI. Create a brief PR/FAQ + user journey flow."
+    outcome: "Walk away with a polished, ATS-optimized resume and LinkedIn profile ready to attract recruiters.",
+    assignment: "Submit your resume for AI scoring + expert review. Rewrite 3 bullet points using the STAR format."
   },
   {
     week: "Week 2",
-    title: "AI Systems, Data & UX for PMs",
+    title: "Interview Fundamentals & Practice",
     whatYouLearn: [
-      "AI/ML systems explained for PMs",
-      "Prompt engineering fundamentals",
-      "Tools: ChatGPT, NotebookLM, Gemini, Kraftful",
-      "UX fundamentals for AI: feedback loops, trust, failure states",
-      "How to spec AI features clearly"
+      "Common interview formats: behavioral, case, technical",
+      "Mastering the STAR method for behavioral questions",
+      "Frameworks for structuring clear, confident answers",
+      "Body language, tone, and first impression tips",
+      "Handling tough questions: salary, gaps, weaknesses"
     ],
-    outcome: "Design clear, intuitive AI workflows and write strong prompt + UX specs.",
-    assignment: "Design an AI assistant for a specific user segment. Provide flows, prompts, and a mini-spec of model behavior."
+    outcome: "Build confidence with structured frameworks to answer any interview question clearly.",
+    assignment: "Complete 2 mock interview sessions and review your recorded performance with detailed feedback."
   },
   {
     week: "Week 3",
-    title: "Strategy, Metrics & Business Thinking",
+    title: "Role-Specific Deep Dives",
     whatYouLearn: [
-      "Prioritization frameworks for AI products",
-      "Defining AI product metrics (quality, engagement, success)",
-      "Growth loops & monetization for AI-first products",
-      "Competitive analysis & evaluating AI markets",
-      "Responsible AI considerations (ethics, bias, safety)"
+      "Tailored prep for your target role (PM, Analyst, Ops, Tech)",
+      "Case study & problem-solving walkthroughs",
+      "Understanding what hiring managers actually look for",
+      "Industry-specific questions and best practices",
+      "Salary negotiation strategies and offer evaluation"
     ],
-    outcome: "Think strategically like a PM — justify decisions using metrics and user impact.",
-    assignment: "Write a 2–3 month product strategy for an AI feature or product. Include metrics, prioritization, and roadmap."
+    outcome: "Develop role-specific expertise that sets you apart from other candidates.",
+    assignment: "Solve a role-specific case study and present your approach to mentors for feedback."
   },
   {
     week: "Week 4",
-    title: "Capstone, Portfolio & Interview Readiness",
+    title: "Final Prep & Job Search Launch",
     whatYouLearn: [
-      "Choosing a strong capstone problem",
-      "Creating a complete AI PM case study",
-      "Storytelling for PM interviews",
-      "Product sense, execution, AI, and strategy interview patterns",
-      "Formatting a professional PM portfolio"
+      "Full-length mock interviews with industry experts",
+      "Refining answers based on feedback patterns",
+      "Job search strategy: where to apply, how to stand out",
+      "Leveraging referrals and networking effectively",
+      "Post-interview follow-ups and closing techniques"
     ],
-    outcome: "Graduate with a polished AI Product Case Study + a PM-ready portfolio.",
-    assignment: "Build your complete capstone project with PRD sections, flows, metrics, UX outline, and pitch it to mentors for feedback."
+    outcome: "Graduate interview-ready with a clear job search strategy and referral network.",
+    assignment: "Complete a final mock interview, finalize your target company list, and send 5 tailored applications."
   }
 ];
 
@@ -81,10 +81,10 @@ export default function CurriculumSection({ onDownloadCurriculum }: CurriculumSe
           className="text-center mb-10"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Curriculum
+            Your 30-Day Roadmap
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            30 days of immersive, hands-on learning designed for ambitious students who want to break into AI Product Management.
+            A structured, hands-on program to take you from unprepared to interview-ready in 30 days.
           </p>
         </motion.div>
         
