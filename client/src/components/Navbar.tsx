@@ -12,7 +12,7 @@ export default function Navbar() {
     >
       <div className="container mx-auto max-w-6xl">
         <div className="flex items-center justify-between px-3 md:px-6 gap-4">
-          <Link href="/" className="py-3 md:py-4 flex-shrink-0 -ml-6 md:-ml-12">
+          <Link href="/" className="py-2 md:py-2 flex-shrink-0 -ml-6 md:-ml-12">
             <img 
               src={bcalmLogo} 
               alt="Bcalm - Crack Any Interview in 30 Days"
