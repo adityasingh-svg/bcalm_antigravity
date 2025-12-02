@@ -51,10 +51,15 @@ export default function HeroSection() {
             Designed for early career professionals and students
           </p>
           
-          {/* Founder Credibility */}
-          <p className="text-sm text-white/60 mb-4 md:mb-5">
-            Created by founders from IIT Delhi and IIM Calcutta
-          </p>
+          {/* Founder Credibility - Highlighted Badge */}
+          <div className="flex justify-center mb-4 md:mb-5">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30 backdrop-blur-sm">
+              <GraduationCap className="h-4 w-4 text-amber-400" />
+              <span className="text-sm font-medium text-white">
+                Created by founders from <span className="text-amber-400 font-semibold">IIT Delhi</span> and <span className="text-amber-400 font-semibold">IIM Calcutta</span>
+              </span>
+            </div>
+          </div>
           
           {/* CTAs - Side by side on desktop, stacked on mobile */}
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 sm:max-w-lg sm:mx-auto mb-6 md:mb-8 px-4 sm:px-0 justify-center sm:justify-center">
