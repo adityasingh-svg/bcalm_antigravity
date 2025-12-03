@@ -25,6 +25,21 @@ ADD COLUMN IF NOT EXISTS personalization_quality text,
 ADD COLUMN IF NOT EXISTS created_at timestamptz DEFAULT now(),
 ADD COLUMN IF NOT EXISTS updated_at timestamptz DEFAULT now();
 
+-- Remove any existing check constraints that might conflict
+ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_current_status_check;
+ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_onboarding_status_check;
+ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_personalization_quality_check;
+
+-- Add correct check constraints with valid values
+ALTER TABLE public.profiles ADD CONSTRAINT profiles_current_status_check 
+CHECK (current_status IS NULL OR current_status IN ('student_fresher', 'working_professional', 'switching_careers'));
+
+ALTER TABLE public.profiles ADD CONSTRAINT profiles_onboarding_status_check 
+CHECK (onboarding_status IS NULL OR onboarding_status IN ('not_started', 'in_progress', 'complete'));
+
+ALTER TABLE public.profiles ADD CONSTRAINT profiles_personalization_quality_check 
+CHECK (personalization_quality IS NULL OR personalization_quality IN ('none', 'partial', 'full'));
+
 -- Enable RLS
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
