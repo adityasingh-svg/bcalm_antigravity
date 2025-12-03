@@ -46,8 +46,8 @@ async function extractTextFromFile(filePath: string, mimeType: string): Promise<
       const PDFParse = pdfParseModule.PDFParse;
       const dataBuffer = fs.readFileSync(filePath);
       const pdfParser = new PDFParse(dataBuffer);
-      const data = await pdfParser.parse();
-      return data.text || "";
+      const text = await pdfParser.getText();
+      return text || "";
     } else if (
       mimeType === "application/msword" ||
       mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
