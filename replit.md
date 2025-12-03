@@ -61,6 +61,20 @@ A dedicated landing page at `/hackathon` for "Think Beyond Data and Analysis" ha
 - **OTP System**: Currently uses generated codes stored in database. For production SMS delivery, Twilio integration is required (see setup instructions below).
 - **UTM Tracking**: Captures utm_source, utm_medium, utm_campaign from URL parameters
 
+#### Replit Auth Integration
+
+The application uses Replit Auth for user authentication, supporting Google, GitHub, Apple, and email/password login.
+- **Session Storage**: PostgreSQL-backed sessions via `sessions` table
+- **User Storage**: User profiles stored in `users` table with OAuth claims (email, firstName, lastName, profileImageUrl)
+- **Auth Routes**:
+  - `GET /api/login` - Initiates Replit OIDC login flow
+  - `GET /api/callback` - Handles OAuth callback
+  - `GET /api/logout` - Logs out user and ends session
+  - `GET /api/auth/user` - Returns current authenticated user
+- **Frontend Hook**: `useAuth()` hook provides `user`, `isLoading`, `isAuthenticated` state
+- **Navbar Behavior**: Shows "Get Free CV Score" CTA for guests (scrolls to form), shows user avatar dropdown with logout for authenticated users
+- **Configuration**: Auth providers configured via Replit Auth pane in workspace (no API keys needed)
+
 #### GTM Attribution Tracking
 
 A comprehensive analytics tracking system for multi-channel campaigns with UTM parameter support.
