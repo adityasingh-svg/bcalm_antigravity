@@ -1,0 +1,143 @@
+Build a full Replit Auth SSO + onboarding + CV scoring web app on Replit using Node.js + Express + SQLite + vanilla HTML/CSS/JS (no React). Implement the following product flow exactly:
+
+Pages / Routes
+
+/ Landing page with top nav CTA and hero CTA both labeled “Get My Free CV Score”.
+
+/onboarding multi-step onboarding wizard.
+
+/upload CV upload page.
+
+/processing loader page.
+
+/results/:jobId results page.
+
+/dashboard simple home for returning users.
+
+API routes under /api/*.
+
+Replit Auth SSO
+
+Use Replit Auth (NOT Google Cloud OAuth). Implement login using Replit’s official auth middleware / examples.
+
+Env vars: SESSION_SECRET, N8N_WEBHOOK_URL, N8N_CALLBACK_SECRET.
+
+On CTA click (nav + hero), if user not logged in, trigger Replit Auth login.
+
+After successful login, Replit redirects to your callback route (e.g., /api/auth/replit/callback) or provides user info via middleware.
+
+Backend should create/link a user in SQLite from Replit identity fields (email or repl user id), then start a session cookie.
+
+Backend should expose /api/me to return logged-in user and onboarding status.
+
+Onboarding logic
+
+Only show onboarding if onboarding_status != 'complete'. Returning fully onboarded users go directly to /upload.
+
+Store onboarding fields in SQLite users table:
+
+current_status enum
+
+target_role nullable text
+
+years_experience nullable integer
+
+onboarding_status enum not_started|complete
+
+personalization_quality enum full|partial
+
+Step 1 Q1 options ONLY: “Student / Fresher”, “Working Professional”, “Switching Careers”.
+
+Progressive logic:
+
+If Student/Fresher: years_experience defaults to 0. You may skip experience step OR show it with 0 preselected.
+
+If Working Professional or Switching Careers: show Experience step.
+
+Step 2 Target Role:
+
+Dynamic role chips based on Q1; include “Not sure yet”.
+
+Free-text input; can be skipped.
+
+Step 3 Experience:
+
+Options: 0 (Just starting), 1–2, 3–5, 6–9, 10+.
+
+If Student/Fresher and screen is shown, preselect 0.
+
+CTA: “See my CV score”.
+
+Secondary link: “Skip for now”.
+
+Completion rule:
+
+If user proceeds or skips experience, mark onboarding_status=complete.
+
+If they skip role or exp, set personalization_quality=partial else full.
+
+If onboarding not completed (user abandons), keep onboarding_status=not_started and on next session redirect them to /onboarding before /upload.
+
+CV upload
+
+/upload requires login and onboarding complete.
+
+Main CTA: “Analyze My CV”.
+
+Secondary inline CTA: “Don’t have a CV? See best CV samples →” (open modal or new tab; do not navigate away).
+
+Accept PDF/DOC/DOCX; store file locally or in Replit filesystem and extract text if possible. If text extraction is hard, store file path and send as file URL to n8n.
+
+n8n Agent integration
+
+When CV submitted, backend creates analysis_jobs table row with status=processing and jobId.
+
+Backend POSTs to N8N_WEBHOOK_URL with JSON:
+
+jobId, userId, current_status, target_role, years_experience, cv_text or cv_file_url, and optional jd_text=null.
+
+n8n will call back to /api/analysis/callback with N8N_CALLBACK_SECRET header and payload:
+
+jobId, score, strengths[], gaps[], quick_wins[], notes, plus flags like needs_jd or needs_target_role.
+
+Backend stores result JSON and sets status=complete.
+
+Processing + Results UI
+
+/processing?jobId=... shows the loader copy and polls /api/analysis/:jobId every 2s until complete, then redirects to /results/:jobId.
+
+Results page shows:
+
+“Your CV readiness score” header
+
+Big {score}/100
+
+Sections: What’s strong ✅, What recruiters will question ⚠️, Fastest upgrades 🚀
+
+Add an “Improve accuracy” box with gap-aware CTAs:
+
+If target_role missing: show CTA “Add target role for sharper scoring” linking to /onboarding?edit=role.
+
+If jd missing and agent says needs_jd: show CTA “Add JD to check fit” linking to /upload?jd=true.
+
+Provide “Re-score after edits” button that takes user back to /upload.
+
+Security + UX
+
+Session cookie secure + sameSite=lax.
+
+Protect routes with middleware that checks Replit Auth session.
+
+Clean, modern purple theme matching the attached landing style.
+
+Include basic error states and empty states.
+
+Deliverables
+
+Generate full runnable code: Express server, SQLite setup, HTML/CSS/JS pages, Replit Auth integration, onboarding wizard, file upload, n8n job pipeline, polling, results rendering.
+
+Use concise comments and clear folder structure.
+
+Do not include placeholders like “TODO” — implement everything with working defaults.
+
+Important: Use Replit Auth as the only auth system; do not reference Google Cloud OAuth or verify Google ID tokens.
