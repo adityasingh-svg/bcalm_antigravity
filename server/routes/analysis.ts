@@ -5,6 +5,10 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { z } from "zod";
+import mammoth from "mammoth";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const pdfParse = require("pdf-parse");
 
 const router = Router();
 
@@ -41,7 +45,6 @@ const upload = multer({
 async function extractTextFromFile(filePath: string, mimeType: string): Promise<string> {
   try {
     if (mimeType === "application/pdf") {
-      const pdfParse = require("pdf-parse");
       const dataBuffer = fs.readFileSync(filePath);
       const data = await pdfParse(dataBuffer);
       return data.text;
@@ -49,7 +52,6 @@ async function extractTextFromFile(filePath: string, mimeType: string): Promise<
       mimeType === "application/msword" ||
       mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
-      const mammoth = require("mammoth");
       const result = await mammoth.extractRawText({ path: filePath });
       return result.value;
     }
