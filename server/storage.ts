@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type ResourcesUser, type InsertResourcesUser, type Resource, type InsertResource, type DownloadLog, type InsertDownloadLog, type AssessmentQuestion, type InsertAssessmentQuestion, type AssessmentAttempt, type InsertAssessmentAttempt, type AssessmentAnswer, type InsertAssessmentAnswer, type HackathonRegistration, type InsertHackathonRegistration, users, resourcesUsers, resources, downloadLogs, assessmentQuestions, assessmentAttempts, assessmentAnswers, hackathonRegistrations } from "@shared/schema";
+import { type User, type InsertUser, type ResourcesUser, type InsertResourcesUser, type Resource, type InsertResource, type DownloadLog, type InsertDownloadLog, type AssessmentQuestion, type InsertAssessmentQuestion, type AssessmentAttempt, type InsertAssessmentAttempt, type AssessmentAnswer, type InsertAssessmentAnswer, type HackathonRegistration, type InsertHackathonRegistration, type CvSubmission, type InsertCvSubmission, users, resourcesUsers, resources, downloadLogs, assessmentQuestions, assessmentAttempts, assessmentAnswers, hackathonRegistrations, cvSubmissions } from "@shared/schema";
 import bcrypt from "bcrypt";
 import { db } from "./db";
 import { eq, sql } from "drizzle-orm";
@@ -43,6 +43,11 @@ export interface IStorage {
   getHackathonRegistrationByEmail(email: string): Promise<HackathonRegistration | undefined>;
   updateHackathonOtp(id: string, otpCode: string, expiresAt: Date): Promise<HackathonRegistration | undefined>;
   verifyHackathonRegistration(id: string): Promise<HackathonRegistration | undefined>;
+  
+  // CV Submission Methods
+  createCvSubmission(submission: InsertCvSubmission): Promise<CvSubmission>;
+  getAllCvSubmissions(): Promise<CvSubmission[]>;
+  getCvSubmissionStats(): Promise<{ total: number; byRole: Record<string, number>; today: number }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -339,6 +344,36 @@ export class DatabaseStorage implements IStorage {
       .where(eq(hackathonRegistrations.id, id))
       .returning();
     return updated || undefined;
+  }
+
+  // CV Submission Methods
+  async createCvSubmission(submission: InsertCvSubmission): Promise<CvSubmission> {
+    const [newSubmission] = await db.insert(cvSubmissions).values(submission).returning();
+    return newSubmission;
+  }
+
+  async getAllCvSubmissions(): Promise<CvSubmission[]> {
+    return await db.select().from(cvSubmissions).orderBy(sql`${cvSubmissions.createdAt} DESC`);
+  }
+
+  async getCvSubmissionStats(): Promise<{ total: number; byRole: Record<string, number>; today: number }> {
+    const allSubmissions = await this.getAllCvSubmissions();
+    const total = allSubmissions.length;
+    
+    const byRole: Record<string, number> = {};
+    allSubmissions.forEach((sub) => {
+      byRole[sub.targetRole] = (byRole[sub.targetRole] || 0) + 1;
+    });
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayCount = allSubmissions.filter((sub) => {
+      const subDate = new Date(sub.createdAt);
+      subDate.setHours(0, 0, 0, 0);
+      return subDate.getTime() === today.getTime();
+    }).length;
+    
+    return { total, byRole, today: todayCount };
   }
 }
 

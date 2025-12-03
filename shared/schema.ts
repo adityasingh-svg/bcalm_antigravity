@@ -178,3 +178,29 @@ export const insertHackathonRegistrationSchema = createInsertSchema(hackathonReg
 
 export type HackathonRegistration = typeof hackathonRegistrations.$inferSelect;
 export type InsertHackathonRegistration = z.infer<typeof insertHackathonRegistrationSchema>;
+
+// CV Submissions Schema
+export const cvSubmissions = pgTable("cv_submissions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: text("email").notNull(),
+  targetRole: text("target_role").notNull(),
+  cvFilePath: text("cv_file_path"),
+  cvFileName: text("cv_file_name"),
+  cvFileSize: integer("cv_file_size"),
+  cvMimeType: text("cv_mime_type"),
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertCvSubmissionSchema = createInsertSchema(cvSubmissions, {
+  email: z.string().email("Invalid email address"),
+  targetRole: z.string().min(1, "Target role is required"),
+}).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type CvSubmission = typeof cvSubmissions.$inferSelect;
+export type InsertCvSubmission = z.infer<typeof insertCvSubmissionSchema>;
