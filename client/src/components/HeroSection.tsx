@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, CheckCircle, ChevronRight } from "lucide-react";
+import { Upload, CheckCircle, ChevronRight, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { trackEvent } from "@/lib/analytics";
+import { useToast } from "@/hooks/use-toast";
 
 const targetRoles = [
   "Product Manager",
@@ -21,6 +22,8 @@ const targetRoles = [
 export default function HeroSection() {
   const [step, setStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     email: "",
     targetRole: "",
@@ -37,14 +40,47 @@ export default function HeroSection() {
     }
   };
 
-  const handleStep2Submit = (e: React.FormEvent) => {
+  const handleStep2Submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.resume) {
+    if (!formData.resume) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      const submitData = new FormData();
+      submitData.append("email", formData.email);
+      submitData.append("targetRole", formData.targetRole);
+      submitData.append("cv", formData.resume);
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("utm_source")) submitData.append("utmSource", urlParams.get("utm_source")!);
+      if (urlParams.get("utm_medium")) submitData.append("utmMedium", urlParams.get("utm_medium")!);
+      if (urlParams.get("utm_campaign")) submitData.append("utmCampaign", urlParams.get("utm_campaign")!);
+      
+      const response = await fetch("/api/cv/submit", {
+        method: "POST",
+        body: submitData,
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to submit CV");
+      }
+      
       trackEvent("cv_score_step2_completed", {
         targetRole: formData.targetRole,
         hasResume: true
       });
+      
       setShowSuccess(true);
+    } catch (error) {
+      console.error("CV submission error:", error);
+      toast({
+        title: "Submission failed",
+        description: "Please try again or contact support.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -309,10 +345,17 @@ export default function HeroSection() {
                           background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
                           boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
                         }}
-                        disabled={!formData.resume}
+                        disabled={!formData.resume || isSubmitting}
                         data-testid="button-submit-cv"
                       >
-                        Submit CV
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                            Submitting...
+                          </>
+                        ) : (
+                          "Submit CV"
+                        )}
                       </Button>
                     </form>
                   )}

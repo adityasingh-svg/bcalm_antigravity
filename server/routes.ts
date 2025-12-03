@@ -5,6 +5,7 @@ import resourcesRouter from "./routes/resources";
 import assessmentRouter from "./routes/assessment";
 import analyticsRouter from "./routes/analytics";
 import hackathonRouter from "./routes/hackathon";
+import cvSubmissionsRouter from "./routes/cv-submissions";
 import express from "express";
 import path from "path";
 
@@ -19,8 +20,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api/assessment", assessmentRouter);
   app.use("/api/analytics", analyticsRouter);
   app.use("/api/hackathon", hackathonRouter);
+  app.use("/api/cv", cvSubmissionsRouter);
   
   app.use("/uploads/resources", express.static(path.join(process.cwd(), "uploads/resources")));
+  app.use("/uploads/cv-submissions", express.static(path.join(process.cwd(), "uploads/cv-submissions")));
 
   const httpServer = createServer(app);
 
