@@ -1,0 +1,57 @@
+Build a high-conversion HERO SECTION (first fold) for a website called “Bcalm”, inspired by the visual style of Seekho’s hero at seekhoapp.com.
+
+Goal: Convert cold traffic into email signups for a FREE AI-powered CV Score and 30-day interview plan.
+
+Technical requirements:
+- Use ONLY HTML, CSS, and vanilla JavaScript in a single file.
+- Mobile-first, but should scale nicely on desktop.
+- All CSS in a <style> tag in the same file.
+- All JavaScript in a <script> tag at the bottom of the file.
+- Use Google Fonts (Poppins or Inter).
+- No external frameworks (no Bootstrap, Tailwind, etc).
+
+Overall visual style (copy Seekho’s hero feel):
+- Full-width hero, centered content.
+- Dark background with a subtle overlay (can use a dark purple gradient).
+- Large, bold, center-aligned headline in white.
+- Short subheadline below it.
+- A pill-shaped badge above the headline (like Seekho’s “India’s No.1 Edutainment App”).
+- Single strong primary CTA button, large pill, centered.
+- A trust line + college logos / chips under the CTA.
+- Use smooth drop shadows, rounded corners, and gradients similar to Seekho’s “Download App” button.
+
+CONTENT (use EXACT text below):
+
+Top badge (centered pill):
+- Text: “India’s Fastest-Growing Interview Prep Platform”
+
+Main headline (two lines, center):
+- Line 1: “Crack Your Dream Job”
+- Line 2: “in 30 Days”
+
+Subheadline (center, single line):
+- “Free AI CV Score + 30-Day Personalized Plan”
+
+Primary CTA button (big pill, centered, gradient):
+- Text: “Get My Free CV Score”
+
+Trust line and proof (below CTA):
+- Line: “Trusted by Students from IITs, BITS, NITs & IIMs”
+- Under this, show 4 small pill chips: “IIT”, “BITS”, “NIT”, “IIM”
+- Under the chips, show 3 small circular avatar placeholders and the text: “200+ success stories”
+
+Below the hero text (still in view on most screens), add a centered CARD that contains a 2-step form:
+
+Form card design:
+- Slightly lighter dark background than the page.
+- Soft border + shadow so it “floats”.
+- Rounded corners (large radius).
+- Max width ~420px, centered.
+- Add a small progress bar at the top of the card.
+
+Step 1 (shown initially):
+- Title at top of card: “Step 1 of 2 · Get your FREE CV Score”
+- Horizontal progress bar filled to 50%.
+- Fields:
+  - Email (required) with placeholder “name@gmail.com”
+  - Target Role (dropdown) with options: “Product Ma

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GraduationCap, Upload, CheckCircle, Users } from "lucide-react";
+import { Upload, CheckCircle, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { trackEvent } from "@/lib/analytics";
 
@@ -18,18 +18,10 @@ const targetRoles = [
   "Other"
 ];
 
-const colleges = [
-  { name: "IIT Delhi", abbr: "IIT-D" },
-  { name: "BITS Pilani", abbr: "BITS" },
-  { name: "NIT", abbr: "NIT" },
-  { name: "IIM", abbr: "IIM" },
-];
-
 export default function HeroSection() {
   const [step, setStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
     email: "",
     targetRole: "",
     resume: null as File | null
@@ -37,7 +29,7 @@ export default function HeroSection() {
 
   const handleStep1Submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.fullName && formData.email && formData.targetRole) {
+    if (formData.email && formData.targetRole) {
       trackEvent("cv_score_step1_completed", {
         targetRole: formData.targetRole
       });
@@ -63,145 +55,189 @@ export default function HeroSection() {
     }
   };
 
+  const scrollToForm = () => {
+    const formCard = document.getElementById('cv-form-card');
+    if (formCard) {
+      formCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
   return (
     <section 
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden" 
+      className="relative min-h-screen overflow-hidden" 
       style={{ paddingTop: '60px' }}
     >
-      {/* Dark purple gradient background */}
+      {/* Dark gradient background - Seekho inspired */}
       <div 
         className="absolute inset-0 z-0"
         style={{
-          background: 'linear-gradient(135deg, #1a0a2e 0%, #16082a 30%, #0f0c29 60%, #0b1328 100%)',
+          background: 'linear-gradient(180deg, #0a0014 0%, #1a0a2e 40%, #12082a 70%, #0a0014 100%)',
         }}
       />
       
-      {/* Subtle glow effects */}
+      {/* Subtle radial glow */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <div 
-          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-20"
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(106, 13, 255, 0.4) 0%, transparent 70%)',
-            filter: 'blur(80px)',
-          }}
-        />
-        <div 
-          className="absolute bottom-1/4 right-1/4 w-72 h-72 rounded-full opacity-15"
-          style={{
-            background: 'radial-gradient(circle, rgba(255, 159, 67, 0.3) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse, rgba(138, 43, 226, 0.15) 0%, transparent 70%)',
             filter: 'blur(60px)',
           }}
         />
       </div>
       
-      <div className="relative z-10 container mx-auto px-4 py-8 md:py-16" style={{ maxWidth: '900px' }}>
+      <div className="relative z-10 container mx-auto px-4 py-12 md:py-16" style={{ maxWidth: '800px' }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          {/* Main Headline */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4 md:mb-6">
-            Crack Your Dream Job in 30 Days —{" "}
-            <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-orange-500 bg-clip-text text-transparent">
-              Guaranteed
+          {/* Top Badge - Seekho style pill */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 md:mb-8"
+            style={{
+              background: 'linear-gradient(135deg, rgba(138, 43, 226, 0.3) 0%, rgba(75, 0, 130, 0.3) 100%)',
+              border: '1px solid rgba(138, 43, 226, 0.4)',
+              boxShadow: '0 4px 20px rgba(138, 43, 226, 0.2)',
+            }}
+          >
+            <span className="text-xs md:text-sm font-medium text-white/90">
+              India's Fastest-Growing Interview Prep Platform
+            </span>
+          </motion.div>
+          
+          {/* Main Headline - Two lines, large and bold */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-4 md:mb-6">
+            <span className="block">Crack Your Dream Job</span>
+            <span className="block bg-gradient-to-r from-violet-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+              in 30 Days
             </span>
           </h1>
           
-          {/* Sub-headline */}
-          <p className="text-lg sm:text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed mb-3 md:mb-4">
-            Get a <span className="font-semibold text-primary">FREE AI-powered CV Score</span> + a personalised interview roadmap for the role you want.
+          {/* Subheadline */}
+          <p className="text-lg sm:text-xl md:text-2xl text-white/80 mb-8 md:mb-10 font-medium">
+            Free AI CV Score + 30-Day Personalized Plan
           </p>
           
-          {/* Founder Credibility */}
-          <p className="text-sm md:text-base text-white/60 mb-6 md:mb-8">
-            Created by <span className="text-amber-400">IIT Delhi</span> & <span className="text-amber-400">IIM Calcutta</span> founders who've hired 500+ candidates.
+          {/* Primary CTA Button - Seekho gradient pill style */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mb-8 md:mb-10"
+          >
+            <button
+              onClick={scrollToForm}
+              className="group inline-flex items-center gap-2 px-8 py-4 md:px-10 md:py-5 rounded-full text-lg md:text-xl font-semibold text-white transition-all duration-300 hover:scale-105 active:scale-100"
+              style={{
+                background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+                boxShadow: '0 8px 32px rgba(139, 92, 246, 0.4), 0 4px 12px rgba(0,0,0,0.3)',
+              }}
+              data-testid="button-get-cv-score-main"
+            >
+              Get My Free CV Score
+              <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            </button>
+          </motion.div>
+          
+          {/* Trust Line */}
+          <p className="text-sm md:text-base text-white/60 mb-4">
+            Trusted by Students from IITs, BITS, NITs & IIMs
           </p>
           
-          {/* Social Proof - College Logos */}
-          <div className="mb-6 md:mb-8">
-            <p className="text-xs md:text-sm text-white/50 mb-3">Trusted by students from</p>
-            <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-4">
-              {colleges.map((college) => (
-                <div 
-                  key={college.abbr}
-                  className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs md:text-sm font-medium"
-                >
-                  {college.name}
-                </div>
-              ))}
-            </div>
-            
-            {/* Student Avatars */}
-            <div className="flex items-center justify-center gap-2">
-              <div className="flex -space-x-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-violet-500 border-2 border-[#1a0a2e] flex items-center justify-center">
-                  <Users className="w-4 h-4 text-white" />
-                </div>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 border-2 border-[#1a0a2e]" />
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 border-2 border-[#1a0a2e]" />
-              </div>
-              <p className="text-xs md:text-sm text-white/70">
-                <span className="font-semibold text-white">+200</span> success stories and counting
-              </p>
-            </div>
+          {/* College Chips */}
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-4">
+            {["IIT", "BITS", "NIT", "IIM"].map((college) => (
+              <span 
+                key={college}
+                className="px-4 py-1.5 rounded-full text-xs md:text-sm font-medium text-white/80"
+                style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                }}
+              >
+                {college}
+              </span>
+            ))}
           </div>
           
-          {/* CTA Card */}
+          {/* Success Stories with Avatars */}
+          <div className="flex items-center justify-center gap-3 mb-10 md:mb-14">
+            <div className="flex -space-x-2">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 border-2 border-[#0a0014]" />
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 border-2 border-[#0a0014]" />
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 border-2 border-[#0a0014]" />
+            </div>
+            <p className="text-sm text-white/70">
+              <span className="font-semibold text-white">200+</span> success stories
+            </p>
+          </div>
+          
+          {/* Form Card - Floating style */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            id="cv-form-card"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="max-w-md mx-auto"
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="max-w-[420px] mx-auto"
           >
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-white/20 shadow-2xl">
+            <div 
+              className="rounded-3xl p-6 md:p-8"
+              style={{
+                background: 'rgba(30, 20, 50, 0.9)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(138, 43, 226, 0.1)',
+              }}
+            >
               {!showSuccess ? (
                 <>
-                  {/* Step Indicator */}
-                  <p className="text-xs md:text-sm text-white/60 mb-4">
-                    Step {step} of 2 · {step === 1 ? "Get your FREE CV Score" : "Upload your CV"}
-                  </p>
+                  {/* Progress Bar */}
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs md:text-sm text-white/70">
+                        Step {step} of 2 · {step === 1 ? "Get your FREE CV Score" : "Upload your CV"}
+                      </span>
+                    </div>
+                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: step === 1 ? '50%' : '100%',
+                          background: 'linear-gradient(90deg, #8B5CF6 0%, #A855F7 100%)',
+                        }}
+                      />
+                    </div>
+                  </div>
                   
                   {step === 1 ? (
                     <form onSubmit={handleStep1Submit} className="space-y-4">
                       <div className="text-left">
-                        <Label htmlFor="fullName" className="text-white/80 text-sm">Full Name</Label>
-                        <Input
-                          id="fullName"
-                          type="text"
-                          placeholder="Enter your full name"
-                          value={formData.fullName}
-                          onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                          className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-primary"
-                          required
-                          data-testid="input-fullname"
-                        />
-                      </div>
-                      
-                      <div className="text-left">
-                        <Label htmlFor="email" className="text-white/80 text-sm">Email</Label>
+                        <Label htmlFor="email" className="text-white/80 text-sm font-medium">Email</Label>
                         <Input
                           id="email"
                           type="email"
-                          placeholder="your.email@example.com"
+                          placeholder="name@gmail.com"
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-primary"
+                          className="mt-1.5 h-12 bg-white/5 border-white/15 text-white placeholder:text-white/40 focus:border-violet-500 focus:ring-violet-500/20 rounded-xl"
                           required
                           data-testid="input-email"
                         />
                       </div>
                       
                       <div className="text-left">
-                        <Label htmlFor="targetRole" className="text-white/80 text-sm">Target Role</Label>
+                        <Label htmlFor="targetRole" className="text-white/80 text-sm font-medium">Target Role</Label>
                         <Select 
                           value={formData.targetRole} 
                           onValueChange={(value) => setFormData({ ...formData, targetRole: value })}
                         >
                           <SelectTrigger 
-                            className="mt-1 bg-white/10 border-white/20 text-white focus:ring-primary"
+                            className="mt-1.5 h-12 bg-white/5 border-white/15 text-white focus:ring-violet-500/20 rounded-xl"
                             data-testid="select-target-role"
                           >
                             <SelectValue placeholder="Select your target role" />
@@ -218,24 +254,29 @@ export default function HeroSection() {
                       
                       <Button 
                         type="submit"
-                        className="w-full text-base py-6 bg-primary hover:bg-primary/90 text-white font-semibold"
+                        className="w-full h-12 text-base font-semibold rounded-xl"
+                        style={{
+                          background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+                          boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
+                        }}
                         data-testid="button-get-cv-score"
                       >
-                        Get Free CV Score
+                        Continue
+                        <ChevronRight className="ml-1 w-4 h-4" />
                       </Button>
                     </form>
                   ) : (
                     <form onSubmit={handleStep2Submit} className="space-y-4">
                       <div className="text-left">
-                        <Label htmlFor="resume" className="text-white/80 text-sm">Upload Resume (PDF or DOCX)</Label>
+                        <Label htmlFor="resume" className="text-white/80 text-sm font-medium">Upload Resume (PDF or DOCX)</Label>
                         <div className="mt-2">
                           <label 
                             htmlFor="resume" 
-                            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/30 rounded-lg cursor-pointer hover:border-primary/60 transition-colors bg-white/5"
+                            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/20 rounded-xl cursor-pointer hover:border-violet-500/60 transition-colors bg-white/5"
                           >
-                            <Upload className="w-8 h-8 text-white/50 mb-2" />
+                            <Upload className="w-8 h-8 text-white/40 mb-2" />
                             <span className="text-sm text-white/70">
-                              {formData.resume ? formData.resume.name : "Click to upload or drag and drop"}
+                              {formData.resume ? formData.resume.name : "Click to upload"}
                             </span>
                             <span className="text-xs text-white/40 mt-1">PDF, DOCX up to 5MB</span>
                             <input 
@@ -249,13 +290,17 @@ export default function HeroSection() {
                           </label>
                         </div>
                         <p className="text-xs text-white/50 mt-2">
-                          We'll analyze your CV and email you a detailed score & roadmap.
+                          We'll analyze your CV and email your score & roadmap.
                         </p>
                       </div>
                       
                       <Button 
                         type="submit"
-                        className="w-full text-base py-6 bg-primary hover:bg-primary/90 text-white font-semibold"
+                        className="w-full h-12 text-base font-semibold rounded-xl"
+                        style={{
+                          background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+                          boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
+                        }}
                         disabled={!formData.resume}
                         data-testid="button-submit-cv"
                       >
@@ -279,15 +324,10 @@ export default function HeroSection() {
             </div>
           </motion.div>
           
-          {/* Urgency & Reassurance Microcopy */}
-          <div className="mt-4 md:mt-6 space-y-2">
-            <p className="text-xs md:text-sm text-amber-400/80">
-              <span className="mr-1">🎉</span> 37 students joined this week · Limited FREE CV scoring slots today
-            </p>
-            <p className="text-xs text-white/40">
-              No spam. We only email you your report and next steps.
-            </p>
-          </div>
+          {/* Urgency Microcopy */}
+          <p className="mt-4 text-xs md:text-sm text-amber-400/80">
+            37 students joined this week · Limited slots available
+          </p>
         </motion.div>
       </div>
     </section>
