@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { trackEvent } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import AuthModal from "@/components/AuthModal";
 
 const targetRoles = [
   "Product Manager",
@@ -27,6 +28,7 @@ export default function HeroSection() {
   const [step, setStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     email: "",
@@ -38,7 +40,7 @@ export default function HeroSection() {
     if (isAuthenticated) {
       navigate("/dashboard");
     } else {
-      window.location.href = "/api/login";
+      setAuthModalOpen(true);
     }
   };
 
@@ -393,6 +395,8 @@ export default function HeroSection() {
           </p>
         </motion.div>
       </div>
+      
+      <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
     </section>
   );
 }

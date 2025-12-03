@@ -157,15 +157,30 @@ async function ensureProfile(user: any) {
 export const isAuthenticated: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const accessToken = (req.session as any)?.accessToken;
+    const refreshToken = (req.session as any)?.refreshToken;
     
     if (!accessToken) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const { data: { user }, error } = await supabaseAdmin.auth.getUser(accessToken);
+    let { data: { user }, error } = await supabaseAdmin.auth.getUser(accessToken);
     
     if (error || !user) {
-      return res.status(401).json({ error: "Unauthorized" });
+      if (refreshToken) {
+        const refreshResult = await supabaseAdmin.auth.refreshSession({ refresh_token: refreshToken });
+        
+        if (refreshResult.data.session && refreshResult.data.user) {
+          (req.session as any).accessToken = refreshResult.data.session.access_token;
+          (req.session as any).refreshToken = refreshResult.data.session.refresh_token;
+          user = refreshResult.data.user;
+        } else {
+          req.session.destroy(() => {});
+          return res.status(401).json({ error: "Session expired. Please sign in again." });
+        }
+      } else {
+        req.session.destroy(() => {});
+        return res.status(401).json({ error: "Unauthorized" });
+      }
     }
 
     (req as any).userId = user.id;
@@ -174,6 +189,7 @@ export const isAuthenticated: RequestHandler = async (req: Request, res: Respons
     next();
   } catch (error) {
     console.error("Auth middleware error:", error);
+    req.session.destroy(() => {});
     res.status(401).json({ error: "Unauthorized" });
   }
 };
