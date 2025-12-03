@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useLocation, useSearch } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
-import { GraduationCap, Loader2, FileSearch, Brain, CheckCircle, Sparkles } from "lucide-react";
+import { GraduationCap, Loader2, FileSearch, Brain, CheckCircle, Sparkles, AlertCircle, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 interface AnalysisJob {
   id: string;
@@ -56,7 +57,8 @@ export default function ProcessingPage() {
     queryKey: ["/api/analysis", jobId],
     enabled: !!jobId && isAuthenticated,
     refetchInterval: (query) => {
-      if (query.state.data?.status === "complete") {
+      const status = query.state.data?.status;
+      if (status === "complete" || status === "failed") {
         return false;
       }
       return 2000;
@@ -68,6 +70,40 @@ export default function ProcessingPage() {
       navigate(`/results/${jobId}`);
     }
   }, [jobData, jobId, navigate]);
+
+  if (jobData?.status === "failed") {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#110022] to-[#1a0033] flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="flex items-center justify-center gap-2 mb-12">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <GraduationCap className="h-5 w-5 text-white" />
+            </div>
+            <span className="text-white font-bold text-xl">BCALM</span>
+          </div>
+
+          <div className="w-20 h-20 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-6">
+            <AlertCircle className="h-10 w-10 text-red-400" />
+          </div>
+
+          <h2 className="text-2xl font-bold text-white mb-4">Analysis Failed</h2>
+          
+          <p className="text-white/60 mb-8">
+            {jobData.notes || "Something went wrong while analyzing your CV. Please try again."}
+          </p>
+
+          <Button
+            onClick={() => navigate("/upload")}
+            className="gap-2"
+            data-testid="button-retry"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (authLoading || !jobId) {
     return (

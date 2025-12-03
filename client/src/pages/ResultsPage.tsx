@@ -55,6 +55,12 @@ export default function ResultsPage() {
     enabled: isAuthenticated,
   });
 
+  useEffect(() => {
+    if (jobData && jobData.status !== "complete") {
+      navigate(`/processing?jobId=${jobId}`);
+    }
+  }, [jobData, jobId, navigate]);
+
   if (authLoading || isLoading || !jobId) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#110022] to-[#1a0033]">
@@ -77,8 +83,11 @@ export default function ResultsPage() {
   }
 
   if (jobData.status !== "complete") {
-    navigate(`/processing?jobId=${jobId}`);
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#110022] to-[#1a0033]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
   }
 
   const score = jobData.score || 0;

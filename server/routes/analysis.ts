@@ -68,9 +68,9 @@ router.post("/submit", isAuthenticated, upload.single("cv"), async (req: any, re
       try {
         const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
         const host = req.get("host") || "localhost:5000";
-        const cvFileUrl = `${protocol}://${host}/uploads/cv-analysis/${path.basename(req.file.path)}`;
+        const cvFileUrl = `${protocol}://${host}/api/analysis/files/${job.id}`;
         
-        await fetch(n8nWebhookUrl, {
+        const response = await fetch(n8nWebhookUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -83,8 +83,20 @@ router.post("/submit", isAuthenticated, upload.single("cv"), async (req: any, re
             jdText: req.body.jdText || null,
           }),
         });
+        
+        if (!response.ok) {
+          console.error("n8n webhook returned error:", response.status, await response.text());
+          await storage.updateAnalysisJobResults(job.id, {
+            status: "failed",
+            notes: "Failed to connect to analysis service. Please try again.",
+          });
+        }
       } catch (webhookError) {
         console.error("Error calling n8n webhook:", webhookError);
+        await storage.updateAnalysisJobResults(job.id, {
+          status: "failed",
+          notes: "Failed to connect to analysis service. Please try again.",
+        });
       }
     } else {
       setTimeout(async () => {
@@ -170,6 +182,32 @@ router.get("/user/jobs", isAuthenticated, async (req: any, res: Response) => {
   } catch (error) {
     console.error("Error fetching user jobs:", error);
     res.status(500).json({ message: "Failed to fetch user jobs" });
+  }
+});
+
+router.get("/files/:jobId", async (req: Request, res: Response) => {
+  try {
+    const { jobId } = req.params;
+    const callbackSecret = process.env.N8N_CALLBACK_SECRET;
+    const providedSecret = req.headers["x-callback-secret"] || req.query.secret;
+    
+    if (callbackSecret && providedSecret !== callbackSecret) {
+      return res.status(401).json({ message: "Unauthorized access to file" });
+    }
+    
+    const job = await storage.getAnalysisJob(jobId);
+    if (!job || !job.cvFilePath) {
+      return res.status(404).json({ message: "File not found" });
+    }
+    
+    if (!fs.existsSync(job.cvFilePath)) {
+      return res.status(404).json({ message: "File not found on disk" });
+    }
+    
+    res.sendFile(path.resolve(job.cvFilePath));
+  } catch (error) {
+    console.error("Error serving CV file:", error);
+    res.status(500).json({ message: "Failed to serve file" });
   }
 });
 
