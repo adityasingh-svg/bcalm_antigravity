@@ -45,7 +45,8 @@ async function extractTextFromFile(filePath: string, mimeType: string): Promise<
       const pdfParseModule = await import("pdf-parse");
       const PDFParse = pdfParseModule.PDFParse;
       const dataBuffer = fs.readFileSync(filePath);
-      const pdfParser = new PDFParse(dataBuffer);
+      const uint8Array = new Uint8Array(dataBuffer);
+      const pdfParser = new PDFParse(uint8Array);
       const text = await pdfParser.getText();
       return text || "";
     } else if (
