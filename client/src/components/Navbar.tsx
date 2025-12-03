@@ -5,7 +5,15 @@ export default function Navbar() {
   const scrollToForm = () => {
     const formCard = document.getElementById('cv-form-card');
     if (formCard) {
-      formCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const navbarHeight = 60;
+      const offset = 20; // Extra padding below navbar
+      const elementPosition = formCard.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - navbarHeight - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
     }
   };
 

@@ -1,10 +1,18 @@
 import { Button } from "@/components/ui/button";
 
 export default function StickyMobileCTA() {
-  const scrollToHero = () => {
-    const heroSection = document.getElementById('hero');
-    if (heroSection) {
-      heroSection.scrollIntoView({ behavior: 'smooth' });
+  const scrollToForm = () => {
+    const formCard = document.getElementById('cv-form-card');
+    if (formCard) {
+      const navbarHeight = 60;
+      const offset = 20;
+      const elementPosition = formCard.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - navbarHeight - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -23,7 +31,7 @@ export default function StickyMobileCTA() {
           Get <span className="text-primary">FREE</span> CV Score
         </p>
         <Button
-          onClick={scrollToHero}
+          onClick={scrollToForm}
           className="bg-primary hover:bg-primary/90 text-white font-semibold px-6"
           data-testid="button-sticky-start"
         >
