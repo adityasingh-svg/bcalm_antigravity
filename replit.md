@@ -61,19 +61,32 @@ A dedicated landing page at `/hackathon` for "Think Beyond Data and Analysis" ha
 - **OTP System**: Currently uses generated codes stored in database. For production SMS delivery, Twilio integration is required (see setup instructions below).
 - **UTM Tracking**: Captures utm_source, utm_medium, utm_campaign from URL parameters
 
-#### Replit Auth Integration
+#### Supabase Auth Integration (CV Score Feature)
 
-The application uses Replit Auth for user authentication, supporting Google, GitHub, Apple, and email/password login.
-- **Session Storage**: PostgreSQL-backed sessions via `sessions` table
-- **User Storage**: User profiles stored in `users` table with OAuth claims (email, firstName, lastName, profileImageUrl)
+The CV Score feature uses Supabase Auth for authentication with Google OAuth and Email/Password.
+- **Session Storage**: Express session with memorystore for session management
+- **User Profiles**: Stored in Supabase `profiles` table (not local PostgreSQL)
 - **Auth Routes**:
-  - `GET /api/login` - Initiates Replit OIDC login flow
-  - `GET /api/callback` - Handles OAuth callback
-  - `GET /api/logout` - Logs out user and ends session
-  - `GET /api/auth/user` - Returns current authenticated user
-- **Frontend Hook**: `useAuth()` hook provides `user`, `isLoading`, `isAuthenticated` state
-- **Navbar Behavior**: Shows "Get Free CV Score" CTA for guests (scrolls to form), shows user avatar dropdown with logout for authenticated users
-- **Configuration**: Auth providers configured via Replit Auth pane in workspace (no API keys needed)
+  - `POST /api/auth/session` - Syncs Supabase session with backend
+  - `GET /api/auth/user` - Returns current user profile
+  - `GET /api/me` - Returns user ID and profile for routing decisions
+  - `POST /api/auth/logout` - Ends session
+- **Frontend Hook**: `useAuth()` hook provides `user`, `isLoading`, `isAuthenticated`, `logout`
+- **Auth Flow**: Landing CTA → AuthModal → Google/Email login → Supabase callback → /auth/callback → /start → onboarding or upload
+
+**IMPORTANT: Supabase Database Setup Required**
+
+Before auth will work, you must run the SQL in `supabase/complete_setup.sql` in your Supabase SQL Editor. This creates:
+1. `profiles` table with all required columns (email, first_name, last_name, avatar_url, onboarding_status, etc.)
+2. `cv_submissions` table for storing uploaded CVs
+3. `analysis_jobs` table for n8n analysis results
+4. Row Level Security (RLS) policies for user and service_role access
+
+**Google OAuth Setup:**
+1. In Supabase Dashboard → Authentication → Providers → Enable Google
+2. In Google Cloud Console: Create OAuth 2.0 credentials
+3. Add Redirect URI: `https://[your-project-ref].supabase.co/auth/v1/callback`
+4. If in "Testing" mode, add test users to OAuth consent screen
 
 #### GTM Attribution Tracking
 
