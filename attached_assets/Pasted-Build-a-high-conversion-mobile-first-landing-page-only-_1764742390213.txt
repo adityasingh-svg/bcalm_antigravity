@@ -1,0 +1,73 @@
+Build a high-conversion mobile-first landing page (only the first fold / hero section) for a product called “Bcalm”. Bcalm helps students and early-career professionals become interview-ready and crack their dream job.
+
+Overall requirements:
+- Use clean HTML, CSS, and vanilla JavaScript only. No frameworks.
+- Design must be mobile-first, but also look great on desktop.
+- Use a modern, minimal style. Background can be a subtle dark purple gradient, but keep plenty of contrast and whitespace so text is easy to read.
+- Primary brand colors: deep purple for background, bright violet for primary button, and orange accents. Use white text for contrast.
+- Put all styles in a <style> tag in the same file and JS in a <script> tag at the bottom.
+
+Layout:
+1. Top navigation bar:
+   - Left: Bcalm logo placeholder (simple graduation cap icon + “BCALM” text).
+   - Right: a small text link “Login” (no other CTAs in the navbar).
+   - Navbar must be sticky at the top.
+
+2. Hero section (first fold):
+   - Main headline (large, bold):
+     “Crack Your Dream Job in 30 Days — Guaranteed”
+   - Sub-headline (smaller, but still prominent):
+     “Get a FREE AI-powered CV Score + a personalised interview roadmap for the role you want.”
+   - Founder credibility line under the sub-headline in smaller font:
+     “Created by IIT Delhi & IIM Calcutta founders who’ve hired 500+ candidates.”
+   - Social proof row ABOVE the main CTA:
+     - Text: “Trusted by students from”
+     - Show placeholder logos for: IIT Delhi, BITS Pilani, NIT, IIM (simple rectangles with text labels are fine).
+   - Under the logos, show a small row of 3 circular placeholder student photos (use colored circles or stock avatars) with a caption:
+     “+200 success stories and counting”
+
+3. Primary CTA area (multi-step, email first, resume second):
+   - Centered card with a subtle shadow.
+   - Step indicator text at the top of the card: “Step 1 of 2 · Get your FREE CV Score”
+   - Inside Step 1:
+     - Input fields: Full Name, Email, Target Role (text input or dropdown with a few roles like “Product Manager, Data Analyst, Software Engineer”).
+     - Primary button: “Get Free CV Score”
+   - When the user clicks “Get Free CV Score”, prevent page reload and:
+     - Hide Step 1 fields.
+     - Change the step indicator to: “Step 2 of 2 · Upload your CV”
+     - Show a file upload field labelled “Upload Resume (PDF or DOCX)” with helper text “We’ll analyze your CV and email you a detailed score & roadmap.”
+     - Change the button text to: “Submit CV”
+   - After Step 2 submit, just show a success state in the card: a green tick icon + text “You’re in! We’ll email your CV Score and roadmap within 24 hours.” No real backend, just front-end behavior.
+
+4. Micro-copy for urgency and reassurance:
+   - Under the main CTA card, show a small line:
+     “🎉 37 students joined this week · Limited FREE CV scoring slots today”
+   - Add another subtle reassurance line:
+     “No spam. We only email you your report and next steps.”
+
+5. Remove distractions:
+   - Do NOT include any “Practice Interviews” button or secondary CTA in the hero section.
+   - The only main action in the hero fold should be “Get Free CV Score” leading into the 2-step flow.
+
+6. Sticky mobile CTA:
+   - On mobile screens, add a sticky bottom bar that is always visible while scrolling.
+   - The bar should contain: short text “Get FREE CV Score” and a button “Start Now”.
+   - Clicking this sticky bar should smoothly scroll to the CTA card in the hero section.
+
+7. Exit-intent popup:
+   - Add a simple exit-intent popup implemented with vanilla JS.
+   - When the user moves the mouse toward the top of the window (or after ~20 seconds on mobile), show a centered modal with:
+     - Title: “Wait! Don’t leave without your FREE CV Score”
+     - Text: “Get a free AI-powered CV Score and personalised interview roadmap in under 2 minutes.”
+     - Email input + button “Get Free CV Score”
+   - If the user submits here, just show a thank-you message in the modal.
+   - Include a close (X) icon at the top right of the modal.
+
+8. General design notes:
+   - Use a clean sans-serif font (e.g., Inter, Poppins, or system font).
+   - Make the headline large and readable on mobile.
+   - Ensure all buttons have hover and active states.
+   - Add smooth scrolling behavior for internal links.
+   - Make sure the hero section fills at least the full viewport height on desktop and mobile so it feels like a complete first fold.
+
+Please output a single, complete HTML file with embedded CSS and JavaScript that implements this Bcalm hero section exactly as described, optimized for high conversion of traffic to signups.

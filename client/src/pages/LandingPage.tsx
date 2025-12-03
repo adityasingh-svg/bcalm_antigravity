@@ -14,6 +14,8 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import WaitlistDialog from "@/components/WaitlistDialog";
 import ScheduleCallDialog from "@/components/ScheduleCallDialog";
+import StickyMobileCTA from "@/components/StickyMobileCTA";
+import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { trackPageView } from "@/lib/analytics";
 
 export default function LandingPage() {
@@ -40,7 +42,7 @@ export default function LandingPage() {
     <div className="min-h-screen">
       <Navbar />
       
-      {/* Fold 1 - Hero */}
+      {/* Fold 1 - Hero with 2-step CTA */}
       <HeroSection />
       
       {/* Instructors Section - Above Why Bcalm Works */}
@@ -74,8 +76,15 @@ export default function LandingPage() {
       
       <Footer />
       
+      {/* Dialogs */}
       <WaitlistDialog open={waitlistOpen} onOpenChange={setWaitlistOpen} />
       <ScheduleCallDialog open={scheduleOpen} onOpenChange={setScheduleOpen} />
+      
+      {/* Mobile sticky CTA */}
+      <StickyMobileCTA />
+      
+      {/* Exit Intent Popup */}
+      <ExitIntentPopup />
     </div>
   );
 }
