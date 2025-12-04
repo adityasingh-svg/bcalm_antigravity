@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { GraduationCap, LogOut, Loader2, Settings, FileCheck } from "lucide-react";
+import { GraduationCap, LogOut, Loader2, Settings } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -25,12 +25,21 @@ export default function Navbar() {
     navigate("/");
   };
 
-  const handleCheckCV = () => {
+  const handleCVReview = () => {
     const onboardingData = sessionStorage.getItem("cv_onboarding");
     if (onboardingData) {
       navigate("/upload");
     } else {
       navigate("/onboarding");
+    }
+  };
+
+  const scrollToHeroCTA = () => {
+    const heroSection = document.getElementById('hero-cta');
+    if (heroSection) {
+      heroSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      navigate('/');
     }
   };
 
@@ -61,25 +70,34 @@ export default function Navbar() {
               <span className="text-white font-bold text-xl tracking-tight">BCALM</span>
             </Link>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin text-white/60" />
               ) : isAuthenticated && user ? (
-                <div className="flex items-center gap-3">
-                  <Button
-                    onClick={handleCheckCV}
-                    size="sm"
-                    className="font-semibold gap-2"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%)',
-                      border: '1px solid rgba(167, 139, 250, 0.5)',
-                      color: '#E9D5FF',
-                    }}
-                    data-testid="button-check-cv-nav"
+                <div className="flex items-center gap-4">
+                  {/* CV Review - subtle text link */}
+                  <button
+                    onClick={handleCVReview}
+                    className="text-white/70 text-sm font-medium hover:text-white transition-colors"
+                    data-testid="link-cv-review"
                   >
-                    <FileCheck className="h-4 w-4" />
-                    Check Your CV
+                    CV Review
+                  </button>
+                  
+                  {/* Start for free - primary CTA */}
+                  <Button
+                    onClick={scrollToHeroCTA}
+                    size="sm"
+                    className="font-semibold"
+                    style={{
+                      background: 'linear-gradient(135deg, #A855F7 0%, #7C3AED 50%, #5B21B6 100%)',
+                      border: '1px solid rgba(196, 181, 253, 0.3)',
+                    }}
+                    data-testid="button-start-free-nav"
+                  >
+                    Start for free
                   </Button>
+                  
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className="flex items-center gap-2 hover:opacity-80 transition-opacity" data-testid="button-user-menu">
@@ -108,24 +126,33 @@ export default function Navbar() {
                   </DropdownMenu>
                 </div>
               ) : (
-                <div className="flex items-center gap-3">
-                  <Button
-                    onClick={handleCheckCV}
-                    size="sm"
-                    className="font-semibold gap-2"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%)',
-                      border: '1px solid rgba(167, 139, 250, 0.5)',
-                      color: '#E9D5FF',
-                    }}
-                    data-testid="button-check-cv-nav"
+                <div className="flex items-center gap-4">
+                  {/* CV Review - subtle text link */}
+                  <button
+                    onClick={handleCVReview}
+                    className="text-white/70 text-sm font-medium hover:text-white transition-colors"
+                    data-testid="link-cv-review"
                   >
-                    <FileCheck className="h-4 w-4" />
-                    Check Your CV
+                    CV Review
+                  </button>
+                  
+                  {/* Start for free - primary CTA */}
+                  <Button
+                    onClick={scrollToHeroCTA}
+                    size="sm"
+                    className="font-semibold"
+                    style={{
+                      background: 'linear-gradient(135deg, #A855F7 0%, #7C3AED 50%, #5B21B6 100%)',
+                      border: '1px solid rgba(196, 181, 253, 0.3)',
+                    }}
+                    data-testid="button-start-free-nav"
+                  >
+                    Start for free
                   </Button>
+                  
                   <button
                     onClick={() => setAuthModalOpen(true)}
-                    className="text-white/80 text-sm font-medium hover:text-white transition-colors"
+                    className="text-white/70 text-sm font-medium hover:text-white transition-colors"
                     data-testid="button-sign-in"
                   >
                     Sign in

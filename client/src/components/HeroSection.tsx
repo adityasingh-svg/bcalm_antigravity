@@ -22,31 +22,31 @@ export default function HeroSection({ onOpenLeadModal }: HeroSectionProps) {
         }}
       />
       
-      {/* Layer 2: Neural network AI background */}
+      {/* Layer 2: Neural network AI background - reduced opacity */}
       <div 
         className="absolute inset-0 z-[1]"
         style={{
           backgroundImage: `url(${neuralBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.12,
+          opacity: 0.08,
           mixBlendMode: 'screen',
         }}
       />
       
-      {/* Layer 3: Central spotlight glow */}
+      {/* Layer 3: Central spotlight glow - reduced by ~50% */}
       <div className="absolute inset-0 z-[2] overflow-hidden pointer-events-none">
         <div 
           className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[600px]"
           style={{
-            background: 'radial-gradient(ellipse at center, rgba(139, 92, 246, 0.25) 0%, rgba(124, 58, 237, 0.15) 30%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center, rgba(139, 92, 246, 0.12) 0%, rgba(124, 58, 237, 0.06) 30%, transparent 70%)',
           }}
         />
-        {/* Secondary glow for depth */}
+        {/* Secondary glow - reduced */}
         <div 
           className="absolute top-[40%] left-1/2 -translate-x-1/2 w-[500px] h-[400px]"
           style={{
-            background: 'radial-gradient(ellipse at center, rgba(167, 139, 250, 0.2) 0%, transparent 60%)',
+            background: 'radial-gradient(ellipse at center, rgba(167, 139, 250, 0.08) 0%, transparent 60%)',
           }}
         />
       </div>
@@ -59,100 +59,118 @@ export default function HeroSection({ onOpenLeadModal }: HeroSectionProps) {
         }}
       />
       
-      <div className="relative z-10 container mx-auto px-4 py-12 md:py-16 flex flex-col items-center justify-center min-h-[calc(100vh-60px)]" style={{ maxWidth: '800px' }}>
+      <div className="relative z-10 container mx-auto px-4 py-8 md:py-12 flex flex-col items-center justify-center min-h-[calc(100vh-60px)]" style={{ maxWidth: '800px' }}>
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
           className="text-center"
         >
-          {/* Top Badge - Gold/Amber accent */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full mb-6 md:mb-8"
+          {/* Hero Surface Panel */}
+          <div 
+            className="px-6 py-6 md:px-8 md:py-7 rounded-[20px]"
             style={{
-              background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.15) 50%, rgba(217, 119, 6, 0.2) 100%)',
-              border: '1px solid rgba(251, 191, 36, 0.5)',
-              boxShadow: '0 0 30px rgba(251, 191, 36, 0.2), inset 0 0 20px rgba(251, 191, 36, 0.08)',
+              background: 'rgba(255, 255, 255, 0.04)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
             }}
           >
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span className="text-xs md:text-sm font-semibold text-amber-200 tracking-wide">
-              India's Fastest-Growing AI Interview Prep Platform
-            </span>
-          </motion.div>
-          
-          {/* Main Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-4 md:mb-5">
-            <span className="block whitespace-nowrap">Crack Your Dream Job</span>
-            <span 
-              className="block bg-clip-text text-transparent"
+            {/* Eyebrow Pill - smaller, tighter */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-4 md:mb-5"
               style={{
-                backgroundImage: 'linear-gradient(135deg, #FBBF24 0%, #F59E0B 40%, #D97706 70%, #B45309 100%)',
+                background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.1) 50%, rgba(217, 119, 6, 0.15) 100%)',
+                border: '1px solid rgba(251, 191, 36, 0.2)',
               }}
             >
-              in 30 Days
-            </span>
-          </h1>
-          
-          {/* Subtitle */}
-          <p className="text-lg md:text-xl text-white/70 mb-8 md:mb-10 font-medium">
-            Free AI CV Score + 30-Day Personalized Plan
-          </p>
-          
-          {/* Primary CTA Button - Sharper design */}
-          <motion.div
-            id="hero-cta"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col items-center gap-3"
-          >
-            <Button 
-              onClick={onOpenLeadModal}
-              className="h-14 px-12 text-lg font-bold rounded-xl transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] shadow-2xl"
-              style={{
-                background: 'linear-gradient(135deg, #A855F7 0%, #8B5CF6 25%, #7C3AED 50%, #6D28D9 75%, #5B21B6 100%)',
-                border: '1px solid rgba(196, 181, 253, 0.5)',
-                boxShadow: '0 0 40px rgba(139, 92, 246, 0.6), 0 8px 32px rgba(139, 92, 246, 0.4), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.1)',
-                textShadow: '0 1px 2px rgba(0,0,0,0.2)',
-              }}
-              data-testid="button-start-free"
-            >
-              Start for Free
-              <ChevronRight className="ml-2 w-5 h-5" />
-            </Button>
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span 
+                className="text-xs font-medium text-amber-200/90 tracking-wide"
+                style={{ fontSize: '12px' }}
+              >
+                India's #1 AI Interview Prep Platform
+              </span>
+            </motion.div>
             
-            {/* Helper text */}
-            <p className="text-white/60 text-sm">
-              Get Your Free Personalized Plan
+            {/* Main Headline - polished typography */}
+            <h1 
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-3 md:mb-4"
+              style={{ 
+                lineHeight: '1.08',
+                letterSpacing: '0.3px',
+              }}
+            >
+              <span className="block whitespace-nowrap">Crack Your Dream Job</span>
+              <span 
+                className="block"
+                style={{
+                  color: '#C4B5FD',
+                  filter: 'brightness(1.15)',
+                }}
+              >
+                in 30 Days
+              </span>
+            </h1>
+            
+            {/* Subline */}
+            <p className="text-base md:text-lg text-white/70 mb-6 md:mb-7 font-medium">
+              Free AI CV Score + 30-Day Personalized Plan
             </p>
-          </motion.div>
+            
+            {/* Primary CTA Button */}
+            <motion.div
+              id="hero-cta"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.15 }}
+              className="flex flex-col items-center"
+            >
+              <Button 
+                onClick={onOpenLeadModal}
+                className="h-14 px-12 text-lg font-bold rounded-xl transition-all duration-[250ms] ease-out hover:scale-[1.02] active:scale-[0.98]"
+                style={{
+                  background: 'linear-gradient(135deg, #A855F7 0%, #8B5CF6 25%, #7C3AED 50%, #6D28D9 75%, #5B21B6 100%)',
+                  border: '1px solid rgba(196, 181, 253, 0.4)',
+                  boxShadow: '0 4px 24px rgba(139, 92, 246, 0.35), 0 2px 8px rgba(139, 92, 246, 0.2)',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.2)',
+                }}
+                data-testid="button-start-free"
+              >
+                Start for Free
+                <ChevronRight className="ml-2 w-5 h-5" />
+              </Button>
+            </motion.div>
+          </div>
           
-          {/* Trust Section - Enhanced visibility */}
+          {/* Trust Section - with background strip */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-16 pt-8 border-t border-white/10"
+            transition={{ duration: 0.3, delay: 0.25 }}
+            className="mt-10 md:mt-12 -mx-6 md:-mx-8 px-6 md:px-8 py-5 md:py-6"
+            style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+            }}
           >
-            <p className="text-base md:text-lg font-medium text-white/80 mb-5">
+            <p 
+              className="font-semibold text-white/90 mb-4"
+              style={{ fontSize: '14px' }}
+            >
               Trusted by Students from Top Institutions
             </p>
             
-            {/* College Chips - Enhanced styling */}
-            <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-6">
+            {/* College Chips - improved contrast with hover */}
+            <div className="flex flex-wrap justify-center gap-2.5 md:gap-3 mb-5">
               {["IIT", "BITS", "NIT", "IIM"].map((college) => (
                 <span 
                   key={college}
-                  className="px-5 py-2 rounded-lg text-sm md:text-base font-bold"
+                  className="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200 hover:-translate-y-[1px]"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)',
-                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    background: 'rgba(255, 255, 255, 0.06)',
+                    border: '1px solid rgba(255, 255, 255, 0.18)',
                     color: 'rgba(255, 255, 255, 0.9)',
-                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
                   }}
                 >
                   {college}
@@ -160,48 +178,47 @@ export default function HeroSection({ onOpenLeadModal }: HeroSectionProps) {
               ))}
             </div>
             
-            {/* Success Stories with Avatars - Enhanced */}
-            <div className="flex items-center justify-center gap-4">
-              <div className="flex -space-x-3">
+            {/* Success Stories - larger text */}
+            <div className="flex items-center justify-center gap-3">
+              <div className="flex -space-x-2.5">
                 <div 
-                  className="w-10 h-10 rounded-full border-2 border-[#110022] flex items-center justify-center text-xs font-bold text-white"
+                  className="w-9 h-9 rounded-full border-2 border-[#110022] flex items-center justify-center text-xs font-bold text-white"
                   style={{
                     background: 'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)',
-                    boxShadow: '0 2px 10px rgba(139, 92, 246, 0.5)',
                   }}
                 >
                   A
                 </div>
                 <div 
-                  className="w-10 h-10 rounded-full border-2 border-[#110022] flex items-center justify-center text-xs font-bold text-white"
+                  className="w-9 h-9 rounded-full border-2 border-[#110022] flex items-center justify-center text-xs font-bold text-white"
                   style={{
                     background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-                    boxShadow: '0 2px 10px rgba(245, 158, 11, 0.5)',
                   }}
                 >
                   R
                 </div>
                 <div 
-                  className="w-10 h-10 rounded-full border-2 border-[#110022] flex items-center justify-center text-xs font-bold text-white"
+                  className="w-9 h-9 rounded-full border-2 border-[#110022] flex items-center justify-center text-xs font-bold text-white"
                   style={{
                     background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                    boxShadow: '0 2px 10px rgba(16, 185, 129, 0.5)',
                   }}
                 >
                   S
                 </div>
                 <div 
-                  className="w-10 h-10 rounded-full border-2 border-[#110022] flex items-center justify-center text-xs font-bold text-white"
+                  className="w-9 h-9 rounded-full border-2 border-[#110022] flex items-center justify-center text-xs font-bold text-white"
                   style={{
                     background: 'linear-gradient(135deg, #EC4899 0%, #DB2777 100%)',
-                    boxShadow: '0 2px 10px rgba(236, 72, 153, 0.5)',
                   }}
                 >
                   P
                 </div>
               </div>
               <div className="text-left">
-                <p className="text-lg font-bold text-white">
+                <p 
+                  className="font-semibold text-white"
+                  style={{ fontSize: '17px' }}
+                >
                   200+ Success Stories
                 </p>
                 <p className="text-sm text-white/60">
