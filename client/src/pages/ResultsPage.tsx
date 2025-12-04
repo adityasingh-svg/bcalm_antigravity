@@ -261,8 +261,6 @@ export default function ResultsPage() {
   const { jobId } = useParams();
   const { toast } = useToast();
   
-  const [showAllStrengths, setShowAllStrengths] = useState(false);
-  const [showAllFixes, setShowAllFixes] = useState(false);
   const [bulletReviewOpen, setBulletReviewOpen] = useState(false);
   const [jobMatchOpen, setJobMatchOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -766,8 +764,8 @@ export default function ResultsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3">
-                {(showAllStrengths ? strengths : strengths.slice(0, 3)).map((item: any, index: number) => (
+              <ul className="space-y-4">
+                {strengths.map((item: any, index: number) => (
                   <motion.li
                     key={index}
                     initial={{ opacity: 0, x: -10 }}
@@ -779,27 +777,18 @@ export default function ResultsPage() {
                       <CheckCircle className="h-4 w-4 text-green-400 mt-1 shrink-0" />
                       <div>
                         <span className="font-medium" data-testid={`text-strength-${index}`}>
-                          {typeof item === 'string' ? item : item.point}
+                          {typeof item === 'string' ? item : (item.strength || item.point)}
                         </span>
                         {item.evidence && (
-                          <p className="text-white/50 text-sm mt-1">{item.evidence}</p>
+                          <p className="text-white/50 text-sm mt-1 italic">
+                            "{item.evidence}"
+                          </p>
                         )}
                       </div>
                     </div>
                   </motion.li>
                 ))}
               </ul>
-              {strengths.length > 3 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowAllStrengths(!showAllStrengths)}
-                  className="w-full mt-3 text-green-400 hover:text-green-300 hover:bg-green-500/10"
-                >
-                  {showAllStrengths ? "Show less" : `Show all ${strengths.length}`}
-                  {showAllStrengths ? <ChevronUp className="ml-2 h-4 w-4" /> : <ChevronDown className="ml-2 h-4 w-4" />}
-                </Button>
-              )}
             </CardContent>
           </Card>
 
@@ -812,8 +801,8 @@ export default function ResultsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3">
-                {(showAllFixes ? fixes : fixes.slice(0, 3)).map((item: any, index: number) => (
+              <ul className="space-y-4">
+                {fixes.map((item: any, index: number) => (
                   <motion.li
                     key={index}
                     initial={{ opacity: 0, x: -10 }}
@@ -822,7 +811,7 @@ export default function ResultsPage() {
                     className="text-white/80"
                   >
                     <div 
-                      className="cursor-pointer"
+                      className={item.how_to_do_it ? "cursor-pointer" : ""}
                       onClick={() => item.how_to_do_it && toggleFixExpand(index)}
                     >
                       <div className="flex items-start gap-2">
@@ -865,17 +854,6 @@ export default function ResultsPage() {
                   </motion.li>
                 ))}
               </ul>
-              {fixes.length > 3 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowAllFixes(!showAllFixes)}
-                  className="w-full mt-3 text-orange-400 hover:text-orange-300 hover:bg-orange-500/10"
-                >
-                  {showAllFixes ? "Show less" : `Show all ${fixes.length}`}
-                  {showAllFixes ? <ChevronUp className="ml-2 h-4 w-4" /> : <ChevronDown className="ml-2 h-4 w-4" />}
-                </Button>
-              )}
             </CardContent>
           </Card>
         </motion.section>
