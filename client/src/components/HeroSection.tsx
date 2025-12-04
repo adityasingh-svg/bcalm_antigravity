@@ -37,11 +37,7 @@ export default function HeroSection() {
   });
 
   const handleGetCvScore = () => {
-    if (isAuthenticated) {
-      navigate("/dashboard");
-    } else {
-      setAuthModalOpen(true);
-    }
+    navigate("/start");
   };
 
   const handleStep1Submit = (e: React.FormEvent) => {

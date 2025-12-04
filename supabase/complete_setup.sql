@@ -78,12 +78,15 @@ FOR UPDATE TO service_role USING (true);
 
 CREATE TABLE IF NOT EXISTS public.cv_submissions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,  -- NULL allowed for anonymous users
   cv_file_path text,
   cv_text text NOT NULL,
   meta_snapshot jsonb,
   created_at timestamptz NOT NULL DEFAULT now()
 );
+
+-- Allow NULL user_id for anonymous CV submissions
+ALTER TABLE public.cv_submissions ALTER COLUMN user_id DROP NOT NULL;
 
 ALTER TABLE public.cv_submissions ENABLE ROW LEVEL SECURITY;
 
@@ -112,13 +115,16 @@ FOR SELECT TO service_role USING (true);
 CREATE TABLE IF NOT EXISTS public.analysis_jobs (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   submission_id uuid NOT NULL REFERENCES public.cv_submissions(id) ON DELETE CASCADE,
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,  -- NULL allowed for anonymous users
   status text NOT NULL DEFAULT 'processing' CHECK (status IN ('processing','complete','failed')),
   result_json jsonb,
   error_text text,
   created_at timestamptz NOT NULL DEFAULT now(),
   completed_at timestamptz
 );
+
+-- Allow NULL user_id for anonymous analysis jobs
+ALTER TABLE public.analysis_jobs ALTER COLUMN user_id DROP NOT NULL;
 
 ALTER TABLE public.analysis_jobs ENABLE ROW LEVEL SECURITY;
 
