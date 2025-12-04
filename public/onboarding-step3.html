@@ -59,6 +59,11 @@
         </div>
       </div>
       
+      <div class="tuning-summary" id="tuningSummary">
+        <span class="tuning-summary-text" id="tuningSummaryText">Scoring for: General readiness · Not specified · Not specified</span>
+        <a class="tuning-edit-link" id="tuningEditLink">Edit</a>
+      </div>
+      
       <div class="buttons">
         <div class="buttons-row">
           <button class="btn btn-secondary" id="backBtn">Back</button>
@@ -70,12 +75,28 @@
   </div>
   
   <script src="/onboarding.js"></script>
+  <script src="/change-profile-modal.js"></script>
   <script>
     let selectedExperience = null;
+    let currentProfile = null;
+    
+    function updateTuningSummary() {
+      const summaryText = document.getElementById('tuningSummaryText');
+      const exp = selectedExperience !== null ? selectedExperience : currentProfile?.years_experience;
+      
+      const displayProfile = {
+        ...currentProfile,
+        years_experience: exp
+      };
+      
+      summaryText.textContent = formatTuningSummary(displayProfile);
+    }
     
     async function initPage() {
-      const profile = await getProfile();
-      const status = profile?.current_status;
+      currentProfile = await getProfile();
+      const status = currentProfile?.current_status;
+      
+      updateTuningSummary();
       
       if (status === 'Switching Careers') {
         document.getElementById('careerSwitcherHelper').style.display = 'block';
@@ -87,6 +108,7 @@
         selectedExperience = 0;
         document.getElementById('continueBtn').disabled = false;
         document.getElementById('prefillHelper').style.display = 'block';
+        updateTuningSummary();
       }
     }
     
@@ -97,6 +119,30 @@
         selectedExperience = parseInt(option.dataset.value);
         document.getElementById('continueBtn').disabled = false;
         document.getElementById('prefillHelper').style.display = 'none';
+        updateTuningSummary();
+      });
+    });
+    
+    document.getElementById('tuningEditLink').addEventListener('click', () => {
+      const profileForModal = {
+        ...currentProfile,
+        years_experience: selectedExperience !== null ? selectedExperience : currentProfile?.years_experience
+      };
+      
+      openChangeProfileModal(profileForModal, (updated) => {
+        currentProfile = { ...currentProfile, ...updated };
+        
+        if (updated.years_experience !== null && updated.years_experience !== undefined) {
+          selectedExperience = updated.years_experience;
+          document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+          const matchOption = document.querySelector(`.option[data-value="${updated.years_experience}"]`);
+          if (matchOption) {
+            matchOption.classList.add('selected');
+          }
+          document.getElementById('continueBtn').disabled = false;
+        }
+        
+        updateTuningSummary();
       });
     });
     

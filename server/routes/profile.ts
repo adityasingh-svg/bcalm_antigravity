@@ -136,6 +136,67 @@ router.post("/experience", isAuthenticated, async (req: Request, res: Response) 
   }
 });
 
+const profileUpdateSchema = z.object({
+  current_status: z.string().nullable().optional(),
+  target_role: z.string().nullable().optional(),
+  years_experience: z.number().nullable().optional()
+});
+
+router.patch("/", optionalAuth, async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+    const parsed = profileUpdateSchema.parse(req.body);
+    
+    if (!userId) {
+      return res.json({ 
+        success: true, 
+        message: "Saved locally (not authenticated)",
+        ...parsed
+      });
+    }
+    
+    const updateData: any = {
+      updated_at: new Date().toISOString()
+    };
+    
+    if (parsed.current_status !== undefined) {
+      updateData.current_status = parsed.current_status;
+    }
+    if (parsed.target_role !== undefined) {
+      updateData.target_role = parsed.target_role;
+    }
+    if (parsed.years_experience !== undefined) {
+      updateData.years_experience = parsed.years_experience;
+    }
+    
+    const { data: profile, error } = await supabaseAdmin
+      .from('profiles')
+      .update(updateData)
+      .eq('id', userId)
+      .select()
+      .single();
+    
+    if (error) {
+      console.error("Error updating profile:", error);
+      return res.status(500).json({ message: "Failed to update profile" });
+    }
+    
+    res.json({
+      success: true,
+      id: profile.id,
+      current_status: profile.current_status,
+      target_role: profile.target_role,
+      years_experience: profile.years_experience
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ message: "Invalid data", errors: error.errors });
+    }
+    console.error("Error updating profile:", error);
+    res.status(500).json({ message: "Failed to update profile" });
+  }
+});
+
 router.post("/complete-onboarding", isAuthenticated, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;

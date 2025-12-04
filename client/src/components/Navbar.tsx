@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { GraduationCap, LogOut, Loader2, LayoutDashboard } from "lucide-react";
+import { GraduationCap, LogOut, Loader2, Settings } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -11,11 +11,13 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import AuthModal from "@/components/AuthModal";
+import ChangeProfileModal from "@/components/ChangeProfileModal";
 
 export default function Navbar() {
   const [, navigate] = useLocation();
   const { user, isLoading, isAuthenticated, logout } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [changeProfileOpen, setChangeProfileOpen] = useState(false);
 
   const scrollToLeadForm = () => {
     const formCard = document.getElementById('lead-form-card');
@@ -92,9 +94,9 @@ export default function Navbar() {
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem onClick={() => navigate("/dashboard")} className="cursor-pointer" data-testid="button-dashboard">
-                        <LayoutDashboard className="mr-2 h-4 w-4" />
-                        Dashboard
+                      <DropdownMenuItem onClick={() => setChangeProfileOpen(true)} className="cursor-pointer" data-testid="button-change-profile">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Change Profile
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={handleLogout} className="cursor-pointer" data-testid="button-logout">
@@ -111,6 +113,16 @@ export default function Navbar() {
       </nav>
       
       <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
+      
+      <ChangeProfileModal 
+        open={changeProfileOpen} 
+        onOpenChange={setChangeProfileOpen}
+        profile={user ? {
+          current_status: (user as any).current_status,
+          target_role: (user as any).target_role,
+          years_experience: (user as any).years_experience
+        } : null}
+      />
     </>
   );
 }
