@@ -752,119 +752,88 @@ export default function ResultsPage() {
         </div>
       </motion.section>
 
-      {/* Bottom Action Row - Non-Sticky */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.2 }}
-        className="px-4 pb-12"
+      {/* Content spacer for sticky footer */}
+      <div className="h-24" />
+
+      {/* Sticky Bottom CTAs */}
+      <div 
+        className="fixed bottom-0 left-0 right-0 z-50 p-4"
+        style={{
+          background: 'linear-gradient(to top, rgba(10, 0, 20, 1) 0%, rgba(10, 0, 20, 0.95) 80%, rgba(10, 0, 20, 0) 100%)',
+          paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
+        }}
       >
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white/5 rounded-xl p-6 border border-white/10">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button
-                onClick={() => navigate("/upload")}
-                className="w-full sm:w-auto gap-2"
-                data-testid="button-rescore"
-              >
-                <RefreshCw className="h-4 w-4" />
-                Re-score after edits
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => navigate("/upload?jd=true")}
-                className="w-full sm:w-auto gap-2 border-white/20 text-white hover:bg-white/10"
-                data-testid="button-upload-jd"
-              >
-                <FileText className="h-4 w-4" />
-                Upload JD for fit match
-              </Button>
-            </div>
-            
-            <div className="flex items-center justify-center gap-4 mt-6 pt-4 border-t border-white/10">
-              <span className="text-white/40 text-sm">Share your score</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleShare}
-                className="gap-2 text-white/60 hover:text-white hover:bg-white/10"
-                data-testid="button-share"
-              >
-                <Share2 className="h-4 w-4" />
-                Share
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleCopyLink}
-                className="gap-2 text-white/60 hover:text-white hover:bg-white/10"
-                data-testid="button-copy-link"
-              >
-                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                {copied ? "Copied!" : "Copy link"}
-              </Button>
-            </div>
-          </div>
+        <div className="max-w-4xl mx-auto flex items-center justify-center gap-4">
+          <Button
+            onClick={handleShare}
+            variant="outline"
+            className="flex-1 h-12 gap-2 border-white/20 text-white hover:bg-white/10"
+            data-testid="button-send-mail"
+          >
+            <Send className="h-4 w-4" />
+            Send on my mail
+          </Button>
+          <Button
+            onClick={handleShare}
+            className="flex-1 h-12 gap-2"
+            style={{
+              background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+            }}
+            data-testid="button-share"
+          >
+            <Share2 className="h-4 w-4" />
+            Share
+          </Button>
         </div>
-      </motion.section>
+      </div>
 
       {/* Share Modal */}
       <Dialog open={shareModalOpen} onOpenChange={setShareModalOpen}>
         <DialogContent className="bg-[#1a0033] border-white/10 text-white max-w-sm">
           <DialogHeader>
-            <DialogTitle className="text-center">Share Your Score</DialogTitle>
-            <DialogDescription className="text-center text-white/50">
-              Share your CV score with friends and colleagues
-            </DialogDescription>
+            <DialogTitle className="text-center">Share</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            {/* Mini Share Card Preview */}
-            <div className="bg-gradient-to-br from-primary/20 to-violet-500/20 rounded-lg p-4 text-center border border-primary/30">
-              <p className="text-white/50 text-xs mb-1">I scored</p>
-              <p className="text-4xl font-bold text-primary">{score}</p>
-              <p className="text-white/50 text-xs">/100 on BCALM</p>
-              {report.role_preset && (
-                <Badge className="mt-2 bg-primary/20 text-primary border-primary/30 text-xs">
-                  {report.role_preset}
-                </Badge>
-              )}
-            </div>
-
-            {/* Share Buttons */}
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                variant="outline"
-                onClick={handleCopyLink}
-                className="gap-2 border-white/20 text-white hover:bg-white/10"
-              >
-                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                Copy link
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => shareToSocial('whatsapp')}
-                className="gap-2 border-white/20 text-white hover:bg-green-500/20"
-              >
-                <MessageCircle className="h-4 w-4" />
-                WhatsApp
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => shareToSocial('linkedin')}
-                className="gap-2 border-white/20 text-white hover:bg-blue-500/20"
-              >
-                <Briefcase className="h-4 w-4" />
-                LinkedIn
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => shareToSocial('twitter')}
-                className="gap-2 border-white/20 text-white hover:bg-sky-500/20"
-              >
-                <span className="font-bold">𝕏</span>
-                Twitter
-              </Button>
-            </div>
+          <div className="space-y-3">
+            <Button
+              variant="outline"
+              onClick={handleCopyLink}
+              className="w-full gap-2 border-white/20 text-white hover:bg-white/10 justify-start"
+            >
+              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              Copy link
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => shareToSocial('whatsapp')}
+              className="w-full gap-2 border-white/20 text-white hover:bg-green-500/20 justify-start"
+            >
+              <MessageCircle className="h-4 w-4" />
+              WhatsApp
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => shareToSocial('telegram')}
+              className="w-full gap-2 border-white/20 text-white hover:bg-sky-500/20 justify-start"
+            >
+              <Send className="h-4 w-4" />
+              Telegram
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => shareToSocial('twitter')}
+              className="w-full gap-2 border-white/20 text-white hover:bg-sky-500/20 justify-start"
+            >
+              <span className="font-bold">X</span>
+              X
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => shareToSocial('linkedin')}
+              className="w-full gap-2 border-white/20 text-white hover:bg-blue-500/20 justify-start"
+            >
+              <Briefcase className="h-4 w-4" />
+              LinkedIn
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

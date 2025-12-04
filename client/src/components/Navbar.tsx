@@ -12,36 +12,15 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import AuthModal from "@/components/AuthModal";
+import LeadModal from "@/components/LeadModal";
 import ChangeProfileModal from "@/components/ChangeProfileModal";
 
 export default function Navbar() {
   const [, navigate] = useLocation();
   const { user, isLoading, isAuthenticated, logout } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [changeProfileOpen, setChangeProfileOpen] = useState(false);
-
-  const scrollToLeadForm = () => {
-    const formCard = document.getElementById('lead-form-card');
-    if (formCard) {
-      const navbarHeight = 60;
-      const offset = 20;
-      const elementPosition = formCard.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - navbarHeight - offset;
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    } else {
-      navigate("/");
-      setTimeout(() => {
-        const form = document.getElementById('lead-form-card');
-        if (form) {
-          form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 100);
-    }
-  };
 
   const handleLogout = async () => {
     await logout();
@@ -81,15 +60,13 @@ export default function Navbar() {
               ) : isAuthenticated && user ? (
                 <div className="flex items-center gap-3">
                   <Button
-                    onClick={scrollToLeadForm}
+                    onClick={() => setLeadModalOpen(true)}
                     size="sm"
-                    className="font-medium"
-                    style={{
-                      background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
-                    }}
+                    variant="outline"
+                    className="font-medium border-white/20 text-white hover:bg-white/10"
                     data-testid="button-start-free-nav"
                   >
-                    Start for Free
+                    Start for free
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -121,12 +98,10 @@ export default function Navbar() {
               ) : (
                 <div className="flex items-center gap-3">
                   <Button
-                    onClick={scrollToLeadForm}
+                    onClick={() => setLeadModalOpen(true)}
                     size="sm"
-                    className="font-medium"
-                    style={{
-                      background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
-                    }}
+                    variant="outline"
+                    className="font-medium border-white/20 text-white hover:bg-white/10"
                     data-testid="button-start-free-nav"
                   >
                     Start for free
@@ -146,6 +121,7 @@ export default function Navbar() {
       </nav>
       
       <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
+      <LeadModal open={leadModalOpen} onOpenChange={setLeadModalOpen} />
       
       <ChangeProfileModal 
         open={changeProfileOpen} 

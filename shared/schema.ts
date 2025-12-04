@@ -261,6 +261,7 @@ export const leads = pgTable("leads", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
   phone: text("phone").notNull(),
+  source: text("source"),
   utmSource: text("utm_source"),
   utmMedium: text("utm_medium"),
   utmCampaign: text("utm_campaign"),
@@ -270,6 +271,10 @@ export const leads = pgTable("leads", {
 export const insertLeadSchema = createInsertSchema(leads, {
   name: z.string().min(2, "Name must be at least 2 characters"),
   phone: z.string().regex(/^[6-9]\d{9}$/, "Please enter a valid 10-digit Indian phone number"),
+  source: z.string().optional(),
+  utmSource: z.string().optional(),
+  utmMedium: z.string().optional(),
+  utmCampaign: z.string().optional(),
 }).omit({
   id: true,
   createdAt: true,

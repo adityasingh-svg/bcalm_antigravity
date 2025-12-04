@@ -12,6 +12,7 @@ router.post("/submit", async (req, res) => {
     const [lead] = await db.insert(leads).values({
       name: validatedData.name,
       phone: validatedData.phone,
+      source: (req.body.source as string) || null,
       utmSource: validatedData.utmSource || null,
       utmMedium: validatedData.utmMedium || null,
       utmCampaign: validatedData.utmCampaign || null,

@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { useLocation, useSearch } from "wouter";
+import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
-import { queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { GraduationCap, Upload, FileText, Loader2, X, AlertCircle, ExternalLink, CheckCircle2 } from "lucide-react";
+import { GraduationCap, Upload, FileText, Loader2, X, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { nanoid } from "nanoid";
@@ -14,12 +13,12 @@ interface OnboardingData {
   status: string;
   currentStatus: string | null;
   targetRole: string;
-  yearsExperience: number | null;
+  yearsExperience: number;
 }
 
 function loadOnboardingData(): OnboardingData | null {
   try {
-    const stored = localStorage.getItem("cv_onboarding");
+    const stored = sessionStorage.getItem("cv_onboarding");
     return stored ? JSON.parse(stored) : null;
   } catch {
     return null;
@@ -27,26 +26,32 @@ function loadOnboardingData(): OnboardingData | null {
 }
 
 function getOrCreateSessionId(): string {
-  let sessionId = localStorage.getItem("cv_session_id");
+  let sessionId = sessionStorage.getItem("cv_session_id");
   if (!sessionId) {
     sessionId = nanoid();
-    localStorage.setItem("cv_session_id", sessionId);
+    sessionStorage.setItem("cv_session_id", sessionId);
   }
   return sessionId;
 }
 
+function getStatusLabel(status: string | null): string {
+  if (!status) return "";
+  const labels: Record<string, string> = {
+    "student_fresher": "Student / Fresher",
+    "working_professional": "Working Professional",
+    "switching_careers": "Switching Careers"
+  };
+  return labels[status] || status.replace(/_/g, " ");
+}
+
 export default function UploadPage() {
   const [, navigate] = useLocation();
-  const searchString = useSearch();
-  const searchParams = new URLSearchParams(searchString);
-  const showJd = searchParams.get("jd") === "true";
-  
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [file, setFile] = useState<File | null>(null);
   const [jdText, setJdText] = useState("");
-  const [showJdInput, setShowJdInput] = useState(showJd);
+  const [showJdInput, setShowJdInput] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [onboardingData, setOnboardingData] = useState<OnboardingData | null>(null);
 
@@ -91,8 +96,7 @@ export default function UploadPage() {
       return response.json();
     },
     onSuccess: (data) => {
-      localStorage.setItem("cv_current_job_id", data.jobId);
-      queryClient.invalidateQueries({ queryKey: ["/api/analysis/user/jobs"] });
+      sessionStorage.setItem("cv_current_job_id", data.jobId);
       navigate(`/processing?jobId=${data.jobId}`);
     },
     onError: (error: Error) => {
@@ -262,7 +266,7 @@ export default function UploadPage() {
                 data-testid="button-toggle-jd"
               >
                 <FileText className="h-4 w-4" />
-                {showJdInput ? "Hide job description" : "Add job description (optional)"}
+                Add job description (optional)
               </button>
               
               {showJdInput && (
@@ -282,17 +286,14 @@ export default function UploadPage() {
               )}
             </div>
 
-            <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/10 border border-primary/20">
-              <AlertCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-              <div className="text-sm text-white/80">
-                <p className="font-medium text-white mb-1">What you'll get:</p>
-                <ul className="list-disc list-inside space-y-1 text-white/60">
-                  <li>Overall CV score out of 100</li>
-                  <li>Detailed breakdown by category</li>
-                  <li>Actionable improvements</li>
-                  <li>Role-specific recommendations</li>
-                </ul>
-              </div>
+            <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
+              <p className="font-medium text-white text-sm mb-2">What you'll get:</p>
+              <ul className="list-disc list-inside space-y-1 text-white/60 text-sm">
+                <li>Overall CV score out of 100</li>
+                <li>Detailed breakdown by category</li>
+                <li>Actionable improvements</li>
+                <li>Role-specific recommendations</li>
+              </ul>
             </div>
 
             <Button
@@ -304,20 +305,16 @@ export default function UploadPage() {
               {submitMutation.isPending ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                  Submitting...
+                  Analyzing...
                 </>
               ) : (
-                <>
-                  <ExternalLink className="h-5 w-5 mr-2" />
-                  Analyze my CV
-                </>
+                "Analyze my CV"
               )}
             </Button>
 
             {onboardingData && (
               <div className="text-center text-white/40 text-sm">
-                Targeting: {onboardingData.targetRole || "General role"} | 
-                {" "}{onboardingData.currentStatus?.replace(/_/g, " ") || ""}
+                Targeting: {onboardingData.targetRole || "General role"} | {getStatusLabel(onboardingData.currentStatus)}
               </div>
             )}
           </CardContent>
