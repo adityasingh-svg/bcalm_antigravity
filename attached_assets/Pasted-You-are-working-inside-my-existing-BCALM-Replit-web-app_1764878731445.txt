@@ -1,0 +1,178 @@
+You are working inside my existing BCALM Replit web app. Apply ONLY the UI/visual changes below to the landing page shown in the latest screenshot. Do NOT change routing, logic, or CTA behavior. Do NOT add any new copy or sections beyond what I specify. Do NOT rewrite existing copy except where I explicitly provide replacement text.
+
+Goal
+
+Improve contrast, hierarchy, and premium feel while keeping “Start for Free” as the hero CTA.
+
+1) Background + glow reduction (reduce “purple fog”)
+
+Find the landing page background layers (radial glows, gradients, AI node/pattern overlay).
+
+Reduce overall glow intensity by ~50%.
+
+Any large hero radial glow behind headline → cut opacity to half or remove if stacked.
+
+AI/node pattern overlay opacity must be 0.08–0.12 max.
+
+Keep the same gradient colors, only reduce intensity/opacity.
+
+2) Add a subtle hero “surface”
+
+Behind H1 + subcopy + CTA, add a translucent panel (hero surface).
+
+Style:
+
+background: rgba(255,255,255,0.04)
+
+border: 1px solid rgba(255,255,255,0.08)
+
+border-radius: 20px
+
+NO outer glow
+
+padding: 24px (mobile), 28–32px (desktop)
+
+This panel should wrap only the hero content, not the full width.
+
+3) Eyebrow pill hierarchy fix
+
+Top pill currently says: “India’s Fastest-Growing AI Interview Prep Platform”
+
+Replace ONLY this pill copy with exactly:
+“India’s #1 AI Interview Prep Platform”
+
+Reduce pill visual weight:
+
+font-size: 12–13px
+
+font-weight: 500
+
+padding tighter (approx 6px 12px)
+
+border alpha down to ~0.2
+
+Reduce vertical gap between pill and H1 so it reads like an eyebrow.
+
+4) Hero copy stack tightening
+
+Remove the faint low-contrast line below CTA (the gray-ish helper line).
+
+Keep only:
+
+eyebrow pill
+
+H1
+
+subline (“Free AI CV Score + 30-Day Personalized Plan”)
+
+CTA
+
+Do NOT add any replacement line.
+
+5) H1 snap + typography polish
+
+Keep H1 text exactly the same.
+
+Increase letter spacing slightly:
+
+letter-spacing: 0.2px to 0.4px
+
+Reduce line-height:
+
+line-height: 1.05–1.1
+
+“in 30 Days” color should remain lavender/purple but:
+
+remove any glow
+
+increase brightness slightly so it pops vs background.
+
+6) Trust block cohesion + chip contrast
+
+Add a soft full-width strip behind trust section:
+
+background: rgba(255,255,255,0.03)
+
+padding-top: 20px
+
+padding-bottom: 24px
+
+Trust heading:
+
+keep copy same
+
+font-size 14–15px
+
+font-weight 600
+
+opacity ~0.9
+
+Institution chips (IIT, BITS, NIT, IIM):
+
+background: rgba(255,255,255,0.06)
+
+border: rgba(255,255,255,0.18)
+
+text opacity 0.9
+
+“200+ success stories”:
+
+increase size slightly (16–18px)
+
+font-weight 600
+
+opacity 1
+
+7) Navigation alignment (no CTA change)
+
+Top nav primary button must be exactly “Start for free” (same as now).
+
+If “Check Your CV” appears in nav as a button, convert it to a simple text link:
+
+label: “CV Review”
+
+subtle style (no border, no fill)
+
+“Sign in” remains a text link.
+
+Do NOT add any new nav items.
+
+8) Micro-interactions (subtle)
+
+CTA hover:
+
+transform: scale(1.02)
+
+transition: 250–300ms ease-out
+
+slightly tighter shadow (no neon glow).
+
+Hero content fade-in:
+
+duration 300ms ease-out
+
+translateY(6–8px)
+
+Institution chips hover:
+
+very subtle lift (translateY(-1px))
+
+slight border brightening.
+
+9) Spacing for mobile
+
+Reduce vertical gap above H1 slightly.
+
+Reduce gap between H1 and subline.
+
+Increase gap below CTA before trust block.
+
+Rules
+
+Do NOT add extra copy, headings, or sections.
+
+Do NOT modify onboarding or CV flow.
+
+Only apply these style/layout changes.
+
+Keep everything responsive (mweb + dweb).
