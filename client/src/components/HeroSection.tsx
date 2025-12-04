@@ -170,7 +170,7 @@ export default function HeroSection() {
           </motion.div>
           
           {/* Main Headline - Two lines, large and bold */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-4 md:mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.1] mb-4 md:mb-6">
             <span className="block">Crack Your Dream Job</span>
             <span className="block bg-gradient-to-r from-violet-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
               in 30 Days
