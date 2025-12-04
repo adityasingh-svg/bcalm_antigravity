@@ -35,9 +35,13 @@ interface GapItem {
 }
 
 interface BulletReviewItem {
-  original: string;
+  original?: string;
+  original_bullet?: string;
   why_weak?: string;
   recommended?: string;
+  recommended_text?: string;
+  recommended_version?: string;
+  why_this_version?: string;
   placeholders?: string[];
   fill?: string[];
 }
@@ -261,10 +265,8 @@ export default function ResultsPage() {
   const { jobId } = useParams();
   const { toast } = useToast();
   
-  const [bulletReviewOpen, setBulletReviewOpen] = useState(false);
   const [jobMatchOpen, setJobMatchOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [expandedFixes, setExpandedFixes] = useState<Set<number>>(new Set());
 
   const { data: jobData, isLoading, refetch } = useQuery<AnalysisJob>({
     queryKey: ["/api/analysis/share", jobId],
@@ -305,16 +307,6 @@ export default function ResultsPage() {
     setCopied(true);
     toast({ title: "Link copied!", description: "Share link copied to clipboard" });
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const toggleFixExpand = (index: number) => {
-    const newExpanded = new Set(expandedFixes);
-    if (newExpanded.has(index)) {
-      newExpanded.delete(index);
-    } else {
-      newExpanded.add(index);
-    }
-    setExpandedFixes(newExpanded);
   };
 
   if (isLoading || !jobId) {
@@ -810,44 +802,23 @@ export default function ResultsPage() {
                     transition={{ delay: index * 0.1 }}
                     className="text-white/80"
                   >
-                    <div 
-                      className={item.how_to_do_it ? "cursor-pointer" : ""}
-                      onClick={() => item.how_to_do_it && toggleFixExpand(index)}
-                    >
-                      <div className="flex items-start gap-2">
-                        <Zap className="h-4 w-4 text-orange-400 mt-1 shrink-0" />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-medium" data-testid={`text-fix-${index}`}>
-                              {typeof item === 'string' ? item : item.point}
+                    <div className="flex items-start gap-2">
+                      <Zap className="h-4 w-4 text-orange-400 mt-1 shrink-0" />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-medium" data-testid={`text-fix-${index}`}>
+                            {typeof item === 'string' ? item : (item.fix || item.point)}
+                          </span>
+                          {(item.expected_score_lift || item.expected_lift) && (
+                            <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                              +{item.expected_score_lift || item.expected_lift} pts
                             </span>
-                            {item.expected_lift && (
-                              <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
-                                +{item.expected_lift} pts
-                              </span>
-                            )}
-                          </div>
-                          {(item.why || item.why_weak) && (
-                            <p className="text-white/50 text-sm mt-1">{item.why || item.why_weak}</p>
                           )}
-                          <AnimatePresence>
-                            {expandedFixes.has(index) && item.how_to_do_it && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="mt-2 p-2 bg-white/5 rounded-lg"
-                              >
-                                <p className="text-white/60 text-sm">{item.how_to_do_it}</p>
-                                {item.ref && (
-                                  <p className="text-white/40 text-xs mt-1 italic">Ref: {item.ref}</p>
-                                )}
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
                         </div>
                         {item.how_to_do_it && (
-                          <ChevronDown className={`h-4 w-4 text-white/30 transition-transform ${expandedFixes.has(index) ? 'rotate-180' : ''}`} />
+                          <p className="text-white/50 text-sm mt-1 italic">
+                            "{item.how_to_do_it}"
+                          </p>
                         )}
                       </div>
                     </div>
@@ -878,58 +849,84 @@ export default function ResultsPage() {
               </CardHeader>
               <CardContent>
                 <Accordion type="multiple" className="space-y-2">
-                  {bulletReview.map((item, index) => (
-                    <AccordionItem 
-                      key={index} 
-                      value={`bullet-${index}`}
-                      className="border border-white/10 rounded-lg overflow-hidden bg-white/5"
-                    >
-                      <AccordionTrigger className="px-4 py-3 hover:bg-white/5 [&[data-state=open]]:bg-white/5">
-                        <div className="flex items-center gap-3 text-left">
-                          <span className="w-6 h-6 rounded-full bg-primary/20 text-primary text-sm flex items-center justify-center shrink-0">
-                            {index + 1}
-                          </span>
-                          <span className="text-white/80 text-sm line-clamp-1">{item.original}</span>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 pb-4 space-y-4">
-                        <div>
-                          <span className="text-xs text-white/40 uppercase tracking-wider flex items-center gap-1">
-                            <FileText className="h-3 w-3" /> Original
-                          </span>
-                          <p className="text-white/60 mt-1 text-sm">{item.original}</p>
-                        </div>
-                        {item.why_weak && (
-                          <div>
-                            <span className="text-xs text-red-400 uppercase tracking-wider flex items-center gap-1">
-                              <AlertCircle className="h-3 w-3" /> Why weak
+                  {bulletReview.map((item, index) => {
+                    const originalText = item.original_bullet || item.original || '';
+                    const recommendedText = item.recommended_text || item.recommended || '';
+                    
+                    return (
+                      <AccordionItem 
+                        key={index} 
+                        value={`bullet-${index}`}
+                        className="border border-white/10 rounded-lg overflow-hidden bg-white/5"
+                      >
+                        <AccordionTrigger className="px-4 py-3 hover:bg-white/5 [&[data-state=open]]:bg-white/5">
+                          <div className="flex items-center gap-3 text-left">
+                            <span className="w-6 h-6 rounded-full bg-primary/20 text-primary text-sm flex items-center justify-center shrink-0">
+                              {index + 1}
                             </span>
-                            <p className="text-white/60 mt-1 text-sm">{item.why_weak}</p>
+                            <span className="text-white/80 text-sm line-clamp-1">{originalText}</span>
                           </div>
-                        )}
-                        {item.recommended && (
-                          <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
-                            <span className="text-xs text-green-400 uppercase tracking-wider flex items-center gap-1">
-                              <CheckCircle className="h-3 w-3" /> Recommended rewrite
-                            </span>
-                            <p className="text-white/80 mt-1 text-sm">{item.recommended}</p>
-                          </div>
-                        )}
-                        {((item.placeholders && item.placeholders.length > 0) || (item.fill && item.fill.length > 0)) && (
+                        </AccordionTrigger>
+                        <AccordionContent className="px-4 pb-4 space-y-4">
+                          {/* Original Bullet */}
                           <div>
-                            <span className="text-xs text-primary uppercase tracking-wider">Fill these placeholders</span>
-                            <div className="flex flex-wrap gap-2 mt-2">
-                              {(item.placeholders || item.fill || []).map((placeholder, pIndex) => (
-                                <Badge key={pIndex} variant="outline" className="bg-primary/10 text-primary border-primary/30">
-                                  [{placeholder}]
-                                </Badge>
-                              ))}
+                            <span className="text-xs text-white/40 uppercase tracking-wider flex items-center gap-1">
+                              <FileText className="h-3 w-3" /> Original
+                            </span>
+                            <p className="text-white/60 mt-1 text-sm">{originalText}</p>
+                          </div>
+                          
+                          {/* Why Weak */}
+                          {item.why_weak && (
+                            <div>
+                              <span className="text-xs text-red-400 uppercase tracking-wider flex items-center gap-1">
+                                <AlertCircle className="h-3 w-3" /> Why weak
+                              </span>
+                              <p className="text-white/60 mt-1 text-sm">{item.why_weak}</p>
                             </div>
-                          </div>
-                        )}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
+                          )}
+                          
+                          {/* Recommended Rewrite */}
+                          {recommendedText && (
+                            <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
+                              <span className="text-xs text-green-400 uppercase tracking-wider flex items-center gap-1">
+                                <CheckCircle className="h-3 w-3" /> 
+                                Recommended rewrite
+                                {item.recommended_version && (
+                                  <span className="ml-1 text-green-300/80">(Version {item.recommended_version})</span>
+                                )}
+                              </span>
+                              <p className="text-white/80 mt-1 text-sm">{recommendedText}</p>
+                            </div>
+                          )}
+                          
+                          {/* Why This Version */}
+                          {item.why_this_version && (
+                            <div className="p-2 bg-primary/5 rounded-lg border border-primary/10">
+                              <span className="text-xs text-primary/80 uppercase tracking-wider flex items-center gap-1">
+                                <Lightbulb className="h-3 w-3" /> Why this version
+                              </span>
+                              <p className="text-white/60 mt-1 text-sm">{item.why_this_version}</p>
+                            </div>
+                          )}
+                          
+                          {/* Placeholders if any */}
+                          {((item.placeholders && item.placeholders.length > 0) || (item.fill && item.fill.length > 0)) && (
+                            <div>
+                              <span className="text-xs text-primary uppercase tracking-wider">Fill these placeholders</span>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {(item.placeholders || item.fill || []).map((placeholder: string, pIndex: number) => (
+                                  <Badge key={pIndex} variant="outline" className="bg-primary/10 text-primary border-primary/30">
+                                    [{placeholder}]
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </AccordionContent>
+                      </AccordionItem>
+                    );
+                  })}
                 </Accordion>
               </CardContent>
             </Card>
