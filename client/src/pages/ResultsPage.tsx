@@ -69,6 +69,10 @@ interface AnalysisJob {
     seven_step_plan?: SevenStepItem[];
     bullet_review?: BulletReviewItem[];
     info_needed_from_user?: string[];
+    // Fields can be at root or in job_match_section
+    top_requirements?: TopRequirement[];
+    highest_roi_gaps?: GapItem[];
+    gaps?: GapItem[] | string[];
     job_match_section?: {
       match_score?: number | null;
       explanation?: string;
@@ -359,7 +363,7 @@ export default function ResultsPage() {
     );
   }
 
-  const report = jobData.report || {};
+  const report = jobData.report || {} as any;
   const score = report.overall_score || 0;
   const rating = report.rating;
   const statusInfo = rating ? { label: rating, color: getStatusLabel(score).color } : getStatusLabel(score);
@@ -370,14 +374,45 @@ export default function ResultsPage() {
   const sevenStepPlan = report.seven_step_plan || [];
   const bulletReview = report.bullet_review || [];
   const infoNeeded = report.info_needed_from_user || [];
-  const jobMatchSection = report.job_match_section;
-  const jobMatchSkipped = breakdown.job_match?.skipped || jobMatchSection?.match_score === null;
+  const jobMatchSection = report.job_match_section || {};
+  // Only skip if explicitly marked as skipped or no JD was provided
+  const jobMatchSkipped = breakdown.job_match?.skipped === true;
   
-  const topRequirements = jobMatchSection?.top_requirements || [];
-  const highestRoiGaps = jobMatchSection?.highest_roi_gaps || 
-    (Array.isArray(jobMatchSection?.gaps) && typeof jobMatchSection.gaps[0] === 'object' 
-      ? jobMatchSection.gaps as GapItem[] 
-      : []);
+  // Top requirements can be at job_match_section.top_requirements or report.top_requirements
+  const topRequirements: TopRequirement[] = 
+    report.top_requirements || 
+    jobMatchSection?.top_requirements || 
+    [];
+  
+  // Highest ROI gaps can be at root level or inside job_match_section
+  const extractGaps = (): GapItem[] => {
+    if (report.highest_roi_gaps && Array.isArray(report.highest_roi_gaps)) {
+      return report.highest_roi_gaps;
+    }
+    if (jobMatchSection?.highest_roi_gaps && Array.isArray(jobMatchSection.highest_roi_gaps)) {
+      return jobMatchSection.highest_roi_gaps;
+    }
+    if (Array.isArray(report.gaps) && report.gaps.length > 0 && typeof report.gaps[0] === 'object') {
+      return report.gaps as GapItem[];
+    }
+    if (Array.isArray(jobMatchSection?.gaps) && jobMatchSection.gaps.length > 0 && typeof jobMatchSection.gaps[0] === 'object') {
+      return jobMatchSection.gaps as GapItem[];
+    }
+    return [];
+  };
+  const highestRoiGaps = extractGaps();
+  
+  // Debug logging for development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Report data:', {
+      hasTopRequirements: topRequirements.length > 0,
+      hasHighestRoiGaps: highestRoiGaps.length > 0,
+      topRequirementsCount: topRequirements.length,
+      highestRoiGapsCount: highestRoiGaps.length,
+      jobMatchSkipped,
+      rawReport: report
+    });
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0014] via-[#110022] to-[#1a0033] pb-24">
