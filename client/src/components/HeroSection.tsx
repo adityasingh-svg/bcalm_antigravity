@@ -3,25 +3,26 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, CheckCircle, ChevronRight, Loader2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { trackEvent } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import AuthModal from "@/components/AuthModal";
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
 
 export default function HeroSection() {
   const [, navigate] = useLocation();
   const { isAuthenticated } = useAuth();
-  const [step, setStep] = useState(1);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showCongrats, setShowCongrats] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
-    resume: null as File | null
   });
   const [phoneError, setPhoneError] = useState("");
 
@@ -37,8 +38,18 @@ export default function HeroSection() {
     return "";
   };
 
-  const handleStep1Submit = (e: React.FormEvent) => {
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.name.trim()) {
+      toast({
+        title: "Name required",
+        description: "Please enter your name",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     const phoneValidation = validatePhoneNumber(formData.phoneNumber);
     if (phoneValidation) {
       setPhoneError(phoneValidation);
@@ -46,79 +57,18 @@ export default function HeroSection() {
     }
     setPhoneError("");
     
-    if (formData.name && formData.phoneNumber) {
-      trackEvent("cv_score_step1_completed", {
-        name: formData.name
-      });
-      setStep(2);
-    }
-  };
-
-  const handleStep2Submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.resume) return;
+    trackEvent("signup_form_submitted", {
+      name: formData.name
+    });
     
-    setIsSubmitting(true);
-    
-    try {
-      const submitData = new FormData();
-      submitData.append("name", formData.name);
-      submitData.append("phoneNumber", formData.phoneNumber);
-      submitData.append("cv", formData.resume);
-      
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get("utm_source")) submitData.append("utmSource", urlParams.get("utm_source")!);
-      if (urlParams.get("utm_medium")) submitData.append("utmMedium", urlParams.get("utm_medium")!);
-      if (urlParams.get("utm_campaign")) submitData.append("utmCampaign", urlParams.get("utm_campaign")!);
-      
-      const response = await fetch("/api/cv/submit", {
-        method: "POST",
-        body: submitData,
-      });
-      
-      if (!response.ok) {
-        throw new Error("Failed to submit CV");
-      }
-      
-      trackEvent("cv_score_step2_completed", {
-        name: formData.name,
-        hasResume: true
-      });
-      
-      setShowSuccess(true);
-    } catch (error) {
-      console.error("CV submission error:", error);
-      toast({
-        title: "Submission failed",
-        description: "Please try again or contact support.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    setShowCongrats(true);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFormData({ ...formData, resume: file });
-    }
+  const handleCloseModal = () => {
+    setShowCongrats(false);
+    setFormData({ name: "", phoneNumber: "" });
   };
 
-  const scrollToForm = () => {
-    const formCard = document.getElementById('cv-form-card');
-    if (formCard) {
-      const navbarHeight = 60;
-      const offset = 20; // Extra padding below navbar
-      const elementPosition = formCard.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - navbarHeight - offset;
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
-  };
 
   return (
     <section 
@@ -193,120 +143,54 @@ export default function HeroSection() {
                 boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(138, 43, 226, 0.1)',
               }}
             >
-              {!showSuccess ? (
-                <>
-                  {step === 1 ? (
-                    <form onSubmit={handleStep1Submit} className="space-y-4">
-                      <div className="text-left">
-                        <Label htmlFor="name" className="text-white/80 text-sm font-medium">Name</Label>
-                        <Input
-                          id="name"
-                          type="text"
-                          placeholder="Enter your name"
-                          value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          className="mt-1.5 h-12 bg-white/5 border-white/15 text-white placeholder:text-white/40 focus:border-violet-500 focus:ring-violet-500/20 rounded-xl"
-                          required
-                          data-testid="input-name"
-                        />
-                      </div>
-                      
-                      <div className="text-left">
-                        <Label htmlFor="phoneNumber" className="text-white/80 text-sm font-medium">Phone Number</Label>
-                        <Input
-                          id="phoneNumber"
-                          type="tel"
-                          placeholder="10-digit mobile number"
-                          value={formData.phoneNumber}
-                          onChange={(e) => {
-                            setFormData({ ...formData, phoneNumber: e.target.value });
-                            if (phoneError) setPhoneError("");
-                          }}
-                          className={`mt-1.5 h-12 bg-white/5 border-white/15 text-white placeholder:text-white/40 focus:border-violet-500 focus:ring-violet-500/20 rounded-xl ${phoneError ? 'border-red-500' : ''}`}
-                          required
-                          data-testid="input-phone"
-                        />
-                        {phoneError && (
-                          <p className="text-red-400 text-xs mt-1">{phoneError}</p>
-                        )}
-                      </div>
-                      
-                      <Button 
-                        type="submit"
-                        className="w-full h-14 text-lg font-semibold rounded-xl"
-                        style={{
-                          background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
-                          boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
-                        }}
-                        data-testid="button-get-cv-score"
-                      >
-                        Start for free
-                        <ChevronRight className="ml-1 w-5 h-5" />
-                      </Button>
-                    </form>
-                  ) : (
-                    <form onSubmit={handleStep2Submit} className="space-y-4">
-                      <div className="text-left">
-                        <Label htmlFor="resume" className="text-white/80 text-sm font-medium">Upload Resume (PDF or DOCX)</Label>
-                        <div className="mt-2">
-                          <label 
-                            htmlFor="resume" 
-                            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/20 rounded-xl cursor-pointer hover:border-violet-500/60 transition-colors bg-white/5"
-                          >
-                            <Upload className="w-8 h-8 text-white/40 mb-2" />
-                            <span className="text-sm text-white/70">
-                              {formData.resume ? formData.resume.name : "Click to upload"}
-                            </span>
-                            <span className="text-xs text-white/40 mt-1">PDF, DOCX up to 5MB</span>
-                            <input 
-                              id="resume" 
-                              type="file" 
-                              className="hidden" 
-                              accept=".pdf,.docx,.doc"
-                              onChange={handleFileChange}
-                              data-testid="input-resume"
-                            />
-                          </label>
-                        </div>
-                        <p className="text-xs text-white/50 mt-2">
-                          We'll analyze your CV and email your score & roadmap.
-                        </p>
-                      </div>
-                      
-                      <Button 
-                        type="submit"
-                        className="w-full h-12 text-base font-semibold rounded-xl"
-                        style={{
-                          background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
-                          boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
-                        }}
-                        disabled={!formData.resume || isSubmitting}
-                        data-testid="button-submit-cv"
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-                            Submitting...
-                          </>
-                        ) : (
-                          "Submit CV"
-                        )}
-                      </Button>
-                    </form>
-                  )}
-                </>
-              ) : (
-                /* Success State */
-                <div className="text-center py-4">
-                  <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
-                    <CheckCircle className="w-10 h-10 text-emerald-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-white mb-2">You're in!</h3>
-                  <p className="text-white/70 text-sm">
-                    We'll email your CV Score and roadmap within 24 hours.
-                  </p>
+              <form onSubmit={handleFormSubmit} className="space-y-4">
+                <div className="text-left">
+                  <Label htmlFor="name" className="text-white/80 text-sm font-medium">Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Rakesh"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="mt-1.5 h-12 bg-white/5 border-white/15 text-white placeholder:text-white/40 focus:border-violet-500 focus:ring-violet-500/20 rounded-xl"
+                    required
+                    data-testid="input-name"
+                  />
                 </div>
-              )}
+                
+                <div className="text-left">
+                  <Label htmlFor="phoneNumber" className="text-white/80 text-sm font-medium">Phone Number</Label>
+                  <Input
+                    id="phoneNumber"
+                    type="tel"
+                    placeholder="9398354912"
+                    value={formData.phoneNumber}
+                    onChange={(e) => {
+                      setFormData({ ...formData, phoneNumber: e.target.value });
+                      if (phoneError) setPhoneError("");
+                    }}
+                    className={`mt-1.5 h-12 bg-white/5 border-white/15 text-white placeholder:text-white/40 focus:border-violet-500 focus:ring-violet-500/20 rounded-xl ${phoneError ? 'border-red-500' : ''}`}
+                    required
+                    data-testid="input-phone"
+                  />
+                  {phoneError && (
+                    <p className="text-red-400 text-xs mt-1">{phoneError}</p>
+                  )}
+                </div>
+                
+                <Button 
+                  type="submit"
+                  className="w-full h-14 text-lg font-semibold rounded-xl"
+                  style={{
+                    background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+                    boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
+                  }}
+                  data-testid="button-get-cv-score"
+                >
+                  Start for free
+                  <ChevronRight className="ml-1 w-5 h-5" />
+                </Button>
+              </form>
             </div>
           </motion.div>
           
@@ -318,6 +202,124 @@ export default function HeroSection() {
       </div>
       
       <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
+      
+      {/* Congratulations Popup Modal */}
+      <Dialog open={showCongrats} onOpenChange={handleCloseModal}>
+        <DialogContent 
+          className="sm:max-w-md border-0 p-0 overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, #1a0033 0%, #0d001a 100%)',
+            boxShadow: '0 25px 80px rgba(138, 43, 226, 0.4), 0 0 60px rgba(138, 43, 226, 0.2)',
+          }}
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="p-8 text-center"
+          >
+            {/* Celebration Icon with Confetti Effect */}
+            <motion.div 
+              className="relative mx-auto mb-6"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            >
+              {/* Animated rings */}
+              <motion.div
+                className="absolute inset-0 w-24 h-24 mx-auto rounded-full"
+                style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%)' }}
+                animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0.2, 0.5] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              <motion.div
+                className="absolute inset-0 w-24 h-24 mx-auto rounded-full"
+                style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%)' }}
+                animate={{ scale: [1.1, 1.4, 1.1], opacity: [0.4, 0.1, 0.4] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
+              />
+              
+              {/* Main celebration emoji */}
+              <div className="relative w-24 h-24 mx-auto flex items-center justify-center">
+                <motion.span 
+                  className="text-6xl"
+                  animate={{ 
+                    rotate: [-5, 5, -5],
+                    y: [0, -5, 0]
+                  }}
+                  transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 1 }}
+                >
+                  🎉
+                </motion.span>
+              </div>
+              
+              {/* Sparkle particles */}
+              {[...Array(6)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-2 h-2 rounded-full bg-amber-400"
+                  style={{
+                    left: `${50 + 40 * Math.cos((i * 60 * Math.PI) / 180)}%`,
+                    top: `${50 + 40 * Math.sin((i * 60 * Math.PI) / 180)}%`,
+                  }}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ 
+                    scale: [0, 1, 0],
+                    opacity: [0, 1, 0],
+                  }}
+                  transition={{ 
+                    duration: 1.5, 
+                    repeat: Infinity,
+                    delay: i * 0.2 
+                  }}
+                />
+              ))}
+            </motion.div>
+            
+            {/* Heading */}
+            <motion.h2 
+              className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              Congrats on taking first step towards your{" "}
+              <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+                dream career
+              </span>
+            </motion.h2>
+            
+            {/* Subtext */}
+            <motion.p 
+              className="text-purple-200 text-lg mb-8"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              We will get back in 24 hours
+            </motion.p>
+            
+            {/* Got it button */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <Button
+                onClick={handleCloseModal}
+                className="px-10 py-6 text-lg font-semibold rounded-xl"
+                style={{
+                  background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+                  boxShadow: '0 4px 20px rgba(139, 92, 246, 0.5)',
+                }}
+                data-testid="button-got-it"
+              >
+                Got it
+              </Button>
+            </motion.div>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
