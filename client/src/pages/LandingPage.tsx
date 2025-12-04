@@ -14,6 +14,8 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import WaitlistDialog from "@/components/WaitlistDialog";
 import ScheduleCallDialog from "@/components/ScheduleCallDialog";
+import StickyMobileCTA from "@/components/StickyMobileCTA";
+import DesktopFloatingCTA from "@/components/DesktopFloatingCTA";
 import { trackPageView } from "@/lib/analytics";
 
 export default function LandingPage() {
@@ -77,6 +79,10 @@ export default function LandingPage() {
       {/* Dialogs */}
       <WaitlistDialog open={waitlistOpen} onOpenChange={setWaitlistOpen} />
       <ScheduleCallDialog open={scheduleOpen} onOpenChange={setScheduleOpen} />
+      
+      {/* Floating CTAs */}
+      <StickyMobileCTA />
+      <DesktopFloatingCTA />
     </div>
   );
 }

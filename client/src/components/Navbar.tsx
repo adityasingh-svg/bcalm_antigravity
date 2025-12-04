@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { GraduationCap, LogOut, Loader2, Settings } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -79,6 +80,17 @@ export default function Navbar() {
                 <Loader2 className="h-4 w-4 animate-spin text-white/60" />
               ) : isAuthenticated && user ? (
                 <div className="flex items-center gap-3">
+                  <Button
+                    onClick={scrollToLeadForm}
+                    size="sm"
+                    className="font-medium"
+                    style={{
+                      background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+                    }}
+                    data-testid="button-start-free-nav"
+                  >
+                    Start for Free
+                  </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className="flex items-center gap-2 hover:opacity-80 transition-opacity" data-testid="button-user-menu">
@@ -106,7 +118,28 @@ export default function Navbar() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-              ) : null}
+              ) : (
+                <div className="flex items-center gap-3">
+                  <Button
+                    onClick={scrollToLeadForm}
+                    size="sm"
+                    className="font-medium"
+                    style={{
+                      background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+                    }}
+                    data-testid="button-start-free-nav"
+                  >
+                    Start for free
+                  </Button>
+                  <button
+                    onClick={() => setAuthModalOpen(true)}
+                    className="text-white/80 text-sm font-medium hover:text-white transition-colors"
+                    data-testid="button-sign-in"
+                  >
+                    Sign in
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
