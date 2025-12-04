@@ -191,11 +191,6 @@ export default function HeroSection() {
             >
               {!showSuccess ? (
                 <>
-                  <div className="flex items-center justify-center gap-2 mb-4">
-                    <Sparkles className="w-5 h-5 text-violet-400" />
-                    <h3 className="text-lg font-semibold text-white">Get Your FREE CV Score</h3>
-                  </div>
-                  
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="text-left">
                       <Label htmlFor="name" className="text-white/80 text-sm font-medium">Full Name</Label>
@@ -248,10 +243,6 @@ export default function HeroSection() {
                       )}
                     </Button>
                   </form>
-                  
-                  <p className="mt-4 text-xs text-white/50 text-center">
-                    No spam. We'll only contact you about your CV review.
-                  </p>
                 </>
               ) : (
                 /* Success State */
