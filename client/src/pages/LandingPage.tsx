@@ -16,6 +16,7 @@ import WaitlistDialog from "@/components/WaitlistDialog";
 import ScheduleCallDialog from "@/components/ScheduleCallDialog";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
+import LimitedOfferBanner from "@/components/LimitedOfferBanner";
 import { trackPageView } from "@/lib/analytics";
 
 export default function LandingPage() {
@@ -40,6 +41,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen">
+      <LimitedOfferBanner />
       <Navbar />
       
       {/* Fold 1 - Hero with 2-step CTA */}
