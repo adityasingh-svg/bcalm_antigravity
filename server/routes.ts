@@ -6,7 +6,6 @@ import analyticsRouter from "./routes/analytics";
 import hackathonRouter from "./routes/hackathon";
 import onboardingRouter from "./routes/onboarding";
 import analysisRouter from "./routes/analysis";
-import leadsRouter from "./routes/leads";
 import express from "express";
 import path from "path";
 import { setupSupabaseAuth } from "./supabaseAuth";
@@ -20,7 +19,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api/hackathon", hackathonRouter);
   app.use("/api/onboarding", onboardingRouter);
   app.use("/api/analysis", analysisRouter);
-  app.use("/api/leads", leadsRouter);
   
   app.use("/uploads/resources", express.static(path.join(process.cwd(), "uploads/resources")));
   app.use("/uploads/cv-submissions", express.static(path.join(process.cwd(), "uploads/cv-submissions")));

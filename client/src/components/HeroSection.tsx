@@ -3,94 +3,90 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChevronRight, Loader2 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Upload, CheckCircle, ChevronRight, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { trackEvent } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import AuthModal from "@/components/AuthModal";
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
+
+const targetRoles = [
+  "Product Manager",
+  "Data Analyst",
+  "Software Engineer",
+  "Business Analyst",
+  "Consultant",
+  "Marketing",
+  "Operations",
+  "Other"
+];
 
 export default function HeroSection() {
   const [, navigate] = useLocation();
   const { isAuthenticated } = useAuth();
-  const [showCongrats, setShowCongrats] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [step, setStep] = useState(1);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    name: "",
-    phoneNumber: "",
+    email: "",
+    targetRole: "",
+    resume: null as File | null
   });
-  const [phoneError, setPhoneError] = useState("");
 
   const handleGetCvScore = () => {
     navigate("/start");
   };
 
-  const validatePhoneNumber = (phone: string) => {
-    const digitsOnly = phone.replace(/\D/g, '');
-    if (digitsOnly.length !== 10) {
-      return "Please enter a valid 10-digit phone number";
+  const handleStep1Submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formData.email && formData.targetRole) {
+      trackEvent("cv_score_step1_completed", {
+        targetRole: formData.targetRole
+      });
+      setStep(2);
     }
-    return "";
   };
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
+  const handleStep2Submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.name.trim()) {
-      toast({
-        title: "Name required",
-        description: "Please enter your name",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    const phoneValidation = validatePhoneNumber(formData.phoneNumber);
-    if (phoneValidation) {
-      setPhoneError(phoneValidation);
-      return;
-    }
-    setPhoneError("");
+    if (!formData.resume) return;
     
     setIsSubmitting(true);
     
     try {
-      const urlParams = new URLSearchParams(window.location.search);
+      const submitData = new FormData();
+      submitData.append("email", formData.email);
+      submitData.append("targetRole", formData.targetRole);
+      submitData.append("cv", formData.resume);
       
-      const response = await fetch("/api/leads", {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("utm_source")) submitData.append("utmSource", urlParams.get("utm_source")!);
+      if (urlParams.get("utm_medium")) submitData.append("utmMedium", urlParams.get("utm_medium")!);
+      if (urlParams.get("utm_campaign")) submitData.append("utmCampaign", urlParams.get("utm_campaign")!);
+      
+      const response = await fetch("/api/cv/submit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name.trim(),
-          phone: formData.phoneNumber.replace(/\D/g, ''),
-          utmSource: urlParams.get("utm_source") || undefined,
-          utmMedium: urlParams.get("utm_medium") || undefined,
-          utmCampaign: urlParams.get("utm_campaign") || undefined,
-        }),
+        body: submitData,
       });
       
       if (!response.ok) {
-        throw new Error("Failed to submit");
+        throw new Error("Failed to submit CV");
       }
       
-      trackEvent("signup_form_submitted", {
-        name: formData.name
+      trackEvent("cv_score_step2_completed", {
+        targetRole: formData.targetRole,
+        hasResume: true
       });
       
-      setShowCongrats(true);
+      setShowSuccess(true);
     } catch (error) {
-      console.error("Error submitting lead:", error);
+      console.error("CV submission error:", error);
       toast({
-        title: "Something went wrong",
-        description: "Please try again",
+        title: "Submission failed",
+        description: "Please try again or contact support.",
         variant: "destructive",
       });
     } finally {
@@ -98,17 +94,33 @@ export default function HeroSection() {
     }
   };
 
-  const handleCloseModal = () => {
-    setShowCongrats(false);
-    setFormData({ name: "", phoneNumber: "" });
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData({ ...formData, resume: file });
+    }
   };
 
+  const scrollToForm = () => {
+    const formCard = document.getElementById('cv-form-card');
+    if (formCard) {
+      const navbarHeight = 60;
+      const offset = 20; // Extra padding below navbar
+      const elementPosition = formCard.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - navbarHeight - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   return (
     <section 
       id="hero"
-      className="relative overflow-hidden" 
-      style={{ paddingTop: '20px' }}
+      className="relative min-h-screen overflow-hidden" 
+      style={{ paddingTop: '60px' }}
     >
       {/* Dark gradient background - Seekho inspired */}
       <div 
@@ -129,7 +141,7 @@ export default function HeroSection() {
         />
       </div>
       
-      <div className="relative z-10 container mx-auto px-4 pt-2 pb-4" style={{ maxWidth: '800px' }}>
+      <div className="relative z-10 container mx-auto px-4 py-12 md:py-16" style={{ maxWidth: '800px' }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -141,7 +153,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3 md:mb-4"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 md:mb-8"
             style={{
               background: 'linear-gradient(135deg, rgba(138, 43, 226, 0.3) 0%, rgba(75, 0, 130, 0.3) 100%)',
               border: '1px solid rgba(138, 43, 226, 0.4)',
@@ -149,17 +161,76 @@ export default function HeroSection() {
             }}
           >
             <span className="text-xs md:text-sm font-medium text-white/90">
-              India's Fastest-Growing <span className="text-amber-400 font-semibold">AI Interview</span> Prep Platform
+              India's Fastest-Growing AI Interview Prep Platform
             </span>
           </motion.div>
           
           {/* Main Headline - Two lines, large and bold */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.1] mb-4 md:mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-4 md:mb-6">
             <span className="block">Crack Your Dream Job</span>
             <span className="block bg-gradient-to-r from-violet-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
               in 30 Days
             </span>
           </h1>
+          
+          {/* Subheadline */}
+          <p className="text-lg sm:text-xl md:text-2xl text-white/80 mb-8 md:mb-10 font-medium">
+            Free AI CV Score + 30-Day Personalized Plan
+          </p>
+          
+          {/* Primary CTA Button - Seekho gradient pill style */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mb-8 md:mb-10"
+          >
+            <button
+              onClick={handleGetCvScore}
+              className="group inline-flex items-center gap-2 px-8 py-4 md:px-10 md:py-5 rounded-full text-lg md:text-xl font-semibold text-white transition-all duration-300 hover:scale-105 active:scale-100"
+              style={{
+                background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+                boxShadow: '0 8px 32px rgba(139, 92, 246, 0.4), 0 4px 12px rgba(0,0,0,0.3)',
+              }}
+              data-testid="button-get-cv-score-main"
+            >
+              Start for free
+              <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            </button>
+          </motion.div>
+          
+          {/* Trust Line */}
+          <p className="text-sm md:text-base text-white/60 mb-4">
+            Trusted by Students from IITs, BITS, NITs & IIMs
+          </p>
+          
+          {/* College Chips */}
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-4">
+            {["IIT", "BITS", "NIT", "IIM"].map((college) => (
+              <span 
+                key={college}
+                className="px-4 py-1.5 rounded-full text-xs md:text-sm font-medium text-white/80"
+                style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                }}
+              >
+                {college}
+              </span>
+            ))}
+          </div>
+          
+          {/* Success Stories with Avatars */}
+          <div className="flex items-center justify-center gap-3 mb-10 md:mb-14">
+            <div className="flex -space-x-2">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 border-2 border-[#0a0014]" />
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 border-2 border-[#0a0014]" />
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 border-2 border-[#0a0014]" />
+            </div>
+            <p className="text-sm text-white/70">
+              <span className="font-semibold text-white">200+</span> success stories
+            </p>
+          </div>
           
           {/* Form Card - Floating style */}
           <motion.div
@@ -177,64 +248,140 @@ export default function HeroSection() {
                 boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(138, 43, 226, 0.1)',
               }}
             >
-              <form onSubmit={handleFormSubmit} className="space-y-4">
-                <div className="text-left">
-                  <Label htmlFor="name" className="text-white/80 text-sm font-medium">Name</Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="Rakesh"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="mt-1.5 h-12 bg-white/5 border-white/15 text-white placeholder:text-white/40 focus:border-violet-500 focus:ring-violet-500/20 rounded-xl"
-                    required
-                    data-testid="input-name"
-                  />
-                </div>
-                
-                <div className="text-left">
-                  <Label htmlFor="phoneNumber" className="text-white/80 text-sm font-medium">Phone Number</Label>
-                  <Input
-                    id="phoneNumber"
-                    type="tel"
-                    placeholder="9398354912"
-                    value={formData.phoneNumber}
-                    onChange={(e) => {
-                      setFormData({ ...formData, phoneNumber: e.target.value });
-                      if (phoneError) setPhoneError("");
-                    }}
-                    className={`mt-1.5 h-12 bg-white/5 border-white/15 text-white placeholder:text-white/40 focus:border-violet-500 focus:ring-violet-500/20 rounded-xl ${phoneError ? 'border-red-500' : ''}`}
-                    required
-                    data-testid="input-phone"
-                  />
-                  {phoneError && (
-                    <p className="text-red-400 text-xs mt-1">{phoneError}</p>
-                  )}
-                </div>
-                
-                <Button 
-                  type="submit"
-                  className="w-full h-14 text-lg font-semibold rounded-xl"
-                  style={{
-                    background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
-                    boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
-                  }}
-                  disabled={isSubmitting}
-                  data-testid="button-get-cv-score"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 w-5 h-5 animate-spin" />
-                      Submitting...
-                    </>
+              {!showSuccess ? (
+                <>
+                  {/* Progress Bar */}
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs md:text-sm text-white/70">
+                        Step {step} of 2 · {step === 1 ? "Get your FREE CV Score" : "Upload your CV"}
+                      </span>
+                    </div>
+                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: step === 1 ? '50%' : '100%',
+                          background: 'linear-gradient(90deg, #8B5CF6 0%, #A855F7 100%)',
+                        }}
+                      />
+                    </div>
+                  </div>
+                  
+                  {step === 1 ? (
+                    <form onSubmit={handleStep1Submit} className="space-y-4">
+                      <div className="text-left">
+                        <Label htmlFor="email" className="text-white/80 text-sm font-medium">Email</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="name@gmail.com"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          className="mt-1.5 h-12 bg-white/5 border-white/15 text-white placeholder:text-white/40 focus:border-violet-500 focus:ring-violet-500/20 rounded-xl"
+                          required
+                          data-testid="input-email"
+                        />
+                      </div>
+                      
+                      <div className="text-left">
+                        <Label htmlFor="targetRole" className="text-white/80 text-sm font-medium">Target Role</Label>
+                        <Select 
+                          value={formData.targetRole} 
+                          onValueChange={(value) => setFormData({ ...formData, targetRole: value })}
+                        >
+                          <SelectTrigger 
+                            className="mt-1.5 h-12 bg-white/5 border-white/15 text-white focus:ring-violet-500/20 rounded-xl"
+                            data-testid="select-target-role"
+                          >
+                            <SelectValue placeholder="Select your target role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {targetRoles.map((role) => (
+                              <SelectItem key={role} value={role}>
+                                {role}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <Button 
+                        type="submit"
+                        className="w-full h-12 text-base font-semibold rounded-xl"
+                        style={{
+                          background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+                          boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
+                        }}
+                        data-testid="button-get-cv-score"
+                      >
+                        Continue
+                        <ChevronRight className="ml-1 w-4 h-4" />
+                      </Button>
+                    </form>
                   ) : (
-                    <>
-                      Start for free
-                      <ChevronRight className="ml-1 w-5 h-5" />
-                    </>
+                    <form onSubmit={handleStep2Submit} className="space-y-4">
+                      <div className="text-left">
+                        <Label htmlFor="resume" className="text-white/80 text-sm font-medium">Upload Resume (PDF or DOCX)</Label>
+                        <div className="mt-2">
+                          <label 
+                            htmlFor="resume" 
+                            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/20 rounded-xl cursor-pointer hover:border-violet-500/60 transition-colors bg-white/5"
+                          >
+                            <Upload className="w-8 h-8 text-white/40 mb-2" />
+                            <span className="text-sm text-white/70">
+                              {formData.resume ? formData.resume.name : "Click to upload"}
+                            </span>
+                            <span className="text-xs text-white/40 mt-1">PDF, DOCX up to 5MB</span>
+                            <input 
+                              id="resume" 
+                              type="file" 
+                              className="hidden" 
+                              accept=".pdf,.docx,.doc"
+                              onChange={handleFileChange}
+                              data-testid="input-resume"
+                            />
+                          </label>
+                        </div>
+                        <p className="text-xs text-white/50 mt-2">
+                          We'll analyze your CV and email your score & roadmap.
+                        </p>
+                      </div>
+                      
+                      <Button 
+                        type="submit"
+                        className="w-full h-12 text-base font-semibold rounded-xl"
+                        style={{
+                          background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+                          boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
+                        }}
+                        disabled={!formData.resume || isSubmitting}
+                        data-testid="button-submit-cv"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                            Submitting...
+                          </>
+                        ) : (
+                          "Submit CV"
+                        )}
+                      </Button>
+                    </form>
                   )}
-                </Button>
-              </form>
+                </>
+              ) : (
+                /* Success State */
+                <div className="text-center py-4">
+                  <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="w-10 h-10 text-emerald-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-2">You're in!</h3>
+                  <p className="text-white/70 text-sm">
+                    We'll email your CV Score and roadmap within 24 hours.
+                  </p>
+                </div>
+              )}
             </div>
           </motion.div>
           
@@ -246,124 +393,6 @@ export default function HeroSection() {
       </div>
       
       <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
-      
-      {/* Congratulations Popup Modal */}
-      <Dialog open={showCongrats} onOpenChange={handleCloseModal}>
-        <DialogContent 
-          className="sm:max-w-md border-0 p-0 overflow-hidden"
-          style={{
-            background: 'linear-gradient(135deg, #1a0033 0%, #0d001a 100%)',
-            boxShadow: '0 25px 80px rgba(138, 43, 226, 0.4), 0 0 60px rgba(138, 43, 226, 0.2)',
-          }}
-        >
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="p-8 text-center"
-          >
-            {/* Celebration Icon with Confetti Effect */}
-            <motion.div 
-              className="relative mx-auto mb-6"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            >
-              {/* Animated rings */}
-              <motion.div
-                className="absolute inset-0 w-24 h-24 mx-auto rounded-full"
-                style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%)' }}
-                animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0.2, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-              <motion.div
-                className="absolute inset-0 w-24 h-24 mx-auto rounded-full"
-                style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%)' }}
-                animate={{ scale: [1.1, 1.4, 1.1], opacity: [0.4, 0.1, 0.4] }}
-                transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
-              />
-              
-              {/* Main celebration emoji */}
-              <div className="relative w-24 h-24 mx-auto flex items-center justify-center">
-                <motion.span 
-                  className="text-6xl"
-                  animate={{ 
-                    rotate: [-5, 5, -5],
-                    y: [0, -5, 0]
-                  }}
-                  transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 1 }}
-                >
-                  🎉
-                </motion.span>
-              </div>
-              
-              {/* Sparkle particles */}
-              {[...Array(6)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-2 h-2 rounded-full bg-amber-400"
-                  style={{
-                    left: `${50 + 40 * Math.cos((i * 60 * Math.PI) / 180)}%`,
-                    top: `${50 + 40 * Math.sin((i * 60 * Math.PI) / 180)}%`,
-                  }}
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ 
-                    scale: [0, 1, 0],
-                    opacity: [0, 1, 0],
-                  }}
-                  transition={{ 
-                    duration: 1.5, 
-                    repeat: Infinity,
-                    delay: i * 0.2 
-                  }}
-                />
-              ))}
-            </motion.div>
-            
-            {/* Heading */}
-            <motion.h2 
-              className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              Congrats on taking first step towards your{" "}
-              <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
-                dream career
-              </span>
-            </motion.h2>
-            
-            {/* Subtext */}
-            <motion.p 
-              className="text-purple-200 text-lg mb-8"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              We will get back in 24 hours
-            </motion.p>
-            
-            {/* Got it button */}
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              <Button
-                onClick={handleCloseModal}
-                className="px-10 py-6 text-lg font-semibold rounded-xl"
-                style={{
-                  background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
-                  boxShadow: '0 4px 20px rgba(139, 92, 246, 0.5)',
-                }}
-                data-testid="button-got-it"
-              >
-                Got it
-              </Button>
-            </motion.div>
-          </motion.div>
-        </DialogContent>
-      </Dialog>
     </section>
   );
 }

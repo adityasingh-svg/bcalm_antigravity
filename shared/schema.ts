@@ -255,25 +255,3 @@ export const insertCvSubmissionSchema = createInsertSchema(cvSubmissions, {
 
 export type CvSubmission = typeof cvSubmissions.$inferSelect;
 export type InsertCvSubmission = z.infer<typeof insertCvSubmissionSchema>;
-
-// Leads table for collecting user signups from hero form
-export const leads = pgTable("leads", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  name: text("name").notNull(),
-  phone: text("phone").notNull(),
-  utmSource: text("utm_source"),
-  utmMedium: text("utm_medium"),
-  utmCampaign: text("utm_campaign"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
-
-export const insertLeadSchema = createInsertSchema(leads, {
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  phone: z.string().regex(/^\d{10}$/, "Please enter a valid 10-digit phone number"),
-}).omit({
-  id: true,
-  createdAt: true,
-});
-
-export type Lead = typeof leads.$inferSelect;
-export type InsertLead = z.infer<typeof insertLeadSchema>;
