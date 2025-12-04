@@ -1,0 +1,126 @@
+Update my existing BCALM Replit app (vanilla HTML/CSS/JS frontend, Node/Express backend).
+Goal: add a desktop-only floating CTA pill on the right mid-screen that appears after a small scroll, is dismissible, and routes into the CV flow.
+IMPORTANT: Do not add or invent any new copy anywhere. Use only the strings below. If a label is required and I didn’t specify it, leave it blank.
+
+Behavior requirements (exact)
+
+The floating pill must render ONLY on desktop (min-width: 1024px).
+
+It must NOT appear on mobile or tablet.
+
+The pill must be hidden on initial page load.
+
+It should fade + slide in once when the user scrolls down 15–20% of the page height (use 18%).
+
+After appearing, it stays fixed while scrolling.
+
+The pill must be dismissible via a small “×” icon in the top-right of the pill.
+
+On dismiss: hide pill immediately.
+
+Persist dismissal using localStorage key bcalm_cta_dismissed_until with a timestamp.
+
+Do not show again for 7 days if dismissed.
+
+If the user clicks the CTA button in the pill, it must trigger the same flow as the main hero CTA (whatever function/router you already use for “get free cv score / start flow”).
+
+After click, the pill should disappear.
+
+Once the user enters onboarding or upload (any route starting /onboarding or /upload or /app), do not render the pill.
+
+Copy requirements (exact, no additions)
+
+Inside the floating pill:
+
+1-line copy text:
+Get a clear CV review
+
+1 CTA button text:
+Check my CV
+
+Dismiss icon: text must be exactly × (no tooltip, no aria-label copy).
+
+No other text should be added to the pill.
+
+Layout & styling requirements
+
+Position:
+
+Fixed on the right side.
+
+Vertically centered but slightly lower: top: 58% with transform translateY(-58%).
+
+Right offset: 24px.
+
+Size:
+
+Width: 260px max, auto height.
+
+Visual style:
+
+Rounded corners 16px.
+
+Background slightly lighter than page background (use rgba white overlay).
+
+Soft shadow.
+
+Low visual dominance (should feel like a calm reminder, not an ad).
+
+Button full width.
+
+No pulsing or bouncing animations. Only a single fade/slide-in on first reveal.
+
+Hover:
+
+Underline text on hover.
+
+Button hover should slightly brighten.
+
+Implementation details
+
+Add HTML for pill into the landing page (home page) template:
+
+Wrap it in a div with id desktopFloatingCTA.
+
+Include:
+
+copy text element
+
+CTA button
+
+dismiss icon
+
+Add JS in a new file public/floating-cta.js and load it only on home page.
+
+JS must:
+
+compute scroll percentage
+
+reveal pill at 18% scroll
+
+respect localStorage dismissal
+
+hide pill on dismiss for 7 days
+
+call existing hero CTA click handler on button click
+
+Add CSS in public/styles.css (or your main home CSS file):
+
+Ensure desktop-only via media query @media (min-width: 1024px)
+
+Provide fade/slide transition
+
+Files to modify/create
+
+Home page HTML (likely public/index.html or template used for /)
+
+add floating pill markup at end of body
+
+load floating-cta.js
+
+public/floating-cta.js (create)
+
+public/styles.css (or existing landing CSS)
+
+Keep code minimal, readable, and consistent with my current structure.
+Again: no extra copy beyond the exact two strings above.
