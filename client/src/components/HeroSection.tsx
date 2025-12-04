@@ -261,7 +261,7 @@ export default function HeroSection() {
                         }}
                         data-testid="button-get-cv-score"
                       >
-                        Continue
+                        Start for free
                         <ChevronRight className="ml-1 w-4 h-4" />
                       </Button>
                     </form>
