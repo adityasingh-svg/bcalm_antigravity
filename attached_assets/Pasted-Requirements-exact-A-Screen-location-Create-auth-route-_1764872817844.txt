@@ -1,0 +1,137 @@
+Requirements (exact)
+
+A) Screen location
+
+Create /auth route/page (usable for both mweb and dweb).
+
+If my app currently opens auth as a modal, keep that behavior but render the same UI from a shared component so it looks identical everywhere.
+
+B) Layout
+
+Centered card, max-width 420px.
+
+Clear separation from background:
+
+Card background must be lighter than page background
+
+Subtle border + soft shadow to lift it.
+
+Vertical spacing and hierarchy exactly like:
+
+Logo
+
+Headline + subtext
+
+Google button (primary)
+
+small “or”
+
+Email field
+
+Password field
+
+Continue button (primary)
+
+helper links row
+
+footer tiny text
+
+C) Copy (use only these strings)
+
+Headline: Welcome to BCALM
+
+Subtext: Sign in to continue
+
+Google button: Continue with Google
+
+Separator: or
+
+Email label: Email
+
+Email placeholder: you@example.com
+
+Password label: Password
+
+Password placeholder: Enter password
+
+Primary CTA: Continue
+
+Helper link left: New here? Create account
+
+Helper link right: Forgot password?
+
+Footer: By continuing you agree to Terms & Privacy
+
+Do not add any other headings, tips, or marketing copy.
+
+D) Behavior
+
+Clicking Continue with Google triggers Supabase Google OAuth and returns to previous page.
+
+Email/password flow:
+
+User enters email + password → clicks Continue.
+
+If email exists → sign in.
+
+If email does not exist → create account automatically with the same password.
+
+Show inline error text only if Supabase returns an error.
+
+“New here? Create account”
+
+This is not a tab. On click, do:
+
+focus email field
+
+show a subtle hint under CTA: We’ll create your account if you’re new.
+(exact string, no more)
+
+“Forgot password?”
+
+On click, open a small inline email-only state:
+
+Keep the same card
+
+Hide password field
+
+CTA changes to Send reset link
+
+After success show: Reset link sent
+(use only these two strings)
+
+E) Styling
+
+Keep BCALM vibe but improve contrast:
+
+Use existing purple gradient for background.
+
+Card bg: rgba(20, 12, 40, 0.96)
+
+Borders: rgba(255,255,255,0.10)
+
+Inputs: solid dark with clear borders (no transparent “blending”).
+
+Primary buttons: purple gradient, full width.
+
+No extra animations besides a smooth 200ms fade-in when card appears.
+
+F) Files
+
+Add /auth page.
+
+If React: make AuthCard.jsx and reuse it in modal + route.
+
+If Vanilla: make auth.html, auth.css, auth.js and reuse in modal by importing the same HTML block.
+
+Finally, test end-to-end:
+
+Google signup/login works.
+
+Email login for existing user works.
+
+Email signup auto-creates user when new.
+
+Forgot password flow sends reset email.
+
+No extra copy exists beyond what I specified.
