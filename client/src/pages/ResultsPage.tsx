@@ -42,9 +42,11 @@ interface BulletReviewItem {
 
 interface SevenStepItem {
   step?: number;
-  action: string;
+  task?: string;
+  action?: string;
   priority?: string;
   output?: string;
+  output_expected?: string;
 }
 
 interface AnalysisJob {
@@ -967,13 +969,13 @@ export default function ResultsPage() {
                       <span className="text-white font-semibold">Step {item.step || index + 1}</span>
                     </div>
                     
-                    {/* Action and Output */}
+                    {/* Task and Output */}
                     <div className="p-4 border-l border-white/10 space-y-1">
-                      <p className="text-white/90 leading-relaxed">{item.action}</p>
-                      {item.output && (
+                      <p className="text-white/90 leading-relaxed">{item.task || item.action}</p>
+                      {(item.output_expected || item.output) && (
                         <p className="text-sm">
                           <span className="text-white/40">Output: </span>
-                          <span className="text-white/50">{item.output}</span>
+                          <span className="text-white/50">{item.output_expected || item.output}</span>
                         </p>
                       )}
                     </div>
