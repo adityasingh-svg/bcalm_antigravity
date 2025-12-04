@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { GraduationCap, LogOut, Loader2, Settings } from "lucide-react";
+import { GraduationCap, LogOut, Loader2, Settings, FileCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,19 +12,26 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import AuthModal from "@/components/AuthModal";
-import LeadModal from "@/components/LeadModal";
 import ChangeProfileModal from "@/components/ChangeProfileModal";
 
 export default function Navbar() {
   const [, navigate] = useLocation();
   const { user, isLoading, isAuthenticated, logout } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [changeProfileOpen, setChangeProfileOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
     navigate("/");
+  };
+
+  const handleCheckCV = () => {
+    const onboardingData = sessionStorage.getItem("cv_onboarding");
+    if (onboardingData) {
+      navigate("/upload");
+    } else {
+      navigate("/onboarding");
+    }
   };
 
   const getUserInitials = () => {
@@ -60,13 +67,18 @@ export default function Navbar() {
               ) : isAuthenticated && user ? (
                 <div className="flex items-center gap-3">
                   <Button
-                    onClick={() => setLeadModalOpen(true)}
+                    onClick={handleCheckCV}
                     size="sm"
-                    variant="outline"
-                    className="font-medium border-white/20 text-white hover:bg-white/10"
-                    data-testid="button-start-free-nav"
+                    className="font-semibold gap-2"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%)',
+                      border: '1px solid rgba(167, 139, 250, 0.5)',
+                      color: '#E9D5FF',
+                    }}
+                    data-testid="button-check-cv-nav"
                   >
-                    Start for free
+                    <FileCheck className="h-4 w-4" />
+                    Check Your CV
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -98,13 +110,18 @@ export default function Navbar() {
               ) : (
                 <div className="flex items-center gap-3">
                   <Button
-                    onClick={() => setLeadModalOpen(true)}
+                    onClick={handleCheckCV}
                     size="sm"
-                    variant="outline"
-                    className="font-medium border-white/20 text-white hover:bg-white/10"
-                    data-testid="button-start-free-nav"
+                    className="font-semibold gap-2"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%)',
+                      border: '1px solid rgba(167, 139, 250, 0.5)',
+                      color: '#E9D5FF',
+                    }}
+                    data-testid="button-check-cv-nav"
                   >
-                    Start for free
+                    <FileCheck className="h-4 w-4" />
+                    Check Your CV
                   </Button>
                   <button
                     onClick={() => setAuthModalOpen(true)}
@@ -121,7 +138,6 @@ export default function Navbar() {
       </nav>
       
       <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
-      <LeadModal open={leadModalOpen} onOpenChange={setLeadModalOpen} />
       
       <ChangeProfileModal 
         open={changeProfileOpen} 

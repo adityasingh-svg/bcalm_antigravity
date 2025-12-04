@@ -14,11 +14,13 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import WaitlistDialog from "@/components/WaitlistDialog";
 import ScheduleCallDialog from "@/components/ScheduleCallDialog";
+import LeadModal from "@/components/LeadModal";
 import { trackPageView } from "@/lib/analytics";
 
 export default function LandingPage() {
   const [waitlistOpen, setWaitlistOpen] = useState(false);
   const [scheduleOpen, setScheduleOpen] = useState(false);
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = 'smooth';
@@ -40,8 +42,8 @@ export default function LandingPage() {
     <div className="min-h-screen">
       <Navbar />
       
-      {/* Fold 1 - Hero with 2-step CTA */}
-      <HeroSection />
+      {/* Fold 1 - Hero with lead capture CTA */}
+      <HeroSection onOpenLeadModal={() => setLeadModalOpen(true)} />
       
       {/* Instructors Section - Above Why Bcalm Works */}
       <InstructorsSection />
@@ -77,6 +79,7 @@ export default function LandingPage() {
       {/* Dialogs */}
       <WaitlistDialog open={waitlistOpen} onOpenChange={setWaitlistOpen} />
       <ScheduleCallDialog open={scheduleOpen} onOpenChange={setScheduleOpen} />
+      <LeadModal open={leadModalOpen} onOpenChange={setLeadModalOpen} />
     </div>
   );
 }

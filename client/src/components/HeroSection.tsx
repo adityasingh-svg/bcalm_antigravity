@@ -1,16 +1,13 @@
-import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import neuralBg from "@assets/generated_images/AI_neural_network_hero_background_86a25de9.png";
 
-export default function HeroSection() {
-  const [, navigate] = useLocation();
+interface HeroSectionProps {
+  onOpenLeadModal: () => void;
+}
 
-  const handleStartFree = () => {
-    navigate("/onboarding");
-  };
-
+export default function HeroSection({ onOpenLeadModal }: HeroSectionProps) {
   return (
     <section 
       id="hero"
@@ -88,7 +85,7 @@ export default function HeroSection() {
           </motion.div>
           
           {/* Main Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6 md:mb-8">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-4 md:mb-5">
             <span className="block whitespace-nowrap">Crack Your Dream Job</span>
             <span 
               className="block bg-clip-text text-transparent"
@@ -100,7 +97,12 @@ export default function HeroSection() {
             </span>
           </h1>
           
-          {/* Primary CTA Button */}
+          {/* Subtitle */}
+          <p className="text-lg md:text-xl text-white/70 mb-8 md:mb-10 font-medium">
+            Free AI CV Score + 30-Day Personalized Plan
+          </p>
+          
+          {/* Primary CTA Button - Sharper design */}
           <motion.div
             id="hero-cta"
             initial={{ opacity: 0, y: 30 }}
@@ -109,14 +111,15 @@ export default function HeroSection() {
             className="flex flex-col items-center gap-3"
           >
             <Button 
-              onClick={handleStartFree}
-              className="h-14 px-10 text-lg font-bold rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+              onClick={onOpenLeadModal}
+              className="h-14 px-12 text-lg font-bold rounded-xl transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] shadow-2xl"
               style={{
-                background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
-                border: '1px solid rgba(167, 139, 250, 0.4)',
-                boxShadow: '0 4px 20px rgba(139, 92, 246, 0.5), inset 0 1px 0 rgba(255,255,255,0.15)',
+                background: 'linear-gradient(135deg, #A855F7 0%, #8B5CF6 25%, #7C3AED 50%, #6D28D9 75%, #5B21B6 100%)',
+                border: '1px solid rgba(196, 181, 253, 0.5)',
+                boxShadow: '0 0 40px rgba(139, 92, 246, 0.6), 0 8px 32px rgba(139, 92, 246, 0.4), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.1)',
+                textShadow: '0 1px 2px rgba(0,0,0,0.2)',
               }}
-              data-testid="button-check-cv"
+              data-testid="button-start-free"
             >
               Start for Free
               <ChevronRight className="ml-2 w-5 h-5" />
