@@ -165,7 +165,7 @@ export default function HeroSection() {
             }}
           >
             <span className="text-xs md:text-sm font-medium text-white/90">
-              India's Fastest-Growing AI Interview Prep Platform
+              India's Fastest-Growing <span className="text-amber-400 font-semibold">AI Interview</span> Prep Platform
             </span>
           </motion.div>
           
