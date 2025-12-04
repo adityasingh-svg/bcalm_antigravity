@@ -4,13 +4,50 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { 
   GraduationCap, Loader2, CheckCircle, AlertTriangle, Zap, Target, FileText, 
   ArrowRight, RefreshCw, ChevronDown, ChevronUp, Share2, Copy, Check,
-  Sparkles, TrendingUp, List, HelpCircle, ExternalLink, FileSearch, Briefcase
+  Sparkles, TrendingUp, List, HelpCircle, ExternalLink, FileSearch, Briefcase,
+  AlertCircle, Lightbulb, Edit3, MessageSquare, CircleCheck, CircleX
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+
+interface TopRequirement {
+  requirement: string;
+  evidence_quality: string;
+  resume_evidence: string;
+}
+
+interface GapItem {
+  gap?: string;
+  title?: string;
+  why_it_matters?: string;
+  proof_needed?: string;
+  bullet_frame?: string;
+}
+
+interface BulletReviewItem {
+  original: string;
+  why_weak?: string;
+  recommended?: string;
+  placeholders?: string[];
+  fill?: string[];
+}
+
+interface SevenStepItem {
+  step?: number;
+  action: string;
+  priority?: string;
+  output?: string;
+}
 
 interface AnalysisJob {
   id: string;
@@ -18,24 +55,29 @@ interface AnalysisJob {
   report: {
     role_preset?: string;
     overall_score?: number;
+    rating?: string;
     score_breakdown?: {
-      ats?: { score: number; feedback?: string; notes?: string };
-      impact?: { score: number; feedback?: string; notes?: string };
-      role_signals?: { score: number; feedback?: string; notes?: string };
-      job_match?: { score: number; feedback?: string; notes?: string; skipped?: boolean };
+      ats?: { score: number; max?: number; feedback?: string; notes?: string };
+      impact?: { score: number; max?: number; feedback?: string; notes?: string };
+      role_signals?: { score: number; max?: number; feedback?: string; notes?: string };
+      job_match?: { score: number; max?: number; feedback?: string; notes?: string; skipped?: boolean };
     };
     summary?: string;
+    coach_summary?: string;
     top_strengths?: Array<{ point: string; evidence?: string; why_it_works?: string } | string>;
-    top_fixes?: Array<{ point: string; expected_lift?: number; why_weak?: string; recommended?: string; how_to_do_it?: string } | string>;
-    seven_step_plan?: Array<{ step?: number; action: string; priority?: string }>;
-    bullet_review?: Array<{ original: string; why_weak?: string; recommended?: string; placeholders?: string[] }>;
+    top_fixes?: Array<{ point: string; expected_lift?: number; why?: string; why_weak?: string; recommended?: string; how_to_do_it?: string; ref?: string } | string>;
+    seven_step_plan?: SevenStepItem[];
+    bullet_review?: BulletReviewItem[];
     info_needed_from_user?: string[];
     job_match_section?: {
       match_score?: number | null;
+      explanation?: string;
       missing_skills?: string[];
       strong_matches?: string[];
       requirements?: Array<{ requirement: string; met: boolean }>;
-      gaps?: string[];
+      top_requirements?: TopRequirement[];
+      gaps?: GapItem[] | string[];
+      highest_roi_gaps?: GapItem[];
     };
     cta?: string;
   };
@@ -108,23 +150,28 @@ function getStatusLabel(score: number): { label: string; color: string } {
 
 function BreakdownCard({ 
   title, 
-  score, 
+  score,
+  maxScore,
   notes, 
   icon: Icon,
   skipped 
 }: { 
   title: string; 
-  score: number; 
+  score: number;
+  maxScore?: number;
   notes?: string; 
   icon: any;
   skipped?: boolean;
 }) {
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-400";
-    if (score >= 60) return "text-yellow-400";
-    if (score >= 40) return "text-orange-400";
+  const getScoreColor = (score: number, max: number = 100) => {
+    const pct = (score / max) * 100;
+    if (pct >= 80) return "text-green-400";
+    if (pct >= 60) return "text-yellow-400";
+    if (pct >= 40) return "text-orange-400";
     return "text-red-400";
   };
+
+  const max = maxScore || 100;
 
   return (
     <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
@@ -139,16 +186,70 @@ function BreakdownCard({
             </span>
           )}
         </div>
-        <div className={`text-3xl font-bold ${skipped ? 'text-white/30' : getScoreColor(score)}`}>
-          {skipped ? '—' : score}
+        <div className={`text-2xl font-bold ${skipped ? 'text-white/30' : getScoreColor(score, max)}`}>
+          {skipped ? '—' : `${score}/${max}`}
         </div>
         <div className="text-white/60 text-sm font-medium mt-1">{title}</div>
         {notes && !skipped && (
-          <p className="text-white/40 text-xs mt-2 line-clamp-2">{notes}</p>
+          <p className="text-white/40 text-xs mt-2 line-clamp-3">{notes}</p>
         )}
       </CardContent>
     </Card>
   );
+}
+
+function EvidenceQualityBadge({ quality }: { quality: string }) {
+  const normalizedQuality = quality?.toLowerCase() || '';
+  
+  if (normalizedQuality.includes('strong') || normalizedQuality === 'present') {
+    return (
+      <Badge variant="outline" className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">
+        <CircleCheck className="h-3 w-3 mr-1" />
+        Strong evidence
+      </Badge>
+    );
+  }
+  if (normalizedQuality.includes('missing') || normalizedQuality === 'absent') {
+    return (
+      <Badge variant="outline" className="bg-red-500/20 text-red-400 border-red-500/30 text-xs">
+        <CircleX className="h-3 w-3 mr-1" />
+        Missing
+      </Badge>
+    );
+  }
+  if (normalizedQuality.includes('weak') || normalizedQuality.includes('partial')) {
+    return (
+      <Badge variant="outline" className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 text-xs">
+        <AlertCircle className="h-3 w-3 mr-1" />
+        Weak
+      </Badge>
+    );
+  }
+  return (
+    <Badge variant="outline" className="bg-white/10 text-white/60 border-white/20 text-xs">
+      {quality}
+    </Badge>
+  );
+}
+
+function RequirementTypeBadge({ type }: { type: string }) {
+  const normalizedType = type?.toLowerCase() || '';
+  
+  if (normalizedType.includes('must') || normalizedType === 'required') {
+    return (
+      <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/20 text-xs">
+        must_have
+      </Badge>
+    );
+  }
+  if (normalizedType.includes('nice') || normalizedType === 'preferred') {
+    return (
+      <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-xs">
+        nice_to_have
+      </Badge>
+    );
+  }
+  return null;
 }
 
 export default function ResultsPage() {
@@ -260,8 +361,9 @@ export default function ResultsPage() {
 
   const report = jobData.report || {};
   const score = report.overall_score || 0;
-  const statusInfo = getStatusLabel(score);
-  const summaryFirstSentence = report.summary?.split('.')[0] || "";
+  const rating = report.rating;
+  const statusInfo = rating ? { label: rating, color: getStatusLabel(score).color } : getStatusLabel(score);
+  const coachSummary = report.coach_summary || report.summary || "";
   const breakdown = report.score_breakdown || {};
   const strengths = report.top_strengths || [];
   const fixes = report.top_fixes || [];
@@ -270,6 +372,12 @@ export default function ResultsPage() {
   const infoNeeded = report.info_needed_from_user || [];
   const jobMatchSection = report.job_match_section;
   const jobMatchSkipped = breakdown.job_match?.skipped || jobMatchSection?.match_score === null;
+  
+  const topRequirements = jobMatchSection?.top_requirements || [];
+  const highestRoiGaps = jobMatchSection?.highest_roi_gaps || 
+    (Array.isArray(jobMatchSection?.gaps) && typeof jobMatchSection.gaps[0] === 'object' 
+      ? jobMatchSection.gaps as GapItem[] 
+      : []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0014] via-[#110022] to-[#1a0033] pb-24">
@@ -278,7 +386,7 @@ export default function ResultsPage() {
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
       </div>
       
-      <div className="relative max-w-3xl mx-auto px-4 py-8">
+      <div className="relative max-w-4xl mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -290,6 +398,7 @@ export default function ResultsPage() {
           <span className="text-white font-bold text-xl">BCALM</span>
         </motion.div>
 
+        {/* Hero Section with Score */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -315,12 +424,6 @@ export default function ResultsPage() {
                   {report.role_preset}
                 </span>
               </div>
-            )}
-            
-            {summaryFirstSentence && (
-              <p className="text-white/70 mt-4 max-w-md mx-auto" data-testid="text-summary">
-                {summaryFirstSentence}.
-              </p>
             )}
           </motion.div>
 
@@ -379,6 +482,7 @@ export default function ResultsPage() {
           </motion.div>
         </motion.section>
 
+        {/* Score Breakdown - 2x2 Grid */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -391,26 +495,30 @@ export default function ResultsPage() {
           </h2>
           <div className="grid grid-cols-2 gap-3">
             <BreakdownCard
-              title="ATS Score"
+              title="ATS / Structure"
               score={breakdown.ats?.score || 0}
+              maxScore={breakdown.ats?.max || 20}
               notes={breakdown.ats?.feedback || breakdown.ats?.notes}
               icon={FileSearch}
             />
             <BreakdownCard
               title="Impact"
               score={breakdown.impact?.score || 0}
+              maxScore={breakdown.impact?.max || 30}
               notes={breakdown.impact?.feedback || breakdown.impact?.notes}
               icon={Zap}
             />
             <BreakdownCard
               title="Role Signals"
               score={breakdown.role_signals?.score || 0}
+              maxScore={breakdown.role_signals?.max || 20}
               notes={breakdown.role_signals?.feedback || breakdown.role_signals?.notes}
               icon={Target}
             />
             <BreakdownCard
               title="Job Match"
               score={breakdown.job_match?.score || 0}
+              maxScore={breakdown.job_match?.max || 30}
               notes={breakdown.job_match?.feedback || breakdown.job_match?.notes}
               icon={Briefcase}
               skipped={jobMatchSkipped}
@@ -418,12 +526,203 @@ export default function ResultsPage() {
           </div>
         </motion.section>
 
+        {/* Coach Summary */}
+        {coachSummary && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35 }}
+            className="mb-8"
+          >
+            <Card className="bg-primary/10 border-primary/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg text-primary flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5" />
+                  Coach Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-white/80 leading-relaxed" data-testid="text-coach-summary">
+                  {coachSummary}
+                </p>
+              </CardContent>
+            </Card>
+          </motion.section>
+        )}
+
+        {/* Job Match Deep Dive with Requirements Table */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
+          className="mb-8"
+        >
+          <Collapsible open={jobMatchOpen} onOpenChange={setJobMatchOpen}>
+            <Card className="bg-white/5 border-white/10">
+              <CollapsibleTrigger asChild>
+                <CardHeader className="cursor-pointer hover:bg-white/5 transition-colors">
+                  <CardTitle className="text-lg text-white flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <Target className="h-5 w-5 text-primary" />
+                      Job Match Deep Dive
+                      {jobMatchSkipped && (
+                        <span className="text-xs bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded-full">
+                          JD missing
+                        </span>
+                      )}
+                    </span>
+                    {jobMatchOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+                  </CardTitle>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="space-y-6">
+                  {jobMatchSkipped ? (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
+                        <FileText className="h-8 w-8 text-white/30" />
+                      </div>
+                      <h3 className="text-white font-medium mb-2">No Job Description Provided</h3>
+                      <p className="text-white/50 mb-4 max-w-sm mx-auto">
+                        Upload a job description to see how well your CV matches the requirements
+                      </p>
+                      <Button
+                        onClick={() => navigate("/upload?jd=true")}
+                        className="gap-2"
+                        data-testid="button-upload-jd-match"
+                      >
+                        <FileText className="h-4 w-4" />
+                        Upload JD
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Explanation */}
+                      {jobMatchSection?.explanation && (
+                        <p className="text-white/70 text-sm leading-relaxed">
+                          {jobMatchSection.explanation}
+                        </p>
+                      )}
+
+                      {/* Top JD Requirements Table */}
+                      {topRequirements.length > 0 && (
+                        <div>
+                          <h4 className="text-white font-medium mb-3 flex items-center gap-2">
+                            <List className="h-4 w-4 text-primary" />
+                            Top JD Requirements & Your Evidence
+                          </h4>
+                          <div className="overflow-x-auto">
+                            <div className="min-w-[500px] space-y-2">
+                              <div className="grid grid-cols-[1fr_auto_1fr] gap-3 text-xs text-white/50 uppercase tracking-wider pb-2 border-b border-white/10">
+                                <span>Requirement</span>
+                                <span className="text-center">Evidence</span>
+                                <span>Resume Evidence</span>
+                              </div>
+                              {topRequirements.map((req, index) => (
+                                <div key={index} className="grid grid-cols-[1fr_auto_1fr] gap-3 py-3 border-b border-white/5 items-start">
+                                  <div className="text-white/80 text-sm">{req.requirement}</div>
+                                  <div className="flex justify-center">
+                                    <EvidenceQualityBadge quality={req.evidence_quality} />
+                                  </div>
+                                  <div className="text-white/60 text-sm">
+                                    {req.resume_evidence || <span className="text-white/30 italic">No evidence found in resume</span>}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Strong Matches & Missing Skills */}
+                      <div className="grid md:grid-cols-2 gap-4">
+                        {jobMatchSection?.strong_matches && jobMatchSection.strong_matches.length > 0 && (
+                          <div>
+                            <h4 className="text-green-400 text-sm font-medium mb-2">Strong Matches</h4>
+                            <ul className="space-y-1">
+                              {jobMatchSection.strong_matches.map((match: string, index: number) => (
+                                <li key={index} className="flex items-center gap-2 text-white/70 text-sm">
+                                  <CheckCircle className="h-4 w-4 text-green-400 shrink-0" />
+                                  {match}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {jobMatchSection?.missing_skills && jobMatchSection.missing_skills.length > 0 && (
+                          <div>
+                            <h4 className="text-orange-400 text-sm font-medium mb-2">Missing Skills</h4>
+                            <ul className="space-y-1">
+                              {jobMatchSection.missing_skills.map((skill: string, index: number) => (
+                                <li key={index} className="flex items-center gap-2 text-white/70 text-sm">
+                                  <AlertTriangle className="h-4 w-4 text-orange-400 shrink-0" />
+                                  {skill}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
+        </motion.section>
+
+        {/* Highest-ROI Gaps */}
+        {highestRoiGaps.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45 }}
+            className="mb-8"
+          >
+            <Card className="bg-red-500/10 border-red-500/20">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg text-red-400 flex items-center gap-2">
+                  <AlertCircle className="h-5 w-5" />
+                  Highest-ROI Gaps to Close
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {highestRoiGaps.map((gap, index) => (
+                  <div key={index} className="p-4 bg-white/5 rounded-lg space-y-3">
+                    <h4 className="text-white font-medium">{gap.gap || gap.title}</h4>
+                    {gap.why_it_matters && (
+                      <div>
+                        <span className="text-xs text-yellow-400 uppercase tracking-wider">Why it matters</span>
+                        <p className="text-white/60 text-sm mt-1">{gap.why_it_matters}</p>
+                      </div>
+                    )}
+                    {gap.proof_needed && (
+                      <div>
+                        <span className="text-xs text-blue-400 uppercase tracking-wider">Proof needed</span>
+                        <p className="text-white/60 text-sm mt-1">{gap.proof_needed}</p>
+                      </div>
+                    )}
+                    {gap.bullet_frame && (
+                      <div className="mt-2 p-3 bg-primary/10 rounded-lg border border-primary/20">
+                        <span className="text-xs text-primary uppercase tracking-wider">Bullet frame</span>
+                        <p className="text-white/80 text-sm mt-1 font-mono">{gap.bullet_frame}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </motion.section>
+        )}
+
+        {/* Top Strengths & Fixes Side by Side */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
           className="grid md:grid-cols-2 gap-4 mb-8"
         >
+          {/* Top Strengths */}
           <Card className="bg-green-500/10 border-green-500/20">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg text-green-400 flex items-center gap-2">
@@ -469,6 +768,7 @@ export default function ResultsPage() {
             </CardContent>
           </Card>
 
+          {/* Highest ROI Fixes */}
           <Card className="bg-orange-500/10 border-orange-500/20">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg text-orange-400 flex items-center gap-2">
@@ -503,8 +803,8 @@ export default function ResultsPage() {
                               </span>
                             )}
                           </div>
-                          {item.recommended && (
-                            <p className="text-white/50 text-sm mt-1">{item.recommended}</p>
+                          {(item.why || item.why_weak) && (
+                            <p className="text-white/50 text-sm mt-1">{item.why || item.why_weak}</p>
                           )}
                           <AnimatePresence>
                             {expandedFixes.has(index) && item.how_to_do_it && (
@@ -515,6 +815,9 @@ export default function ResultsPage() {
                                 className="mt-2 p-2 bg-white/5 rounded-lg"
                               >
                                 <p className="text-white/60 text-sm">{item.how_to_do_it}</p>
+                                {item.ref && (
+                                  <p className="text-white/40 text-xs mt-1 italic">Ref: {item.ref}</p>
+                                )}
                               </motion.div>
                             )}
                           </AnimatePresence>
@@ -542,11 +845,119 @@ export default function ResultsPage() {
           </Card>
         </motion.section>
 
+        {/* Bullet-by-Bullet Rewrite Recommendations */}
+        {bulletReview.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.55 }}
+            className="mb-8"
+          >
+            <Card className="bg-white/5 border-white/10">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg text-white flex items-center gap-2">
+                  <Edit3 className="h-5 w-5 text-primary" />
+                  Bullet-by-Bullet Rewrite Recommendations
+                  <Badge variant="outline" className="bg-white/10 text-white/60 border-white/20">
+                    {bulletReview.length} bullets
+                  </Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="multiple" className="space-y-2">
+                  {bulletReview.map((item, index) => (
+                    <AccordionItem 
+                      key={index} 
+                      value={`bullet-${index}`}
+                      className="border border-white/10 rounded-lg overflow-hidden bg-white/5"
+                    >
+                      <AccordionTrigger className="px-4 py-3 hover:bg-white/5 [&[data-state=open]]:bg-white/5">
+                        <div className="flex items-center gap-3 text-left">
+                          <span className="w-6 h-6 rounded-full bg-primary/20 text-primary text-sm flex items-center justify-center shrink-0">
+                            {index + 1}
+                          </span>
+                          <span className="text-white/80 text-sm line-clamp-1">{item.original}</span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 pb-4 space-y-4">
+                        <div>
+                          <span className="text-xs text-white/40 uppercase tracking-wider flex items-center gap-1">
+                            <FileText className="h-3 w-3" /> Original
+                          </span>
+                          <p className="text-white/60 mt-1 text-sm">{item.original}</p>
+                        </div>
+                        {item.why_weak && (
+                          <div>
+                            <span className="text-xs text-red-400 uppercase tracking-wider flex items-center gap-1">
+                              <AlertCircle className="h-3 w-3" /> Why weak
+                            </span>
+                            <p className="text-white/60 mt-1 text-sm">{item.why_weak}</p>
+                          </div>
+                        )}
+                        {item.recommended && (
+                          <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
+                            <span className="text-xs text-green-400 uppercase tracking-wider flex items-center gap-1">
+                              <CheckCircle className="h-3 w-3" /> Recommended rewrite
+                            </span>
+                            <p className="text-white/80 mt-1 text-sm">{item.recommended}</p>
+                          </div>
+                        )}
+                        {((item.placeholders && item.placeholders.length > 0) || (item.fill && item.fill.length > 0)) && (
+                          <div>
+                            <span className="text-xs text-primary uppercase tracking-wider">Fill these placeholders</span>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {(item.placeholders || item.fill || []).map((placeholder, pIndex) => (
+                                <Badge key={pIndex} variant="outline" className="bg-primary/10 text-primary border-primary/30">
+                                  [{placeholder}]
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </motion.section>
+        )}
+
+        {/* Info to Fill Placeholders */}
+        {infoNeeded.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mb-8"
+          >
+            <Card className="bg-blue-500/10 border-blue-500/20">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg text-blue-400 flex items-center gap-2">
+                  <HelpCircle className="h-5 w-5" />
+                  Info to Fill Placeholders
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {infoNeeded.map((question: string, index: number) => (
+                    <li key={index} className="flex items-start gap-2 text-white/70">
+                      <HelpCircle className="h-4 w-4 text-blue-400 mt-1 shrink-0" />
+                      <span className="text-sm">{question}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </motion.section>
+        )}
+
+        {/* 7-Step Improvement Plan */}
         {sevenStepPlan.length > 0 && (
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.65 }}
             className="mb-8"
           >
             <Card className="bg-primary/10 border-primary/20">
@@ -560,12 +971,12 @@ export default function ResultsPage() {
                 <div className="relative">
                   <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-primary/20" />
                   <ol className="space-y-4">
-                    {sevenStepPlan.map((item: any, index: number) => (
+                    {sevenStepPlan.map((item, index) => (
                       <motion.li
                         key={index}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.5 + index * 0.05 }}
+                        transition={{ delay: 0.65 + index * 0.05 }}
                         className="flex items-start gap-4 relative"
                       >
                         <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-sm font-medium shrink-0 z-10">
@@ -582,6 +993,11 @@ export default function ResultsPage() {
                               {item.priority}
                             </span>
                           )}
+                          {item.output && (
+                            <p className="text-white/50 text-sm mt-1">
+                              <span className="text-primary/70">Output:</span> {item.output}
+                            </p>
+                          )}
                         </div>
                       </motion.li>
                     ))}
@@ -592,193 +1008,12 @@ export default function ResultsPage() {
           </motion.section>
         )}
 
-        {bulletReview.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="mb-8"
-          >
-            <Collapsible open={bulletReviewOpen} onOpenChange={setBulletReviewOpen}>
-              <Card className="bg-white/5 border-white/10">
-                <CollapsibleTrigger asChild>
-                  <CardHeader className="cursor-pointer hover:bg-white/5 transition-colors">
-                    <CardTitle className="text-lg text-white flex items-center justify-between">
-                      <span className="flex items-center gap-2">
-                        <FileText className="h-5 w-5 text-primary" />
-                        Bullet Review Deep Dive
-                        <span className="text-xs bg-white/10 px-2 py-0.5 rounded-full text-white/50">
-                          {bulletReview.length} items
-                        </span>
-                      </span>
-                      {bulletReviewOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-                    </CardTitle>
-                  </CardHeader>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <CardContent className="space-y-4">
-                    {bulletReview.map((item: any, index: number) => (
-                      <div key={index} className="p-4 bg-white/5 rounded-lg space-y-3">
-                        <div>
-                          <span className="text-xs text-white/40 uppercase tracking-wider">Original</span>
-                          <p className="text-white/60 mt-1">{item.original}</p>
-                        </div>
-                        {item.why_weak && (
-                          <div>
-                            <span className="text-xs text-red-400 uppercase tracking-wider">Why it's weak</span>
-                            <p className="text-white/60 mt-1">{item.why_weak}</p>
-                          </div>
-                        )}
-                        {item.recommended && (
-                          <div>
-                            <span className="text-xs text-green-400 uppercase tracking-wider">Recommended</span>
-                            <p className="text-white/80 mt-1">{item.recommended}</p>
-                          </div>
-                        )}
-                        {item.placeholders && item.placeholders.length > 0 && (
-                          <div className="flex flex-wrap gap-2">
-                            {item.placeholders.map((placeholder: string, pIndex: number) => (
-                              <span key={pIndex} className="text-xs bg-primary/20 text-primary px-2 py-1 rounded">
-                                {placeholder}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </CardContent>
-                </CollapsibleContent>
-              </Card>
-            </Collapsible>
-          </motion.section>
-        )}
-
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="mb-8"
-        >
-          <Collapsible open={jobMatchOpen} onOpenChange={setJobMatchOpen}>
-            <Card className="bg-white/5 border-white/10">
-              <CollapsibleTrigger asChild>
-                <CardHeader className="cursor-pointer hover:bg-white/5 transition-colors">
-                  <CardTitle className="text-lg text-white flex items-center justify-between">
-                    <span className="flex items-center gap-2">
-                      <Briefcase className="h-5 w-5 text-primary" />
-                      Job Match Deep Dive
-                      {jobMatchSkipped && (
-                        <span className="text-xs bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded-full">
-                          JD missing
-                        </span>
-                      )}
-                    </span>
-                    {jobMatchOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-                  </CardTitle>
-                </CardHeader>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <CardContent>
-                  {jobMatchSkipped ? (
-                    <div className="text-center py-8">
-                      <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
-                        <FileText className="h-8 w-8 text-white/30" />
-                      </div>
-                      <h3 className="text-white font-medium mb-2">No Job Description Provided</h3>
-                      <p className="text-white/50 mb-4 max-w-sm mx-auto">
-                        Upload a job description to see how well your CV matches the requirements
-                      </p>
-                      <Button
-                        onClick={() => navigate("/upload?jd=true")}
-                        className="gap-2"
-                        data-testid="button-upload-jd-match"
-                      >
-                        <FileText className="h-4 w-4" />
-                        Upload JD
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {jobMatchSection?.strong_matches && jobMatchSection.strong_matches.length > 0 && (
-                        <div>
-                          <h4 className="text-green-400 text-sm font-medium mb-2">Strong Matches</h4>
-                          <ul className="space-y-1">
-                            {jobMatchSection.strong_matches.map((match: string, index: number) => (
-                              <li key={index} className="flex items-center gap-2 text-white/70">
-                                <CheckCircle className="h-4 w-4 text-green-400" />
-                                {match}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      {jobMatchSection?.missing_skills && jobMatchSection.missing_skills.length > 0 && (
-                        <div>
-                          <h4 className="text-orange-400 text-sm font-medium mb-2">Missing Skills</h4>
-                          <ul className="space-y-1">
-                            {jobMatchSection.missing_skills.map((skill: string, index: number) => (
-                              <li key={index} className="flex items-center gap-2 text-white/70">
-                                <AlertTriangle className="h-4 w-4 text-orange-400" />
-                                {skill}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      {jobMatchSection?.gaps && jobMatchSection.gaps.length > 0 && (
-                        <div>
-                          <h4 className="text-red-400 text-sm font-medium mb-2">Gaps to Address</h4>
-                          <ul className="space-y-1">
-                            {jobMatchSection.gaps.map((gap: string, index: number) => (
-                              <li key={index} className="flex items-center gap-2 text-white/70">
-                                <AlertTriangle className="h-4 w-4 text-red-400" />
-                                {gap}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </CardContent>
-              </CollapsibleContent>
-            </Card>
-          </Collapsible>
-        </motion.section>
-
-        {infoNeeded.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="mb-8"
-          >
-            <Card className="bg-blue-500/10 border-blue-500/20">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg text-blue-400 flex items-center gap-2">
-                  <HelpCircle className="h-5 w-5" />
-                  Questions for Better Analysis
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  {infoNeeded.map((question: string, index: number) => (
-                    <li key={index} className="flex items-start gap-2 text-white/70">
-                      <HelpCircle className="h-4 w-4 text-blue-400 mt-1 shrink-0" />
-                      <span>{question}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </motion.section>
-        )}
-
+        {/* CTA Banner */}
         {report.cta && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 }}
+            transition={{ delay: 0.7 }}
             className="bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-xl p-6 text-center mb-8"
           >
             <Sparkles className="h-8 w-8 text-primary mx-auto mb-3" />
@@ -787,13 +1022,14 @@ export default function ResultsPage() {
         )}
       </div>
 
+      {/* Sticky Footer CTAs */}
       <motion.div
         initial={{ y: 100 }}
         animate={{ y: 0 }}
         transition={{ delay: 1, type: "spring" }}
         className="fixed bottom-0 left-0 right-0 bg-[#0a0014]/95 backdrop-blur-lg border-t border-white/10 p-4 z-50"
       >
-        <div className="max-w-3xl mx-auto flex items-center justify-between gap-3">
+        <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
           <Button
             onClick={() => navigate("/upload")}
             className="flex-1 gap-2"
@@ -810,15 +1046,6 @@ export default function ResultsPage() {
           >
             <FileText className="h-4 w-4" />
             Upload JD
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleShare}
-            className="text-white/70 hover:text-white hover:bg-white/10"
-            data-testid="button-share-sticky"
-          >
-            <Share2 className="h-5 w-5" />
           </Button>
         </div>
       </motion.div>
