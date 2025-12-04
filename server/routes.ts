@@ -14,6 +14,21 @@ import { setupSupabaseAuth } from "./supabaseAuth";
 export async function registerRoutes(app: Express): Promise<Server> {
   await setupSupabaseAuth(app);
 
+  // Serve Supabase config to frontend (anon key is safe to expose)
+  app.get("/api/config/supabase", (req, res) => {
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return res.status(500).json({ error: "Supabase not configured" });
+    }
+    
+    res.json({
+      url: supabaseUrl,
+      anonKey: supabaseAnonKey
+    });
+  });
+
   app.use("/api/resources", resourcesRouter);
   app.use("/api/assessment", assessmentRouter);
   app.use("/api/analytics", analyticsRouter);

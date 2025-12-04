@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase, signOut as supabaseSignOut, syncSessionWithBackend } from "@/lib/supabase";
+import { getSupabaseClient, signOut as supabaseSignOut, syncSessionWithBackend } from "@/lib/supabase";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 interface Profile {
@@ -33,33 +33,52 @@ export function useAuth() {
   const queryClient = useQueryClient();
   const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
   const [sessionChecked, setSessionChecked] = useState(false);
+  const [clientReady, setClientReady] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSupabaseUser(session?.user ?? null);
-      if (session) {
-        syncSessionWithBackend();
-      }
-      setSessionChecked(true);
-    });
+    let subscription: { unsubscribe: () => void } | null = null;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setSupabaseUser(session?.user ?? null);
-      if (session) {
-        await syncSessionWithBackend();
-        queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-        queryClient.invalidateQueries({ queryKey: ["/api/me"] });
-      } else {
-        queryClient.clear();
-      }
-    });
+    async function initAuth() {
+      try {
+        const client = await getSupabaseClient();
+        setClientReady(true);
 
-    return () => subscription.unsubscribe();
+        const { data: { session } } = await client.auth.getSession();
+        setSupabaseUser(session?.user ?? null);
+        if (session) {
+          syncSessionWithBackend();
+        }
+        setSessionChecked(true);
+
+        const { data: { subscription: sub } } = client.auth.onAuthStateChange(async (event, session) => {
+          setSupabaseUser(session?.user ?? null);
+          if (session) {
+            await syncSessionWithBackend();
+            queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/me"] });
+          } else {
+            queryClient.clear();
+          }
+        });
+        subscription = sub;
+      } catch (error) {
+        console.error('Failed to initialize auth:', error);
+        setSessionChecked(true);
+      }
+    }
+
+    initAuth();
+
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
   }, [queryClient]);
 
   const { data: profile, isLoading: profileLoading, error } = useQuery<Profile>({
     queryKey: ["/api/auth/user"],
-    enabled: !!supabaseUser && sessionChecked,
+    enabled: !!supabaseUser && sessionChecked && clientReady,
     retry: false,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
@@ -95,7 +114,7 @@ export function useAuth() {
 
   return {
     user,
-    isLoading: !sessionChecked || (!!supabaseUser && profileLoading && !is401),
+    isLoading: !sessionChecked || !clientReady || (!!supabaseUser && profileLoading && !is401),
     isAuthenticated: !!supabaseUser && !!profile && !is401,
     error: is401 ? null : error,
     logout,

@@ -1,25 +1,58 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-// Supabase configuration - anon key is public and safe to include in client code
-const SUPABASE_URL = 'https://rhwvwvvwjwvtlxzqooii.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJod3Z3dnZ3and2dGx4enFvb2lpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1ODQzOTEsImV4cCI6MjA3ODE2MDM5MX0.tvv9lDe_4PACmq4s1j1jkwAPiTEYATjLZUaDtW_e4Ms';
+let supabaseInstance: SupabaseClient | null = null;
+let configPromise: Promise<{ url: string; anonKey: string }> | null = null;
+let initError: Error | null = null;
 
-// Use environment variables if available (for flexibility), otherwise use hardcoded values
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || SUPABASE_ANON_KEY;
-
-export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
+async function fetchSupabaseConfig(): Promise<{ url: string; anonKey: string }> {
+  const response = await fetch('/api/config/supabase');
+  if (!response.ok) {
+    throw new Error('Failed to fetch Supabase config from server');
   }
-});
+  return response.json();
+}
 
-export const isSupabaseConfigured = true;
+export async function getSupabaseClient(): Promise<SupabaseClient> {
+  if (supabaseInstance) {
+    return supabaseInstance;
+  }
+  
+  if (initError) {
+    throw initError;
+  }
+  
+  if (!configPromise) {
+    configPromise = fetchSupabaseConfig();
+  }
+  
+  try {
+    const config = await configPromise;
+    supabaseInstance = createClient(config.url, config.anonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+      }
+    });
+    return supabaseInstance;
+  } catch (error) {
+    initError = error as Error;
+    configPromise = null;
+    throw error;
+  }
+}
+
+export function getSupabaseSync(): SupabaseClient | null {
+  return supabaseInstance;
+}
+
+export async function initializeSupabase(): Promise<void> {
+  await getSupabaseClient();
+}
 
 export async function signInWithGoogle() {
-  const { data, error } = await supabase.auth.signInWithOAuth({
+  const client = await getSupabaseClient();
+  const { data, error } = await client.auth.signInWithOAuth({
     provider: 'google',
     options: {
       redirectTo: `${window.location.origin}/auth/callback`
@@ -35,7 +68,8 @@ export async function signInWithGoogle() {
 }
 
 export async function signInWithEmail(email: string, password: string) {
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const client = await getSupabaseClient();
+  const { data, error } = await client.auth.signInWithPassword({
     email,
     password
   });
@@ -48,7 +82,8 @@ export async function signInWithEmail(email: string, password: string) {
 }
 
 export async function signUpWithEmail(email: string, password: string) {
-  const { data, error } = await supabase.auth.signUp({
+  const client = await getSupabaseClient();
+  const { data, error } = await client.auth.signUp({
     email,
     password,
     options: {
@@ -64,7 +99,8 @@ export async function signUpWithEmail(email: string, password: string) {
 }
 
 export async function signOut() {
-  const { error } = await supabase.auth.signOut();
+  const client = await getSupabaseClient();
+  const { error } = await client.auth.signOut();
   if (error) {
     console.error('Sign out error:', error);
     throw error;
@@ -72,12 +108,18 @@ export async function signOut() {
 }
 
 export async function getSession() {
-  const { data: { session }, error } = await supabase.auth.getSession();
-  if (error) {
-    console.error('Get session error:', error);
+  try {
+    const client = await getSupabaseClient();
+    const { data: { session }, error } = await client.auth.getSession();
+    if (error) {
+      console.error('Get session error:', error);
+      return null;
+    }
+    return session;
+  } catch (error) {
+    console.error('Failed to get Supabase client:', error);
     return null;
   }
-  return session;
 }
 
 export async function syncSessionWithBackend() {
