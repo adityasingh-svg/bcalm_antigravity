@@ -17,8 +17,27 @@ export default function Navbar() {
   const { user, isLoading, isAuthenticated, logout } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
-  const handleGetCvScore = () => {
-    navigate("/start");
+  const scrollToLeadForm = () => {
+    const formCard = document.getElementById('lead-form-card');
+    if (formCard) {
+      const navbarHeight = 60;
+      const offset = 20;
+      const elementPosition = formCard.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - navbarHeight - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    } else {
+      navigate("/");
+      setTimeout(() => {
+        const form = document.getElementById('lead-form-card');
+        if (form) {
+          form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    }
   };
 
   const handleLogout = async () => {
@@ -95,7 +114,7 @@ export default function Navbar() {
                     Sign in
                   </button>
                   <button 
-                    onClick={handleGetCvScore}
+                    onClick={scrollToLeadForm}
                     className="text-white bg-primary hover:bg-primary/90 px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
                     data-testid="button-get-cv-score-nav"
                   >

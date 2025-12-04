@@ -3,116 +3,78 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, CheckCircle, ChevronRight, Loader2 } from "lucide-react";
+import { CheckCircle, ChevronRight, Loader2, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { trackEvent } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/useAuth";
-import AuthModal from "@/components/AuthModal";
-
-const targetRoles = [
-  "Product Manager",
-  "Data Analyst",
-  "Software Engineer",
-  "Business Analyst",
-  "Consultant",
-  "Marketing",
-  "Operations",
-  "Other"
-];
 
 export default function HeroSection() {
   const [, navigate] = useLocation();
-  const { isAuthenticated } = useAuth();
-  const [step, setStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    email: "",
-    targetRole: "",
-    resume: null as File | null
+    name: "",
+    phone: ""
   });
 
-  const handleGetCvScore = () => {
-    navigate("/start");
-  };
-
-  const handleStep1Submit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.email && formData.targetRole) {
-      trackEvent("cv_score_step1_completed", {
-        targetRole: formData.targetRole
+    
+    if (!formData.name || !formData.phone) {
+      toast({
+        title: "Please fill all fields",
+        description: "Name and mobile number are required.",
+        variant: "destructive",
       });
-      setStep(2);
+      return;
     }
-  };
 
-  const handleStep2Submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.resume) return;
+    if (!/^[6-9]\d{9}$/.test(formData.phone)) {
+      toast({
+        title: "Invalid phone number",
+        description: "Please enter a valid 10-digit Indian mobile number.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     setIsSubmitting(true);
     
     try {
-      const submitData = new FormData();
-      submitData.append("email", formData.email);
-      submitData.append("targetRole", formData.targetRole);
-      submitData.append("cv", formData.resume);
-      
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get("utm_source")) submitData.append("utmSource", urlParams.get("utm_source")!);
-      if (urlParams.get("utm_medium")) submitData.append("utmMedium", urlParams.get("utm_medium")!);
-      if (urlParams.get("utm_campaign")) submitData.append("utmCampaign", urlParams.get("utm_campaign")!);
       
-      const response = await fetch("/api/cv/submit", {
+      const response = await fetch("/api/leads/submit", {
         method: "POST",
-        body: submitData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone,
+          utmSource: urlParams.get("utm_source") || undefined,
+          utmMedium: urlParams.get("utm_medium") || undefined,
+          utmCampaign: urlParams.get("utm_campaign") || undefined,
+        }),
       });
       
       if (!response.ok) {
-        throw new Error("Failed to submit CV");
+        const data = await response.json();
+        throw new Error(data.error || "Failed to submit");
       }
       
-      trackEvent("cv_score_step2_completed", {
-        targetRole: formData.targetRole,
-        hasResume: true
+      trackEvent("lead_submitted", {
+        source: "hero_form"
       });
       
       setShowSuccess(true);
     } catch (error) {
-      console.error("CV submission error:", error);
+      console.error("Lead submission error:", error);
       toast({
         title: "Submission failed",
-        description: "Please try again or contact support.",
+        description: error instanceof Error ? error.message : "Please try again.",
         variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFormData({ ...formData, resume: file });
-    }
-  };
-
-  const scrollToForm = () => {
-    const formCard = document.getElementById('cv-form-card');
-    if (formCard) {
-      const navbarHeight = 60;
-      const offset = 20; // Extra padding below navbar
-      const elementPosition = formCard.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - navbarHeight - offset;
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
     }
   };
 
@@ -122,7 +84,7 @@ export default function HeroSection() {
       className="relative min-h-screen overflow-hidden" 
       style={{ paddingTop: '60px' }}
     >
-      {/* Dark gradient background - Seekho inspired */}
+      {/* Dark gradient background */}
       <div 
         className="absolute inset-0 z-0"
         style={{
@@ -148,7 +110,7 @@ export default function HeroSection() {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          {/* Top Badge - Seekho style pill */}
+          {/* Top Badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -165,7 +127,7 @@ export default function HeroSection() {
             </span>
           </motion.div>
           
-          {/* Main Headline - Two lines, large and bold */}
+          {/* Main Headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-4 md:mb-6">
             <span className="block">Crack Your Dream Job</span>
             <span className="block bg-gradient-to-r from-violet-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
@@ -177,27 +139,6 @@ export default function HeroSection() {
           <p className="text-lg sm:text-xl md:text-2xl text-white/80 mb-8 md:mb-10 font-medium">
             Free AI CV Score + 30-Day Personalized Plan
           </p>
-          
-          {/* Primary CTA Button - Seekho gradient pill style */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mb-8 md:mb-10"
-          >
-            <button
-              onClick={handleGetCvScore}
-              className="group inline-flex items-center gap-2 px-8 py-4 md:px-10 md:py-5 rounded-full text-lg md:text-xl font-semibold text-white transition-all duration-300 hover:scale-105 active:scale-100"
-              style={{
-                background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
-                boxShadow: '0 8px 32px rgba(139, 92, 246, 0.4), 0 4px 12px rgba(0,0,0,0.3)',
-              }}
-              data-testid="button-get-cv-score-main"
-            >
-              Start for free
-              <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-            </button>
-          </motion.div>
           
           {/* Trust Line */}
           <p className="text-sm md:text-base text-white/60 mb-4">
@@ -232,9 +173,9 @@ export default function HeroSection() {
             </p>
           </div>
           
-          {/* Form Card - Floating style */}
+          {/* Lead Capture Form Card */}
           <motion.div
-            id="cv-form-card"
+            id="lead-form-card"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -250,125 +191,67 @@ export default function HeroSection() {
             >
               {!showSuccess ? (
                 <>
-                  {/* Progress Bar */}
-                  <div className="mb-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs md:text-sm text-white/70">
-                        Step {step} of 2 · {step === 1 ? "Get your FREE CV Score" : "Upload your CV"}
-                      </span>
-                    </div>
-                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{
-                          width: step === 1 ? '50%' : '100%',
-                          background: 'linear-gradient(90deg, #8B5CF6 0%, #A855F7 100%)',
-                        }}
-                      />
-                    </div>
+                  <div className="flex items-center justify-center gap-2 mb-4">
+                    <Sparkles className="w-5 h-5 text-violet-400" />
+                    <h3 className="text-lg font-semibold text-white">Get Your FREE CV Score</h3>
                   </div>
                   
-                  {step === 1 ? (
-                    <form onSubmit={handleStep1Submit} className="space-y-4">
-                      <div className="text-left">
-                        <Label htmlFor="email" className="text-white/80 text-sm font-medium">Email</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="name@gmail.com"
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          className="mt-1.5 h-12 bg-white/5 border-white/15 text-white placeholder:text-white/40 focus:border-violet-500 focus:ring-violet-500/20 rounded-xl"
-                          required
-                          data-testid="input-email"
-                        />
-                      </div>
-                      
-                      <div className="text-left">
-                        <Label htmlFor="targetRole" className="text-white/80 text-sm font-medium">Target Role</Label>
-                        <Select 
-                          value={formData.targetRole} 
-                          onValueChange={(value) => setFormData({ ...formData, targetRole: value })}
-                        >
-                          <SelectTrigger 
-                            className="mt-1.5 h-12 bg-white/5 border-white/15 text-white focus:ring-violet-500/20 rounded-xl"
-                            data-testid="select-target-role"
-                          >
-                            <SelectValue placeholder="Select your target role" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {targetRoles.map((role) => (
-                              <SelectItem key={role} value={role}>
-                                {role}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      <Button 
-                        type="submit"
-                        className="w-full h-12 text-base font-semibold rounded-xl"
-                        style={{
-                          background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
-                          boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
-                        }}
-                        data-testid="button-get-cv-score"
-                      >
-                        Continue
-                        <ChevronRight className="ml-1 w-4 h-4" />
-                      </Button>
-                    </form>
-                  ) : (
-                    <form onSubmit={handleStep2Submit} className="space-y-4">
-                      <div className="text-left">
-                        <Label htmlFor="resume" className="text-white/80 text-sm font-medium">Upload Resume (PDF or DOCX)</Label>
-                        <div className="mt-2">
-                          <label 
-                            htmlFor="resume" 
-                            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/20 rounded-xl cursor-pointer hover:border-violet-500/60 transition-colors bg-white/5"
-                          >
-                            <Upload className="w-8 h-8 text-white/40 mb-2" />
-                            <span className="text-sm text-white/70">
-                              {formData.resume ? formData.resume.name : "Click to upload"}
-                            </span>
-                            <span className="text-xs text-white/40 mt-1">PDF, DOCX up to 5MB</span>
-                            <input 
-                              id="resume" 
-                              type="file" 
-                              className="hidden" 
-                              accept=".pdf,.docx,.doc"
-                              onChange={handleFileChange}
-                              data-testid="input-resume"
-                            />
-                          </label>
-                        </div>
-                        <p className="text-xs text-white/50 mt-2">
-                          We'll analyze your CV and email your score & roadmap.
-                        </p>
-                      </div>
-                      
-                      <Button 
-                        type="submit"
-                        className="w-full h-12 text-base font-semibold rounded-xl"
-                        style={{
-                          background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
-                          boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
-                        }}
-                        disabled={!formData.resume || isSubmitting}
-                        data-testid="button-submit-cv"
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-                            Submitting...
-                          </>
-                        ) : (
-                          "Submit CV"
-                        )}
-                      </Button>
-                    </form>
-                  )}
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="text-left">
+                      <Label htmlFor="name" className="text-white/80 text-sm font-medium">Full Name</Label>
+                      <Input
+                        id="name"
+                        type="text"
+                        placeholder="Enter your name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="mt-1.5 h-12 bg-white/5 border-white/15 text-white placeholder:text-white/40 focus:border-violet-500 focus:ring-violet-500/20 rounded-xl"
+                        required
+                        data-testid="input-name"
+                      />
+                    </div>
+                    
+                    <div className="text-left">
+                      <Label htmlFor="phone" className="text-white/80 text-sm font-medium">Mobile Number</Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="10-digit mobile number"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
+                        className="mt-1.5 h-12 bg-white/5 border-white/15 text-white placeholder:text-white/40 focus:border-violet-500 focus:ring-violet-500/20 rounded-xl"
+                        required
+                        data-testid="input-phone"
+                      />
+                    </div>
+                    
+                    <Button 
+                      type="submit"
+                      className="w-full h-12 text-base font-semibold rounded-xl"
+                      style={{
+                        background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+                        boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
+                      }}
+                      disabled={isSubmitting}
+                      data-testid="button-start-free"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          Start for free
+                          <ChevronRight className="ml-1 w-4 h-4" />
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                  
+                  <p className="mt-4 text-xs text-white/50 text-center">
+                    No spam. We'll only contact you about your CV review.
+                  </p>
                 </>
               ) : (
                 /* Success State */
@@ -376,9 +259,14 @@ export default function HeroSection() {
                   <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
                     <CheckCircle className="w-10 h-10 text-emerald-400" />
                   </div>
-                  <h3 className="text-xl font-semibold text-white mb-2">You're in!</h3>
-                  <p className="text-white/70 text-sm">
-                    We'll email your CV Score and roadmap within 24 hours.
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    Congratulations! 🎉
+                  </h3>
+                  <p className="text-white/80 text-base mb-2">
+                    You've taken the first step toward your dream job!
+                  </p>
+                  <p className="text-white/60 text-sm">
+                    We'll reach out to you soon to get started.
                   </p>
                 </div>
               )}
@@ -391,8 +279,6 @@ export default function HeroSection() {
           </p>
         </motion.div>
       </div>
-      
-      <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
     </section>
   );
 }

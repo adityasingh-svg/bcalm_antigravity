@@ -1,18 +1,16 @@
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function StickyMobileCTA() {
-  const scrollToForm = () => {
-    const formCard = document.getElementById('cv-form-card');
-    if (formCard) {
-      const navbarHeight = 60;
-      const offset = 20;
-      const elementPosition = formCard.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - navbarHeight - offset;
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+  const [, navigate] = useLocation();
+  const { isAuthenticated } = useAuth();
+
+  const handleCheckMyCv = () => {
+    if (isAuthenticated) {
+      navigate("/upload");
+    } else {
+      navigate("/start");
     }
   };
 
@@ -28,14 +26,14 @@ export default function StickyMobileCTA() {
     >
       <div className="flex items-center justify-between gap-3">
         <p className="text-white text-sm font-medium">
-          Get <span className="text-primary">FREE</span> CV Score
+          Get a <span className="text-primary">clear CV review</span>
         </p>
         <Button
-          onClick={scrollToForm}
+          onClick={handleCheckMyCv}
           className="bg-primary hover:bg-primary/90 text-white font-semibold px-6"
-          data-testid="button-sticky-start"
+          data-testid="button-sticky-check-cv"
         >
-          Start Now
+          Check my CV
         </Button>
       </div>
     </div>
