@@ -88,6 +88,39 @@ Before auth will work, you must run the SQL in `supabase/complete_setup.sql` in 
 3. Add Redirect URI: `https://[your-project-ref].supabase.co/auth/v1/callback`
 4. If in "Testing" mode, add test users to OAuth consent screen
 
+#### Auth Page & Modal
+
+A unified authentication system with shared AuthCard component used on both `/auth` route and in modal.
+
+**Layout (exact order):**
+1. Logo (GraduationCap icon in purple gradient box)
+2. Headline: "Welcome to BCALM"
+3. Subtext: "Sign in to continue"
+4. "Continue with Google" button (purple gradient, triggers Supabase OAuth)
+5. "or" separator
+6. Email field (label: "Email", placeholder: "you@example.com")
+7. Password field (label: "Password", placeholder: "Enter password")
+8. "Continue" button (purple gradient)
+9. Helper links: "New here? Create account" | "Forgot password?"
+10. Footer: "By continuing you agree to Terms & Privacy"
+
+**Styling:**
+- Card background: `rgba(20, 12, 40, 0.96)`
+- Borders: `rgba(255,255,255,0.10)`
+- Inputs: solid dark (#1a0033) with clear borders
+- Primary buttons: purple gradient
+- Page background: dark purple gradient
+
+**Behaviors:**
+- **Email/password auto-create**: Attempts sign-in first; if user doesn't exist, automatically creates account
+- **"New here?" link**: Focuses email field, shows hint "We'll create your account if you're new."
+- **"Forgot password?" link**: Switches to inline reset state with email-only field and "Send reset link" CTA; shows "Reset link sent" on success
+
+**Files:**
+- `client/src/components/AuthCard.tsx` - Shared component
+- `client/src/pages/AuthPage.tsx` - Renders AuthCard on `/auth` route
+- `client/src/components/AuthModal.tsx` - Wraps AuthCard in dialog
+
 #### CTA Components
 
 Three CTA systems are implemented for lead conversion:
