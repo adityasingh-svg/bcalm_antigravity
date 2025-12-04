@@ -1,0 +1,202 @@
+Update my existing BCALM Replit app (Node + Express backend, vanilla HTML/CSS/JS frontend).
+Goal: add a consistent “Change Profile” popup that can be opened from:
+
+the user menu in the top bar (after clicking user name), and
+
+an “Edit” link shown near the final tuning summary on the last onboarding screen (Experience screen).
+IMPORTANT: Do not add or invent any new copy anywhere.
+Use only the exact text strings I specify below.
+If a UI element needs a label and I didn’t give one, leave it unlabeled.
+
+Existing assumptions
+
+Supabase auth + profiles table already integrated.
+
+Profiles fields:
+
+current_status
+
+target_role
+
+years_experience
+
+onboarding_completed
+
+Experience screen route exists: /onboarding/experience
+
+Top bar exists and shows user name when logged in.
+
+New UI requirements
+A) Add “Edit” near final tuning line on last onboarding screen
+
+On /onboarding/experience, below the experience selection and above the primary CTA, render a single-line summary:
+
+Exact format (no extra words):
+Scoring for: {target_role or 'General readiness'} · {current_status or 'Not specified'} · {years_experience or 'Not specified'}
+
+At the right end of that same line, add a subtle text link:
+
+Exact link text:
+Edit
+
+Styling:
+
+Same font size as summary line.
+
+Secondary/muted color.
+
+Underline only on hover.
+
+Not a button.
+
+Behavior:
+
+Clicking Edit opens the same Change Profile popup described below.
+
+Popup fields must be prefilled with current Supabase profile values.
+
+After Save, update the summary line and keep user on the same screen.
+
+B) Add user menu options in top bar
+
+On click of user name in top bar, open a small dropdown with two options:
+
+Exact menu items (no extra items):
+
+Change Profile
+
+Logout
+
+Behavior:
+
+Clicking Change Profile opens the same popup.
+
+Clicking Logout signs out from Supabase and redirects to home (/).
+
+C) Change Profile popup (single reusable component)
+
+Implement one popup modal component that is reused by:
+
+the onboarding Experience screen Edit link
+
+the top bar menu Change Profile
+
+Popup layout:
+
+Centered modal with dark overlay.
+
+Title at top:
+
+Exact title text:
+Tune your CV review
+
+Subtitle under title:
+
+Exact subtitle text:
+This helps us score more accurately.
+
+Fields (3 dropdowns, prefilled):
+
+Current status dropdown
+Options (exact):
+
+Student / Fresher
+
+Working Professional
+
+Switching Careers
+
+Target role dropdown
+
+Show suggested roles if you already have them.
+
+Must allow custom typed role in the same control (combo box).
+
+If user chooses “Not sure”, store null.
+
+Exact safe option text inside dropdown list:
+Not sure yet — score me for general readiness
+
+Experience dropdown
+Options (exact):
+
+0 years
+
+1–2 years
+
+3–5 years
+
+6–9 years
+
+10+ years
+
+Buttons row at bottom-right:
+
+Exact button texts:
+
+Primary: Save
+
+Secondary: Cancel
+
+Behavior:
+
+On Cancel: close popup, no changes.
+
+On Save:
+
+PATCH/UPSERT Supabase profiles for current user with the 3 values.
+
+Update local UI state immediately.
+
+Close popup.
+
+Additional logic:
+
+If current_status is Student / Fresher, preselect experience 0 years but allow user to override.
+
+Do not add any success/error copy beyond existing toasts if present. If none exist, do not add new toast text.
+
+Backend/API work
+
+If not already present, add a single endpoint:
+
+PATCH /api/profile
+
+requires Supabase auth
+
+body: { current_status, target_role, years_experience }
+
+upserts into profiles
+
+returns updated profile JSON
+
+Use this endpoint from the popup Save action.
+
+Files to modify/create
+
+public/onboarding-step3.html (Experience screen) OR your current experience HTML
+
+add the final tuning summary + Edit link
+
+public/onboarding.js
+
+fetch profile, render summary, open popup, save changes
+
+public/topbar.js (or wherever top bar lives)
+
+add dropdown menu and hook Change Profile + Logout
+
+public/change-profile-modal.html (if you split markup)
+
+public/change-profile-modal.js
+
+public/onboarding.css
+
+style summary line, Edit link, modal, dropdown
+
+server.js
+
+add PATCH /api/profile if missing
+
+Keep code clean, minimal, and consistent with existing structure.
+Again: do not add any extra copy outside the exact strings above.
