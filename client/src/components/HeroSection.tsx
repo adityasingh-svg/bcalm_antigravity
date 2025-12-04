@@ -194,7 +194,7 @@ export default function HeroSection() {
               }}
               data-testid="button-get-cv-score-main"
             >
-              Get My Free CV Score
+              Start for free
               <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </button>
           </motion.div>
