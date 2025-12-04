@@ -233,7 +233,7 @@ export default function HeroSection() {
                       
                       <Button 
                         type="submit"
-                        className="w-full h-12 text-base font-semibold rounded-xl"
+                        className="w-full h-14 text-lg font-semibold rounded-xl"
                         style={{
                           background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
                           boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
@@ -241,7 +241,7 @@ export default function HeroSection() {
                         data-testid="button-get-cv-score"
                       >
                         Start for free
-                        <ChevronRight className="ml-1 w-4 h-4" />
+                        <ChevronRight className="ml-1 w-5 h-5" />
                       </Button>
                     </form>
                   ) : (
