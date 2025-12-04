@@ -178,13 +178,9 @@ export default function ResultsPage() {
   const { data: jobData, isLoading } = useQuery<AnalysisJob>({
     queryKey: ["/api/analysis", jobId],
     enabled: !!jobId && isAuthenticated,
+    staleTime: 0,
+    refetchOnMount: "always",
   });
-
-  useEffect(() => {
-    if (jobData && jobData.status !== "complete") {
-      navigate(`/processing?jobId=${jobId}`);
-    }
-  }, [jobData, jobId, navigate]);
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/share/${jobId}`;
@@ -247,7 +243,22 @@ export default function ResultsPage() {
   if (jobData.status !== "complete") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#0a0014] via-[#110022] to-[#1a0033]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-white/70">
+            {jobData.status === "processing" ? "Still analyzing your CV..." : "Loading results..."}
+          </p>
+          {jobData.status === "processing" && (
+            <Button
+              variant="ghost"
+              className="mt-4 text-white/50"
+              onClick={() => navigate(`/processing?jobId=${jobId}`)}
+              data-testid="button-view-processing"
+            >
+              View progress
+            </Button>
+          )}
+        </div>
       </div>
     );
   }

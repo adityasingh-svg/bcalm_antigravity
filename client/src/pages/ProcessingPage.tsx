@@ -51,6 +51,7 @@ export default function ProcessingPage() {
   const { data: jobData, isLoading } = useQuery<AnalysisJob>({
     queryKey: ["/api/analysis", jobId],
     enabled: !!jobId && isAuthenticated,
+    staleTime: 0,
     refetchInterval: (query) => {
       const status = query.state.data?.status;
       if (status === "complete" || status === "failed") {
@@ -62,9 +63,10 @@ export default function ProcessingPage() {
 
   useEffect(() => {
     if (jobData?.status === "complete") {
-      navigate(`/results/${jobId}`);
+      console.log("Job complete, navigating to results:", jobId);
+      navigate(`/results/${jobId}`, { replace: true });
     }
-  }, [jobData, jobId, navigate]);
+  }, [jobData?.status, jobId, navigate]);
 
   if (jobData?.status === "failed") {
     return (
