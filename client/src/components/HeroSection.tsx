@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { trackEvent } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
@@ -19,6 +19,7 @@ export default function HeroSection() {
   const { isAuthenticated } = useAuth();
   const [showCongrats, setShowCongrats] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
@@ -38,7 +39,7 @@ export default function HeroSection() {
     return "";
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.name.trim()) {
@@ -57,11 +58,44 @@ export default function HeroSection() {
     }
     setPhoneError("");
     
-    trackEvent("signup_form_submitted", {
-      name: formData.name
-    });
+    setIsSubmitting(true);
     
-    setShowCongrats(true);
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          phone: formData.phoneNumber.replace(/\D/g, ''),
+          utmSource: urlParams.get("utm_source") || undefined,
+          utmMedium: urlParams.get("utm_medium") || undefined,
+          utmCampaign: urlParams.get("utm_campaign") || undefined,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to submit");
+      }
+      
+      trackEvent("signup_form_submitted", {
+        name: formData.name
+      });
+      
+      setShowCongrats(true);
+    } catch (error) {
+      console.error("Error submitting lead:", error);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCloseModal = () => {
@@ -185,10 +219,20 @@ export default function HeroSection() {
                     background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
                     boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
                   }}
+                  disabled={isSubmitting}
                   data-testid="button-get-cv-score"
                 >
-                  Start for free
-                  <ChevronRight className="ml-1 w-5 h-5" />
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 w-5 h-5 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      Start for free
+                      <ChevronRight className="ml-1 w-5 h-5" />
+                    </>
+                  )}
                 </Button>
               </form>
             </div>
