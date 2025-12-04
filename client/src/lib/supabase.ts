@@ -107,6 +107,20 @@ export async function signOut() {
   }
 }
 
+export async function resetPassword(email: string) {
+  const client = await getSupabaseClient();
+  const { data, error } = await client.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/auth/callback`
+  });
+  
+  if (error) {
+    console.error('Password reset error:', error);
+    throw error;
+  }
+  
+  return data;
+}
+
 export async function getSession() {
   try {
     const client = await getSupabaseClient();

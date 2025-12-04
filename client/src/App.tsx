@@ -24,12 +24,14 @@ import ResultsPage from "@/pages/ResultsPage";
 import SharePage from "@/pages/SharePage";
 import DashboardPage from "@/pages/DashboardPage";
 import AuthCallbackPage from "@/pages/AuthCallbackPage";
+import AuthPage from "@/pages/AuthPage";
 import StartPage from "@/pages/StartPage";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
+      <Route path="/auth" component={AuthPage} />
       <Route path="/auth/callback" component={AuthCallbackPage} />
       <Route path="/score" component={StartPage} />
       <Route path="/start" component={StartPage} />
