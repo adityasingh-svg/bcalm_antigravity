@@ -102,7 +102,7 @@ export default function HeroSection({ onOpenLeadModal }: HeroSectionProps) {
             
             {/* Subline */}
             <p className="text-base md:text-lg text-white/70 mb-6 md:mb-7 font-medium">
-              Free AI CV Score + 30-Day Personalized Plan
+              Get your 30 day personalized plan
             </p>
             
             {/* Primary CTA Button */}
