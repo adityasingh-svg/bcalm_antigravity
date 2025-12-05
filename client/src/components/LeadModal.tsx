@@ -84,9 +84,10 @@ export default function LeadModal({ open, onOpenChange }: LeadModalProps) {
         <div 
           className="relative rounded-2xl p-6"
           style={{
-            background: 'rgba(20, 12, 40, 0.98)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
+            background: 'linear-gradient(135deg, rgba(30, 20, 50, 0.95) 0%, rgba(20, 12, 40, 0.98) 100%)',
+            border: '1px solid rgba(167, 139, 250, 0.25)',
+            boxShadow: '0 0 40px rgba(139, 92, 246, 0.25), 0 25px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)',
+            backdropFilter: 'blur(8px)',
           }}
         >
           {/* Close button */}
