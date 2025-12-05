@@ -59,7 +59,7 @@ export default function HeroSection({ onOpenLeadModal }: HeroSectionProps) {
         }}
       />
       
-      <div className="relative z-10 container mx-auto px-4 py-8 md:py-12 flex flex-col items-center justify-center min-h-[calc(100vh-60px)]" style={{ maxWidth: '800px' }}>
+      <div className="relative z-10 container mx-auto px-4 pt-8 md:pt-12 pb-8 flex flex-col items-center" style={{ maxWidth: '800px' }}>
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
