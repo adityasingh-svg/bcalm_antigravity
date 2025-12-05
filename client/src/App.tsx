@@ -26,11 +26,13 @@ import DashboardPage from "@/pages/DashboardPage";
 import AuthCallbackPage from "@/pages/AuthCallbackPage";
 import AuthPage from "@/pages/AuthPage";
 import StartPage from "@/pages/StartPage";
+import VibecodingPage from "@/pages/VibecodingPage";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
+      <Route path="/vibecoding" component={VibecodingPage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/auth/callback" component={AuthCallbackPage} />
       <Route path="/score" component={StartPage} />

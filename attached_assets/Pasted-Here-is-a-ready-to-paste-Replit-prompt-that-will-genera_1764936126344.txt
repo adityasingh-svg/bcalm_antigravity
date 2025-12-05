@@ -1,0 +1,89 @@
+Here is a **ready-to-paste Replit prompt** that will generate a **mobile-first, responsive landing page** for **Vibecoding**, styled similar to BCALM’s UI, but with an **orange hero theme**, and a strong CTA **“Enroll Now”**.
+The prompt tells Replit AI exactly what to build — layout, sections, responsiveness, design rules, fonts, animations, everything.
+
+---
+
+# ✅ **Replit Prompt — Copy & Paste**
+
+**Prompt:**
+Build a fully responsive, mobile-first landing page for **Vibecoding**, hosted at **[www.bcalm.org/vibecoding](http://www.bcalm.org/vibecoding)**.
+
+### **Brand & Design Requirements**
+
+* Visual style similar to **bcalm.org** but with **orange gradient** instead of purple.
+* Clean, modern UI with subtle animations.
+* Use **inter**, **poppins**, or any clean sans-serif font.
+* Rounded buttons, soft shadows, glowing CTA.
+* Keep width constrained for desktop but **optimize for mobile first** (primary audience).
+* Add mobile navbar with hamburger menu.
+* Add smooth scroll, fade-in animations, and responsive hero text scaling.
+
+### **Hero Section**
+
+* Full-screen hero section with a bright **orange gradient** background.
+* Headline: **“Learn to Build Websites & Apps in 14 Days”**
+* Subheadline: **“Master full-stack web dev through vibecoded, hands-on projects.”**
+* Big CTA button: **“Enroll Now”** (same style as BCALM “Start for Free” button, but orange).
+* Add secondary text: **“No prior coding experience needed.”**
+* Hero must stack vertically and center-align for mobile.
+
+### **Sections to Include**
+
+1. **Why Vibecoding Works**
+
+   * 3 cards explaining benefits:
+
+     * *Learn by Vibecoding Projects*
+     * *AI-powered mentorship*
+     * *Build a portfolio in 14 days*
+   * Cards must be responsive 1-column on mobile, 3-column on desktop.
+
+2. **Curriculum Preview**
+
+   * Show a 14-day schedule grid (responsive).
+
+3. **Success Stories**
+
+   * Student avatars + short testimonials.
+
+4. **What You Will Build**
+
+   * 3 sample projects with screenshots/placeholders.
+
+5. **Final CTA Section**
+
+   * Orange gradient background.
+   * Headline: **“Ready to Build Your First Website or App?”**
+   * CTA Button: **“Enroll Now”**.
+
+### **Technical Requirements**
+
+* Use **HTML + Tailwind CSS** (preferred) OR vanilla CSS if needed.
+* Mobile-first design:
+
+  * Hero text auto scales
+  * Buttons fill width on mobile
+  * Avoid overflow issues
+  * Navbar converts to hamburger
+* Everything fully responsive:
+
+  * Images scale
+  * Grids collapse
+  * Padding adjusts
+* Code must be clean and production-ready.
+
+### **Animations**
+
+* Fade-up animation on scroll.
+* CTA button hover glow.
+* Smooth page transitions.
+
+### **Additional Instructions**
+
+* Provide complete **index.html**, **style.css** (if not using Tailwind), and **script.js**.
+* Ensure the site loads fast and uses no heavy libraries.
+* Make the orange theme consistent across hover states, buttons, and gradients.
+
+---
+
+If you'd like, I can now **generate the full code**, **preview the landing page**, or **add additional sections like pricing, FAQ, or a lead-capture form**.
