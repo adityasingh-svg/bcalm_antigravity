@@ -11,7 +11,7 @@ export default function HeroSection({ onOpenLeadModal }: HeroSectionProps) {
   return (
     <section 
       id="hero"
-      className="relative min-h-screen overflow-hidden" 
+      className="relative overflow-hidden" 
       style={{ paddingTop: '60px' }}
     >
       {/* Layer 1: Rich multi-stop gradient background */}

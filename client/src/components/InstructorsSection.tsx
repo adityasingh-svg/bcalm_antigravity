@@ -38,7 +38,7 @@ const instructors = [
 
 export default function InstructorsSection() {
   return (
-    <section id="instructors" className="py-16 bg-background">
+    <section id="instructors" className="py-10 bg-background">
       <div className="container mx-auto px-4 max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
