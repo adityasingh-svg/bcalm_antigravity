@@ -149,14 +149,6 @@ export default function Navbar() {
                   >
                     Start for free
                   </Button>
-                  
-                  <button
-                    onClick={() => setAuthModalOpen(true)}
-                    className="text-white/70 text-sm font-medium hover:text-white transition-colors"
-                    data-testid="button-sign-in"
-                  >
-                    Sign in
-                  </button>
                 </div>
               )}
             </div>
