@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, Code, Users, Zap, CheckCircle2, ArrowRight } from "lucide-react";
+import { Sparkles, Code, Users, Zap, CheckCircle2, ArrowRight, Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
 
 const containerVariants = {
@@ -50,6 +50,30 @@ export default function VibecodingPage() {
     { day: "Days 9-10", title: "Database Integration", projects: "Full-Stack Todo" },
     { day: "Days 11-12", title: "Deployment & DevOps", projects: "Deploy Live" },
     { day: "Days 13-14", title: "Capstone Project", projects: "Your Own Idea" },
+  ];
+
+  const instructors = [
+    {
+      name: "Rakesh Malloju",
+      role: "Senior Director of Product",
+      companies: ["Zaptic", "Musigma"],
+      education: "IIM Calcutta",
+      linkedin: "https://linkedin.com/in/rakesh-malloju",
+    },
+    {
+      name: "Aditya Singh",
+      role: "Product Manager",
+      companies: ["Apollo247"],
+      education: "IIT Delhi",
+      linkedin: "https://linkedin.com/in/aditya-singh",
+    },
+    {
+      name: "Akhil Joy",
+      role: "Senior Product Engineer",
+      companies: ["Swiggy", "Flipkart"],
+      education: "NIT Trichy",
+      linkedin: "https://linkedin.com/in/akhil-joy",
+    },
   ];
 
   const testimonials = [
@@ -198,6 +222,45 @@ export default function VibecodingPage() {
                 </motion.div>
               );
             })}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Built by Leaders Section */}
+      <section className="py-16 md:py-24 px-4">
+        <div className="max-w-5xl mx-auto">
+          <motion.h2 variants={itemVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
+            Built by Leaders Who've Hired 1000+
+          </motion.h2>
+          <motion.p variants={itemVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-white/60 text-center mb-12 max-w-2xl mx-auto">
+            From IITs to top tech companies — they know what it takes to get hired
+          </motion.p>
+
+          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {instructors.map((instructor, idx) => (
+              <motion.div key={idx} variants={itemVariants} className="flex flex-col items-center">
+                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center mb-4 flex-shrink-0 border-4 border-orange-500/30">
+                  <span className="text-4xl font-bold text-white">{instructor.name.split(' ').map(n => n[0]).join('')}</span>
+                </div>
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <h3 className="text-lg font-bold text-white">{instructor.name}</h3>
+                    <a href={instructor.linkedin} target="_blank" rel="noopener noreferrer" className="text-orange-400 hover:text-orange-300 transition-colors">
+                      <Linkedin className="h-4 w-4" />
+                    </a>
+                  </div>
+                  <p className="text-sm text-white/70 mb-2">{instructor.role}</p>
+                  <div className="flex flex-wrap justify-center gap-2 mb-2">
+                    {instructor.companies.map((company) => (
+                      <span key={company} className="px-2 py-1 text-xs bg-orange-500/20 text-orange-300 rounded border border-orange-500/30">
+                        {company}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-xs text-white/50">{instructor.education}</p>
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
