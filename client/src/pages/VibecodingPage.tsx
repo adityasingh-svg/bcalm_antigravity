@@ -140,7 +140,7 @@ export default function VibecodingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-16 md:pt-40 md:pb-24 px-4 overflow-hidden">
+      <section className="relative pt-32 pb-6 md:pt-40 md:pb-8 px-4 overflow-hidden">
         {/* Hero gradient background */}
         <div className="absolute inset-0 -z-10">
           <div
@@ -194,7 +194,7 @@ export default function VibecodingPage() {
       </section>
 
       {/* Why Vibecoding Works */}
-      <section className="py-16 md:py-24 px-4">
+      <section className="py-8 md:py-12 px-4">
         <div className="max-w-5xl mx-auto">
           <motion.h2 variants={itemVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
             Why Vibecoding Works
