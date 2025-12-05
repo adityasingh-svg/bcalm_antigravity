@@ -13,12 +13,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import AuthModal from "@/components/AuthModal";
 import ChangeProfileModal from "@/components/ChangeProfileModal";
+import LeadModal from "@/components/LeadModal";
 
 export default function Navbar() {
   const [, navigate] = useLocation();
   const { user, isLoading, isAuthenticated, logout } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [changeProfileOpen, setChangeProfileOpen] = useState(false);
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -31,15 +33,6 @@ export default function Navbar() {
       navigate("/upload");
     } else {
       navigate("/onboarding");
-    }
-  };
-
-  const scrollToHeroCTA = () => {
-    const heroSection = document.getElementById('hero-cta');
-    if (heroSection) {
-      heroSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else {
-      navigate('/');
     }
   };
 
@@ -86,7 +79,7 @@ export default function Navbar() {
                   
                   {/* Start for free - primary CTA */}
                   <Button
-                    onClick={scrollToHeroCTA}
+                    onClick={() => setLeadModalOpen(true)}
                     size="sm"
                     className="font-semibold"
                     style={{
@@ -138,7 +131,7 @@ export default function Navbar() {
                   
                   {/* Start for free - primary CTA */}
                   <Button
-                    onClick={scrollToHeroCTA}
+                    onClick={() => setLeadModalOpen(true)}
                     size="sm"
                     className="font-semibold"
                     style={{
@@ -167,6 +160,8 @@ export default function Navbar() {
           years_experience: (user as any).years_experience
         } : null}
       />
+      
+      <LeadModal open={leadModalOpen} onOpenChange={setLeadModalOpen} />
     </>
   );
 }
