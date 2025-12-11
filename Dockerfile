@@ -23,4 +23,4 @@ EXPOSE 8080
 
 # Start the server via npm "start" script
 # 👉 Make sure package.json has: "start": "node server/index.js" (or whatever your server entry is)
-CMD ["npm", "start"]
+CMD ["npm","run","start"]
