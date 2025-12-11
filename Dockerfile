@@ -1,27 +1,25 @@
+# Use a small, modern Node image
 FROM node:20-alpine
 
+# Create and switch to app directory
 WORKDIR /usr/src/app
 
-# Install deps
+# Install ALL dependencies (including dev deps like vite, esbuild)
 COPY package*.json ./
-RUN npm install --omit=dev
+RUN npm install
 
-# Copy all source code
+# Copy the rest of the source code
 COPY . .
 
-# 🔁 THIS is the important change:
-# ⛔ REMOVE this line:
-# RUN chmod +x ./build.sh && ./build.sh
-# ✅ REPLACE with:
+# Build the app (uses your "build" script: vite + esbuild)
 RUN npm run build
 
-# Cloud Run will inject PORT at runtime
-ENV PORT=8080
+# Runtime env
 ENV NODE_ENV=production
+ENV PORT=8080
 
+# Document the port Cloud Run will send traffic to
 EXPOSE 8080
 
-# You already changed this in the repo:
-# package.json -> "start": "npm run start" (or similar)
+# Start the server (uses your "start" script from package.json)
 CMD ["npm", "run", "start"]
-
