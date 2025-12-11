@@ -1,9 +1,16 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import { setupVite, log } from "./vite";
 import { storage } from "./storage";
 
+import path from "path";
+import { fileURLToPath } from "url";
+
 const app = express();
+
+// Node ESM helpers for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Allow attaching rawBody on JSON requests (for webhooks etc.)
 declare module "http" {
@@ -25,7 +32,7 @@ app.use(express.urlencoded({ extended: false }));
 // Logging middleware for /api routes
 app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
-  const path = req.path;
+  const pathStr = req.path;
   let capturedJsonResponse: unknown;
 
   const originalResJson = res.json.bind(res);
@@ -37,8 +44,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   res.on("finish", () => {
     const duration = Date.now() - start;
 
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
+    if (pathStr.startsWith("/api")) {
+      let logLine = `${req.method} ${pathStr} ${res.statusCode} in ${duration}ms`;
 
       if (capturedJsonResponse != null) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
@@ -62,7 +69,7 @@ async function bootstrap() {
 
     const server = await registerRoutes(app);
 
-    // Central error handler (do NOT rethrow, or it will crash the process)
+    // Central error handler (do NOT rethrow or it will crash the process)
     app.use(
       (err: any, _req: Request, res: Response, _next: NextFunction) => {
         const status = err.status || err.statusCode || 500;
@@ -76,14 +83,23 @@ async function bootstrap() {
       }
     );
 
-    // Only run Vite dev middleware in development
     if (app.get("env") === "development") {
+      // Vite dev middleware – only used locally
       await setupVite(app, server);
     } else {
-      serveStatic(app);
+      // ✅ PRODUCTION: serve built SPA from dist/public
+      const distPublic = path.resolve(__dirname, "../dist/public");
+
+      // Serve static assets (JS, CSS, images, etc.)
+      app.use(express.static(distPublic));
+
+      // SPA fallback – any non-API route returns index.html
+      app.get("*", (_req, res) => {
+        res.sendFile(path.join(distPublic, "index.html"));
+      });
     }
 
-    // Cloud Run will inject PORT (e.g. 8080). Default to 8080 for local runs.
+    // Cloud Run injects PORT, default to 8080 for local runs
     const port = Number(process.env.PORT) || 8080;
 
     app.listen(port, () => {
@@ -91,7 +107,6 @@ async function bootstrap() {
     });
   } catch (err) {
     console.error("Failed to start server:", err);
-    // If bootstrap fails, exit so Cloud Run marks the revision as unhealthy
     process.exit(1);
   }
 }
